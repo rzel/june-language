@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" output="work/test/classes" path="test/classes"/>
+	<classpathentry kind="src" output="work/main/classes" path="main/classes"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="main/lib/antlr-3.0b6.jar"/>
+	<classpathentry kind="lib" path="main/lib/asm-all-3.0.jar"/>
+	<classpathentry kind="lib" path="test/lib/testng-5.5-jdk15.jar"/>
+	<classpathentry kind="output" path="work/main/classes"/>
+</classpath>
