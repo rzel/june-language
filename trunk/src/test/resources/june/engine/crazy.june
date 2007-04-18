@@ -1,0 +1,44 @@
+def blah {
+	var a = 5;
+	go
+}
+
+def something(a: String) {
+	out.println("there");
+}
+
+
+var 
+: String\\\%^$%^$%; var a: String = c;;; var c
+
+var b = ''
+
+try {
+	something.more(4, dude).there
+	writeLine('Hello, world!')
+	writeLine('Just a #bit# more here.', static Logger(getClass))
+	repeat {
+		that
+	} until(done) # 'blah {} something' is equivalent to 'blah(do(){}).something();'.
+	writeLine('Too cool!'); writeLine('And another statement for kicks.')
+	a; b; c
+} catch {
+} finally {
+	whatever
+}
+
+def whatever(... last) {
+}
+
+def html(block: do(with Html)) {
+	var a = 2;
+}
+
+switch(a) {
+	case(`hello) {
+	}
+	case(3) {
+	}
+}
+
+def {
