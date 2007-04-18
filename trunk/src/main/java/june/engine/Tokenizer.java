@@ -201,6 +201,9 @@ public class Tokenizer {
 				case ';':
 					nextToken(SEMICOLON);
 					break;
+				case ',':
+					nextToken(COMMA);
+					break;
 				case '{':
 					nextToken(OPEN_BRACE);
 					break;

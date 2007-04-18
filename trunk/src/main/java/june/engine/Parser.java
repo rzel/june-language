@@ -86,7 +86,33 @@ public class Parser {
 	}
 
 	private void args() {
-		// TODO Auto-generated method stub
+		push(new Args());
+		try {
+			next();
+			while (!at(CLOSE_PAREN) && !at(END_FILE)) {
+				push(new Arg());
+				try {
+					// TODO Do we really need Arg nodes? Leave for now for easier reading of results.
+					if (!at(COMMA)) {
+						// TODO Do unterminated strings parse as one expression until terminated?
+						expression();
+					}
+					if (at(COMMA) || at(END_LINE)) {
+						next();
+					} else if (!at(CLOSE_PAREN)) {
+						// TODO Mark error.
+					}
+				} finally {
+					pop();
+				}
+			}
+			// TODO Do end of file (except when expected) as an exception on purpose to simplify the logic?
+			if (!at(END_FILE)) {
+				next(ANY_BUT_LINEAR_FILL);
+			}
+		} finally {
+			pop();
+		}
 	}
 
 	private void assignment() {
@@ -182,8 +208,12 @@ public class Parser {
 			case ID:
 				call();
 				break;
+			default:
+				next(ANY_BUT_LINEAR_FILL);
+				break;
 		}
 		while (at(DOT)) {
+			// TODO If inside of a list, we should look for COMMA or CLOSE_PAREN instead of normal ends.
 			next(ID_OR_STRONG_END);
 			if (at(ID)) {
 				call();
