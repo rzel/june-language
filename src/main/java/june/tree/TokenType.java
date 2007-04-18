@@ -9,6 +9,7 @@ public enum TokenType {
 	CLOSE_BRACKET,
 	CLOSE_PAREN,
 	COLON,
+	COMMA,
 	COMMENT,
 	DEF,
 	DO,
