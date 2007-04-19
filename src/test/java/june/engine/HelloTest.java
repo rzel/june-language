@@ -37,11 +37,12 @@ public class HelloTest extends TestCase {
 	public void testParser() {
 		String helloSource = readHello();
 		Script script = null;
-		for (int i = 0; i < 10000; i++) {
+		for (int i = 0; i < 100; i++) {
 			Parser parser = new Parser();
 			script = parser.parse(helloSource);
 		}
 		System.out.println(script);
+		new Analyzer().analyze(script);
 	}
 
 	// public void testRunner() {

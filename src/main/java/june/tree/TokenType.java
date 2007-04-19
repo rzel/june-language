@@ -14,6 +14,7 @@ public enum TokenType {
 	DEF,
 	DO,
 	DOT,
+	ELLIPSIS,
 	END_FILE,
 	END_LINE,
 	EQUALS,
