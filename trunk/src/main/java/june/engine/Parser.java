@@ -208,6 +208,9 @@ public class Parser {
 			case ID:
 				call();
 				break;
+			case STRING:
+				stringNode();
+				break;
 			default:
 				next(ANY_BUT_LINEAR_FILL);
 				break;
@@ -258,6 +261,7 @@ public class Parser {
 			}
 			index++;
 			token = tokens.get(index);
+			// TODO If stopping at END_LINEs, check also for ellipses and skip the next endline if that's next stop.
 			if (at(stops)) {
 				return token.type;
 			}
@@ -339,6 +343,17 @@ public class Parser {
 		}
 		if (!advancedForSemi && !at(END_FILE)) {
 			next();
+		}
+	}
+
+	private void stringNode() {
+		push(new StringNode());
+		try {
+			do {
+				next(ANY_BUT_LINEAR_FILL);
+			} while (at(STRING));
+		} finally {
+			pop();
 		}
 	}
 

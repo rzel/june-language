@@ -4,7 +4,6 @@ import java.util.*;
 
 import june.tree.*;
 
-
 import static june.tree.TokenType.*;
 
 public class Tokenizer {
@@ -67,6 +66,18 @@ public class Tokenizer {
 			// Chew through.
 		}
 		token(COMMENT);
+	}
+
+	private void dot() {
+		if (next() == '.') {
+			if (next() == '.') {
+				nextToken(ELLIPSIS);
+			} else {
+				token(ERROR);
+			}
+		} else {
+			token(DOT);
+		}
 	}
 
 	private void endLine() {
@@ -193,7 +204,7 @@ public class Tokenizer {
 					comment();
 					break;
 				case '.':
-					nextToken(DOT);
+					dot();
 					break;
 				case ':':
 					nextToken(COLON);
