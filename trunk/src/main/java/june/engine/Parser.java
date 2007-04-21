@@ -359,7 +359,7 @@ public class Parser {
 
 	private void type() {
 		if (next() == ID) {
-			push(new Type());
+			push(new TypeRef());
 			try {
 				next();
 			} finally {

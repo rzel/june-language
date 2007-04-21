@@ -1,5 +1,7 @@
 package june.engine;
 
+import june.tree.*;
+
 public abstract class Resolver {
 
 	// TODO Keep abstract enough that it could apply other than with Java classpaths?
@@ -8,10 +10,10 @@ public abstract class Resolver {
 
 	public Resolver parent;
 
-	protected abstract Object findCurrentEntity(Object signature);
+	protected abstract Entity findCurrentEntity(Signature signature);
 
-	public Object findEntity(Object signature) {
-		Object entity = findCurrentEntity(signature);
+	public Entity findEntity(Signature signature) {
+		Entity entity = findCurrentEntity(signature);
 		if (entity == null) {
 			entity = parent.findEntity(signature);
 		}
