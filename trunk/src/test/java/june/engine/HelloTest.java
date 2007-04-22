@@ -1,12 +1,13 @@
 package june.engine;
 
 import java.io.*;
+import java.lang.reflect.*;
 import java.util.*;
 
 import june.tree.*;
 import junit.framework.*;
 
-public class HelloTest extends TestCase {
+public class HelloTest<T extends Number & Runnable> extends TestCase {
 
 	private String readHello() {
 		try {
@@ -59,6 +60,23 @@ public class HelloTest extends TestCase {
 			// System.out.println(token);
 			// Avoid disuse warning for now:
 			token.toString();
+		}
+	}
+
+	public T[] blah;
+
+	@SuppressWarnings("unchecked")
+	public void testWhatever() throws Exception {
+		GenericArrayType genericArrayType =
+				(GenericArrayType)HelloTest.class
+						.getField("blah")
+						.getGenericType();
+		TypeVariable<Class> typeVariable =
+				(TypeVariable<Class>)genericArrayType.getGenericComponentType();
+		Class declaration = typeVariable.getGenericDeclaration();
+		System.out.println(declaration);
+		for (Type bound: typeVariable.getBounds()) {
+			System.out.println(bound + " instanceof " + bound.getClass());
 		}
 	}
 

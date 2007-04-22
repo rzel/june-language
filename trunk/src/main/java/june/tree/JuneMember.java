@@ -2,7 +2,12 @@ package june.tree;
 
 import java.lang.reflect.*;
 
-public class JuneMember implements Entity, Member {
+public class JuneMember extends Entity implements Member {
+
+	/**
+	 * TODO This isn't going to work since we can't just make our own Class instances on demand.
+	 */
+	public String declaringClass;
 
 	public Class<?> getDeclaringClass() {
 		// TODO Auto-generated method stub
@@ -15,8 +20,7 @@ public class JuneMember implements Entity, Member {
 	}
 
 	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
+		return name;
 	}
 
 	public boolean isSynthetic() {

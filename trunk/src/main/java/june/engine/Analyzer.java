@@ -1,10 +1,23 @@
 package june.engine;
 
+import java.util.*;
+
 import june.tree.*;
 
 import static june.tree.TokenType.*;
 
+@SuppressWarnings("unchecked")
 public class Analyzer {
+
+	public static final Set<String> DEFAULT_IMPORTS =
+			Collections.unmodifiableSet(new LinkedHashSet(Arrays.asList(
+					"java.io",
+					"java.lang",
+					"java.lang.System",
+					"java.math",
+					"java.text",
+					"java.util",
+					"java.util.regex")));
 
 	// TODO Resolve names. Find higher-level bugs. More.
 
@@ -32,6 +45,12 @@ public class Analyzer {
 				Token token = (Token)kid;
 				if (token.type == ID) {
 					System.out.println("call " + token + " at " + context);
+					if (context instanceof Block) {
+						Signature signature = new Signature();
+						signature.name = token.text.toString();
+						new Resolver.ImportResolver(DEFAULT_IMPORTS, null)
+								.findEntity(signature);
+					}
 					// TODO Search through context to find what this is.
 					// TODO Do we need to know the arg types first?
 				}
