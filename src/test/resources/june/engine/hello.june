@@ -1,4 +1,4 @@
+#!/usr/bin/env june
 # This is as simple as it gets for June.
-# Should we take out the auto-import of System members?
 
 out.println('Hello, world!')
