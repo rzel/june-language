@@ -37,7 +37,11 @@ class ClassBuilder implements ClassVisitor {
 			String description,
 			String signature,
 			Object value) {
-		// TODO Auto-generated method stub
+		JuneField method = new JuneField();
+		method.name = name;
+		method.declaringClass = $class;
+		$class.addMember(method);
+		// TODO We'll need a field visitor to get annotations which we'll need for full (yet usually runtime erased) type information from June.
 		return null;
 	}
 
@@ -58,7 +62,8 @@ class ClassBuilder implements ClassVisitor {
 		JuneMethod method = new JuneMethod();
 		method.name = name;
 		method.declaringClass = $class;
-		$class.methods.add(method);
+		$class.addMember(method);
+		// TODO We'll need a method visitor to get annotations which we'll need for full (yet usually runtime erased) type information from June.
 		return null;
 	}
 
