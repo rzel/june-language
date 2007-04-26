@@ -45,11 +45,21 @@ public class Analyzer {
 				Token token = (Token)kid;
 				if (token.type == ID) {
 					System.out.println("call " + token + " at " + context);
+					Usage usage = new Usage();
+					usage.name = token.text.toString();
 					if (context instanceof Block) {
-						Signature signature = new Signature();
-						signature.name = token.text.toString();
-						new Resolver.ImportResolver(DEFAULT_IMPORTS, null)
-								.findEntity(signature);
+						call.entity =
+								new Resolver.ImportResolver(
+										DEFAULT_IMPORTS,
+										null).findEntity(usage);
+					} else if (context instanceof Call) {
+						Entity entity = ((Call)context).entity;
+						if (entity instanceof JuneMember) {
+							// TODO Do we need resolve the other types? Now or immediately when building the class?
+							call.entity =
+									((JuneClass)((JuneMember)entity).type)
+											.getMember(usage);
+						}
 					}
 					// TODO Search through context to find what this is.
 					// TODO Do we need to know the arg types first?

@@ -35,7 +35,7 @@ public abstract class Resolver {
 		private void addMatches(
 				Set<Entity> matches,
 				String $import,
-				Signature signature) {
+				Usage signature) {
 			try {
 				// TODO First check the last part of the imported package to see if it matches (if null argTypes). As in "sql" for "java.sql".
 				// TODO Use the provided classpath, and manually search it instead of using Package#getPackage(String).
@@ -104,7 +104,7 @@ public abstract class Resolver {
 		}
 
 		@Override
-		protected Entity findCurrentEntity(Signature signature) {
+		protected Entity findCurrentEntity(Usage signature) {
 			Set<Entity> matches = new HashSet<Entity>();
 			// First, make sure to check the root.
 			addMatches(matches, "", signature);
@@ -131,7 +131,7 @@ public abstract class Resolver {
 	public static class MemberResolver extends Resolver {
 
 		@Override
-		protected Entity findCurrentEntity(Signature signature) {
+		protected Entity findCurrentEntity(Usage signature) {
 			// TODO Auto-generated method stub
 			return null;
 		}
@@ -144,9 +144,9 @@ public abstract class Resolver {
 
 	public Resolver parent;
 
-	protected abstract Entity findCurrentEntity(Signature signature);
+	protected abstract Entity findCurrentEntity(Usage signature);
 
-	public Entity findEntity(Signature signature) {
+	public Entity findEntity(Usage signature) {
 		Entity entity = findCurrentEntity(signature);
 		if (entity == null && parent != null) {
 			entity = parent.findEntity(signature);
