@@ -13,13 +13,27 @@ public class Tokenizer {
 	private static Map<String, TokenType> buildKeywords() {
 		Map<String, TokenType> keywords = new HashMap<String, TokenType>();
 		keywords.put("annotation", ANNOTATION);
+		keywords.put("as", AS);
+		keywords.put("aspect", ASPECT);
 		keywords.put("class", CLASS);
 		keywords.put("def", DEF);
 		keywords.put("do", DO);
+		keywords.put("else", ELSE);
+		keywords.put("for", FOR);
+		keywords.put("if", IF);
 		keywords.put("import", IMPORT);
+		keywords.put("instanceof", INSTANCEOF);
 		keywords.put("interface", INTERFACE);
+		keywords.put("internal", INTERNAL);
+		keywords.put("isobject", ISOBJECT);
+		keywords.put("of", OF);
+		keywords.put("override", OVERRIDE);
+		keywords.put("private", PRIVATE);
+		keywords.put("public", PUBLIC);
 		keywords.put("return", RETURN);
+		keywords.put("role", ROLE);
 		keywords.put("var", VAR);
+		keywords.put("while", WHILE);
 		keywords.put("with", WITH);
 		return Collections.unmodifiableMap(keywords);
 	}

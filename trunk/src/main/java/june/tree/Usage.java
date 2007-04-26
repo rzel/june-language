@@ -4,9 +4,9 @@ import java.lang.reflect.*;
 import java.util.*;
 
 /**
- * Represents the information available to identify a particular entity (var, method, class, ...).
+ * Represents the information available (name, argument types, ...) to identify a particular entity (var, method, class, ...).
  */
-public class Signature {
+public class Usage {
 
 	/**
 	 * Empty list for no args (e.g., "run()"). Null for unspecified (e.g., "run").

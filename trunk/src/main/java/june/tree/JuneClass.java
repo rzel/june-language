@@ -24,9 +24,9 @@ public class JuneClass extends JuneType implements GenericDeclaration {
 	/**
 	 * Finds the best match of members (fields or methods) if any for the given signature.
 	 */
-	public JuneMember getMember(Signature signature) {
+	public JuneMember getMember(Usage usage) {
 		JuneMember member = null;
-		Set<JuneMember> candidates = members.get(signature.name);
+		Set<JuneMember> candidates = members.get(usage.name);
 		if (candidates != null) {
 			for (JuneMember candidate: candidates) {
 				// TODO Actually check. Do we need a distance metric or something fancier?
