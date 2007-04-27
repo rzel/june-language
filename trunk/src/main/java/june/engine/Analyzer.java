@@ -1,10 +1,10 @@
 package june.engine;
 
+import static june.tree.TokenType.*;
+
 import java.util.*;
 
 import june.tree.*;
-
-import static june.tree.TokenType.*;
 
 @SuppressWarnings("unchecked")
 public class Analyzer {
@@ -22,6 +22,9 @@ public class Analyzer {
 	// TODO Resolve names. Find higher-level bugs. More.
 
 	// TODO Pass in a Resolver! (Into the constructor?)
+
+	private Map<String, JuneClass> classCache =
+			new HashMap<String, JuneClass>();
 
 	public void analyze(Script script) {
 		for (Node kid: script.getKids()) {
@@ -45,24 +48,35 @@ public class Analyzer {
 				Token token = (Token)kid;
 				if (token.type == ID) {
 					System.out.println("call " + token + " at " + context);
+					// TODO Do we need to know the arg types first?
 					Usage usage = new Usage();
 					usage.name = token.text.toString();
 					if (context instanceof Block) {
 						call.entity =
 								new Resolver.ImportResolver(
 										DEFAULT_IMPORTS,
+										classCache,
 										null).findEntity(usage);
 					} else if (context instanceof Call) {
 						Entity entity = ((Call)context).entity;
 						if (entity instanceof JuneMember) {
+							JuneClass $class =
+									((JuneClass)((JuneMember)entity).type);
+							if (!classCache.containsKey($class.name)) {
+								String[] packageAndClass =
+										Resolver
+												.splitPackageAndClass($class.name);
+								classCache.put($class.name, $class);
+								Resolver.loadClass(
+										classCache,
+										packageAndClass[0],
+										packageAndClass[1]);
+							}
 							// TODO Do we need resolve the other types? Now or immediately when building the class?
-							call.entity =
-									((JuneClass)((JuneMember)entity).type)
-											.getMember(usage);
+							call.entity = $class.getMember(usage);
 						}
 					}
-					// TODO Search through context to find what this is.
-					// TODO Do we need to know the arg types first?
+					System.out.println(call.entity);
 				}
 			}
 		}
