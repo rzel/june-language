@@ -7,7 +7,11 @@ import static org.objectweb.asm.Type.*;
 
 class ClassBuilder implements ClassVisitor {
 
-	public JuneClass $class = new JuneClass();
+	public final JuneClass $class;
+
+	public ClassBuilder(JuneClass $class) {
+		this.$class = $class == null ? new JuneClass() : $class;
+	}
 
 	/**
 	 * TODO We need annotations for full type information. Also, use signatures not descriptors!
