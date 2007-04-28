@@ -131,8 +131,7 @@ public abstract class Resolver {
 			if (url != null) {
 				// TODO Cache built classes by URL or by resourceName?
 				System.out.println(url);
-				ClassBuilder builder =
-						new ClassBuilder(classCache.get(className));
+				ClassBuilder builder = new ClassBuilder(classCache);
 				InputStream stream = url.openStream();
 				try {
 					new ClassReader(new BufferedInputStream(stream)).accept(
@@ -142,6 +141,7 @@ public abstract class Resolver {
 					stream.close();
 				}
 				$class = builder.$class;
+				$class.loaded = true;
 			}
 			return $class;
 		} catch (Exception e) {
