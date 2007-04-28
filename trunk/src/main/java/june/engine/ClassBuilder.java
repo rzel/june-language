@@ -1,16 +1,37 @@
 package june.engine;
 
+import static org.objectweb.asm.Type.*;
+
+import java.util.*;
+
 import june.tree.*;
 
 import org.objectweb.asm.*;
-import static org.objectweb.asm.Type.*;
 
 class ClassBuilder implements ClassVisitor {
 
-	public final JuneClass $class;
+	public static JuneClass accessClass(
+			Map<String, JuneClass> classCache,
+			String className) {
+		JuneClass $class = classCache.get(className);
+		if ($class == null) {
+			$class = new JuneClass();
+			$class.name = className;
+			classCache.put(className, $class);
+		}
+		return $class;
+	}
 
-	public ClassBuilder(JuneClass $class) {
-		this.$class = $class == null ? new JuneClass() : $class;
+	public JuneClass $class;
+
+	private Map<String, JuneClass> classCache;
+
+	public ClassBuilder(Map<String, JuneClass> classCache) {
+		this.classCache = classCache;
+	}
+
+	private JuneClass accessClass(String className) {
+		return accessClass(classCache, className);
 	}
 
 	/**
@@ -20,8 +41,8 @@ class ClassBuilder implements ClassVisitor {
 		JuneType juneType = null;
 		switch (asmType.getSort()) {
 			case OBJECT:
-				juneType = new JuneClass();
-				juneType.name = asmType.getClassName();
+				juneType = accessClass(asmType.getClassName());
+				break;
 		}
 		return juneType;
 	}
@@ -33,7 +54,8 @@ class ClassBuilder implements ClassVisitor {
 			String signature,
 			String superName,
 			String[] interfaces) {
-		$class.name = name.replace('/', '.');
+		String className = name.replace('/', '.');
+		$class = accessClass(className);
 	}
 
 	public AnnotationVisitor visitAnnotation(String descriptor, boolean visible) {

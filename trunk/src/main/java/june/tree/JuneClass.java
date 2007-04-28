@@ -9,6 +9,8 @@ public class JuneClass extends JuneType implements GenericDeclaration {
 		ANNOTATION, ASPECT, CLASS, INTERFACE, ROLE
 	}
 
+	public boolean loaded;
+
 	public Map<String, Set<JuneMember>> members =
 			new HashMap<String, Set<JuneMember>>();
 
