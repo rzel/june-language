@@ -123,9 +123,6 @@ public abstract class Resolver {
 					(packageName.length() > 0 ? packageName.replace('.', '/')
 							+ "/" : "")
 							+ baseClassName.replace('.', '$') + ".class";
-			String className =
-					(packageName.length() > 0 ? (packageName + '.') : "")
-							+ baseClassName;
 			// TODO Just search the classpath manually where possible, but this might still be needed for system classes.
 			URL url = Resolver.class.getClassLoader().getResource(resourceName);
 			if (url != null) {

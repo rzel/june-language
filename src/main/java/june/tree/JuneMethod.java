@@ -19,4 +19,9 @@ public class JuneMethod extends JuneMember implements GenericDeclaration {
 		return null;
 	}
 
+	@Override
+	public String toString() {
+		return super.toString() + " with " + argTypes;
+	}
+
 }

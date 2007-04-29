@@ -14,4 +14,9 @@ public class Usage {
 
 	public String name;
 
+	@Override
+	public String toString() {
+		return name + (argTypes != null ? argTypes : "");
+	}
+
 }

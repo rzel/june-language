@@ -27,15 +27,32 @@ public class JuneClass extends JuneType implements GenericDeclaration {
 	 * Finds the best match of members (fields or methods) if any for the given signature.
 	 */
 	public JuneMember getMember(Usage usage) {
-		JuneMember member = null;
+		JuneMember best = null;
 		Set<JuneMember> candidates = members.get(usage.name);
 		if (candidates != null) {
 			for (JuneMember candidate: candidates) {
-				// TODO Actually check. Do we need a distance metric or something fancier?
-				return candidate;
+				// TODO Varargs of all arrays and lists (and sets and other iterables?).
+				// TODO Actually check. Do we need a distance metric or something multidimensional?
+				if (usage.argTypes == null) {
+					if (candidate instanceof JuneField) {
+						// Done deal.
+						return candidate;
+					} else if (candidate instanceof JuneMethod) {
+						if (((JuneMethod)candidate).argTypes.isEmpty()) {
+							best = candidate;
+						}
+					}
+				} else if (candidate instanceof JuneMethod) {
+					// TODO Check for hierarchy matches up and down. June allows automatic downcasting.
+					// TODO Prefer upcasts to downcasts? Or call such cases ambiguous?
+					if (((JuneMethod)candidate).argTypes.equals(usage.argTypes)) {
+						// Done deal.
+						return candidate;
+					}
+				}
 			}
 		}
-		return member;
+		return best;
 	}
 
 	public TypeVariable<?>[] getTypeParameters() {

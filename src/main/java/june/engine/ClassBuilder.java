@@ -104,6 +104,11 @@ class ClassBuilder implements ClassVisitor {
 		method.name = name;
 		method.declaringClass = $class;
 		method.type = toJuneType(Type.getReturnType(descriptor));
+		// TODO Use SignatureVisitor and MethodVisitor to get full type information.
+		Type[] argTypes = Type.getArgumentTypes(descriptor);
+		for (Type type: argTypes) {
+			method.argTypes.add(toJuneType(type));
+		}
 		$class.addMember(method);
 		// TODO We'll need a method visitor to get annotations which we'll need for full (yet usually runtime erased) type information from June.
 		return null;
