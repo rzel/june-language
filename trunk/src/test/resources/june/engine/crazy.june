@@ -7,6 +7,9 @@ def something(a: String) {
 	out.println("there");
 }
 
+# TODO Allow parameter (co and contra) variance if only one (semi-matching) super-class method and use of override.
+
+override equals(other: Lizard): Boolean = false
 
 var 
 : String\\\%^$%^$%; var a: String = c;;; var c

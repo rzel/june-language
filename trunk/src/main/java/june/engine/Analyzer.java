@@ -80,13 +80,12 @@ public class Analyzer {
 			}
 		}
 		if (usage.name != null) {
-			System.out.println("call " + usage.name + usage.argTypes + " at "
-					+ context);
+			System.out.println("call " + usage + " at " + context);
 			if (context instanceof Call) {
 				Entity entity = ((Call)context).entity;
 				if (entity instanceof JuneMember) {
 					JuneClass $class = ((JuneClass)((JuneMember)entity).type);
-					if (!classCache.containsKey($class.name)) {
+					if (!$class.loaded) {
 						String[] packageAndClass =
 								Resolver.splitPackageAndClass($class.name);
 						classCache.put($class.name, $class);
