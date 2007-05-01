@@ -12,6 +12,8 @@ public abstract class JuneMember extends Entity implements Member {
 	 */
 	public JuneClass declaringClass;
 
+	private int modifiers;
+
 	/**
 	 * The type of a field or the return type of a method.
 	 */
@@ -23,17 +25,28 @@ public abstract class JuneMember extends Entity implements Member {
 	}
 
 	public int getModifiers() {
-		// TODO Auto-generated method stub
-		return 0;
+		return modifiers;
 	}
 
 	public String getName() {
 		return name;
 	}
 
+	public boolean isStatic() {
+		return (modifiers & Modifier.STATIC) != 0;
+	}
+
 	public boolean isSynthetic() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	public void setStatic(boolean $static) {
+		if ($static) {
+			modifiers |= Modifier.STATIC;
+		} else {
+			modifiers &= ~Modifier.STATIC;
+		}
 	}
 
 	@Override

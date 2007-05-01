@@ -34,6 +34,10 @@ class ClassBuilder implements ClassVisitor {
 		return accessClass(classCache, className);
 	}
 
+	private void applyModifiers(JuneMember member, int access) {
+		member.setStatic((access & Opcodes.ACC_STATIC) != 0);
+	}
+
 	/**
 	 * TODO We need annotations for full type information. Also, use signatures not descriptors!
 	 */
@@ -81,6 +85,7 @@ class ClassBuilder implements ClassVisitor {
 		field.name = name;
 		field.declaringClass = $class;
 		field.type = toJuneType(Type.getType(descriptor));
+		applyModifiers(field, access);
 		$class.addMember(field);
 		// TODO We'll need a field visitor to get annotations which we'll need for full (yet usually runtime erased) type information from June.
 		return null;
@@ -109,6 +114,7 @@ class ClassBuilder implements ClassVisitor {
 		for (Type type: argTypes) {
 			method.argTypes.add(toJuneType(type));
 		}
+		applyModifiers(method, access);
 		$class.addMember(method);
 		// TODO We'll need a method visitor to get annotations which we'll need for full (yet usually runtime erased) type information from June.
 		return null;
