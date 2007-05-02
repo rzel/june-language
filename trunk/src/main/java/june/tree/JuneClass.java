@@ -3,11 +3,19 @@ package june.tree;
 import java.lang.reflect.*;
 import java.util.*;
 
+import org.objectweb.asm.Type;
+
+/**
+ * All types in June are represented by Java classes (except for arrays?). The nullable indicator is used to distinguish primitives as needed. Um, then how do we represent NonNull annotations on
+ * (e.g.) Integer types for future Java versions? Have to deal with that later.
+ */
 public class JuneClass extends JuneType implements GenericDeclaration {
 
 	public enum ClassType {
 		ANNOTATION, ASPECT, CLASS, INTERFACE, ROLE
 	}
+
+	public String internalName;
 
 	public boolean loaded;
 
@@ -58,6 +66,14 @@ public class JuneClass extends JuneType implements GenericDeclaration {
 	public TypeVariable<?>[] getTypeParameters() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	Type toAsmType() {
+		if (internalName.equals("java/lang/Void")) {
+			return Type.VOID_TYPE;
+		} else {
+			return Type.getObjectType(internalName);
+		}
 	}
 
 }

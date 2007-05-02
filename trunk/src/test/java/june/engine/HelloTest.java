@@ -9,6 +9,8 @@ import junit.framework.*;
 
 public class HelloTest<T extends Number & Runnable> extends TestCase {
 
+	public T[] blah;
+
 	private String readHello() {
 		try {
 			StringBuilder builder = new StringBuilder();
@@ -52,6 +54,10 @@ public class HelloTest<T extends Number & Runnable> extends TestCase {
 	// runner.run(helloSource);
 	// }
 
+	public void testRunner() {
+		new Runner().run(readHello());
+	}
+
 	public void testTokenizer() {
 		String helloSource = readHello();
 		Tokenizer tokenizer = new Tokenizer();
@@ -62,8 +68,6 @@ public class HelloTest<T extends Number & Runnable> extends TestCase {
 			token.toString();
 		}
 	}
-
-	public T[] blah;
 
 	@SuppressWarnings("unchecked")
 	public void testWhatever() throws Exception {

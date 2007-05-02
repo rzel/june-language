@@ -2,3 +2,7 @@
 # This is as simple as it gets for June.
 
 out.println('Hello, world!')
+out.flush
+err.print('This is on err: ')
+err.println('os.name')
+# err.println(getProperty('os.name'))

@@ -85,15 +85,7 @@ public class Analyzer {
 				Entity entity = ((Call)context).entity;
 				if (entity instanceof JuneMember) {
 					JuneClass $class = ((JuneClass)((JuneMember)entity).type);
-					if (!$class.loaded) {
-						String[] packageAndClass =
-								Resolver.splitPackageAndClass($class.name);
-						classCache.put($class.name, $class);
-						Resolver.loadClass(
-								classCache,
-								packageAndClass[0],
-								packageAndClass[1]);
-					}
+					ensureClassLoaded($class);
 					// TODO Do we need resolve the other types? Now or immediately when building the class?
 					call.entity = $class.getMember(usage);
 				}
@@ -104,12 +96,32 @@ public class Analyzer {
 								classCache,
 								null).findEntity(usage);
 			}
+			if (call.entity instanceof JuneMember) {
+				call.type = ((JuneMember)call.entity).type;
+				ensureClassLoaded((JuneClass)call.type);
+			}
+		}
+	}
+
+	/**
+	 * Load class details on demand with this method. Maybe we should just aggressively load everything at referring class load time?
+	 */
+	private void ensureClassLoaded(JuneClass $class) {
+		if (!$class.loaded) {
+			String[] packageAndClass =
+					Resolver.splitPackageAndClass($class.name);
+			Resolver.loadClass(
+					classCache,
+					packageAndClass[0],
+					packageAndClass[1]);
 		}
 	}
 
 	private void expression(Expression expression) {
 		if (expression instanceof StringNode) {
-			expression.type = accessClass("java.lang.String");
+			JuneClass $class = accessClass("java.lang.String");
+			ensureClassLoaded($class);
+			expression.type = $class;
 		}
 		Node context = expression.parent;
 		for (Node kid: expression.getKids()) {
