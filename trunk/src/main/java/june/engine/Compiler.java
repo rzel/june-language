@@ -6,11 +6,16 @@ import june.tree.*;
 
 import org.objectweb.asm.*;
 
-
 public class Compiler {
 
+	private ClassWriter writer;
+
+	private void block(Node kid) {
+		// TODO Auto-generated method stub
+	}
+
 	public Class<?> compile(Script script) {
-		ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+		writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
 		writer.visit(
 				V1_5,
 				ACC_PUBLIC + ACC_SUPER,
@@ -18,7 +23,12 @@ public class Compiler {
 				null,
 				"java/lang/Object",
 				null);
-		writer.visitSource("TODO.tuga", null);
+		writer.visitSource("TODO.june", null);
+		for (Node kid: script.getKids()) {
+			if (kid instanceof Block) {
+				block(kid);
+			}
+		}
 		// for (Statement statement: script.blocks.get(0).statements) {
 		// if (statement.begin().content instanceof Do) {
 		// Multi doMulti = (Multi)statement;
