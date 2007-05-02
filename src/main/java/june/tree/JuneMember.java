@@ -24,6 +24,8 @@ public abstract class JuneMember extends Entity implements Member {
 		return null;
 	}
 
+	public abstract String getDescriptor();
+
 	public int getModifiers() {
 		return modifiers;
 	}

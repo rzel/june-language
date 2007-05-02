@@ -44,6 +44,9 @@ class ClassBuilder implements ClassVisitor {
 	private JuneType toJuneType(Type asmType) {
 		JuneType juneType = null;
 		switch (asmType.getSort()) {
+			case VOID:
+				juneType = accessClass("java.lang.Void");
+				break;
 			case OBJECT:
 				juneType = accessClass(asmType.getClassName());
 				break;
@@ -60,6 +63,7 @@ class ClassBuilder implements ClassVisitor {
 			String[] interfaces) {
 		String className = name.replace('/', '.');
 		$class = accessClass(className);
+		$class.internalName = name;
 	}
 
 	public AnnotationVisitor visitAnnotation(String descriptor, boolean visible) {

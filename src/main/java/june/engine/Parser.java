@@ -347,9 +347,17 @@ public class Parser {
 	}
 
 	private void stringNode() {
-		push(new StringNode());
+		StringNode stringNode = push(new StringNode());
 		try {
 			do {
+				String text = token.text.toString().substring(1);
+				if (text.endsWith("'")) {
+					text = text.substring(0, text.length() - 1);
+				} else {
+					// TODO Should this ever have "\r\n"?
+					text += '\n';
+				}
+				stringNode.value += text;
 				next(ANY_BUT_LINEAR_FILL);
 			} while (at(STRING));
 		} finally {

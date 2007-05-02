@@ -1,7 +1,14 @@
 package june.tree;
 
+import org.objectweb.asm.*;
+
 public class JuneField extends JuneMember {
 
-	// Nothing custom to add yet. Just a marker class for now.
+	@Override
+	public String getDescriptor() {
+		return Type
+				.getObjectType(((JuneClass)type).internalName)
+				.getDescriptor();
+	}
 
 }

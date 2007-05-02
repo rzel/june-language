@@ -12,6 +12,7 @@ public class Runner {
 	public void run(CharSequence source) {
 		// TODO Run the analyzer, compile dependent files, and so on.
 		Script script = new Parser().parse(source);
+		new Analyzer().analyze(script);
 		Class<?> class_ = new Compiler().compile(script);
 		newInstance(class_);
 	}
