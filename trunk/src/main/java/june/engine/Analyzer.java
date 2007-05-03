@@ -122,13 +122,18 @@ public class Analyzer {
 			JuneClass $class = accessClass("java.lang.String");
 			ensureClassLoaded($class);
 			expression.type = $class;
-		}
-		Node context = expression.parent;
-		for (Node kid: expression.getKids()) {
-			if (kid instanceof Call) {
-				call((Call)kid, context);
-				// TODO This should be any prior expression node (not just statement nor call) in a series of dot drills.
-				context = kid;
+		} else if (expression instanceof Call) {
+			// TODO Should this really be here? How should a dot series really look?
+			call(((Call)expression), null);
+		} else {
+			// TODO Should this really be here? Should we have such arbitrary "expressions" or make Expression abstract?
+			Node context = expression.parent;
+			for (Node kid: expression.getKids()) {
+				if (kid instanceof Call) {
+					call((Call)kid, context);
+					// TODO This should be any prior expression node (not just statement nor call) in a series of dot drills.
+					context = kid;
+				}
 			}
 		}
 	}

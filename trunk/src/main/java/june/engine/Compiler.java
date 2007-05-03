@@ -101,6 +101,7 @@ public class Compiler {
 		defaultConstructor.visitEnd();
 		writer.visitEnd();
 		final byte[] data = writer.toByteArray();
+		System.out.println("Class size: " + data.length);
 		ClassLoader loader = new ClassLoader(getClass().getClassLoader()) {
 			@Override
 			protected Class<?> findClass(String name)
@@ -122,6 +123,9 @@ public class Compiler {
 		if (expression instanceof StringNode) {
 			// TODO Track current method.
 			defaultConstructor.visitLdcInsn(((StringNode)expression).value);
+		} else if (expression instanceof Call) {
+			// TODO See Analyzer for a discussion of how I might want to handle Call.
+			call((Call)expression);
 		} else {
 			for (Node kid: expression.getKids()) {
 				if (kid instanceof Call) {

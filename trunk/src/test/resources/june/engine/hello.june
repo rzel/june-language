@@ -1,8 +1,19 @@
 #!/usr/bin/env june
-# This is as simple as it gets for June.
+# This is as simple as it gets for June:
 
 out.println('Hello, world!')
+
+
+
+
+# And here's some extra bother just for testing:
+
+out.println(
+	'Hello, world!
+	# 'done'
+)
 out.flush
+
 err.print('This is on err: ')
-err.println('os.name')
-# err.println(getProperty('os.name'))
+err.println(getProperty('os.name'))
+err.flush
