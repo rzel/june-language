@@ -48,12 +48,6 @@ public class HelloTest<T extends Number & Runnable> extends TestCase {
 		new Analyzer().analyze(script);
 	}
 
-	// public void testRunner() {
-	// String helloSource = readHello();
-	// Runner runner = new Runner();
-	// runner.run(helloSource);
-	// }
-
 	public void testRunner() {
 		new Runner().run(readHello());
 	}
