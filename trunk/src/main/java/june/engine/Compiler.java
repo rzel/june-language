@@ -8,7 +8,7 @@ import org.objectweb.asm.*;
 
 public class Compiler {
 
-	private MethodVisitor defaultConstructor;
+	private MethodVisitor method;
 
 	private ClassWriter writer;
 
@@ -25,7 +25,48 @@ public class Compiler {
 		}
 	}
 
-	private void block(Node block) {
+	private void block(Block block, boolean explicitDef) {
+		if (explicitDef) {
+			// In the case of an explicit def, just build the code.
+			// The analyzer should be responsible for assigning it a unique name and a real declaring class by this point.
+			expressionsFor(block);
+		} else {
+			// Otherwise, it's an implicit method. Assume constructor for now. Single-method interface callbacks will be different.
+			buildDefaultConstructor(block);
+		}
+		// Even explicit defs can have subdefs. They'll belong to some class or another.
+		for (Node kid: block.getKids()) {
+			if (kid instanceof Def) {
+				def((Def)kid);
+			}
+		}
+	}
+
+	private void buildDefaultConstructor(Block block) {
+		// TODO Support pushing method on stack so we can nest them and so on.
+		method = writer.visitMethod(ACC_PUBLIC, "<init>", "()V", null, null);
+		method.visitVarInsn(ALOAD, 0);
+		method.visitMethodInsn(
+				INVOKESPECIAL,
+				"java/lang/Object",
+				"<init>",
+				"()V");
+		Label firstLabel = new Label();
+		expressionsFor(block);
+		Label lastLabel = new Label();
+		method.visitLocalVariable(
+				"this",
+				"Lpkg/Cls;",
+				null,
+				firstLabel,
+				lastLabel,
+				0);
+		method.visitInsn(RETURN);
+		method.visitMaxs(0, 0);
+		method.visitEnd();
+	}
+
+	private void expressionsFor(Block block) {
 		for (Node kid: block.getKids()) {
 			if (kid instanceof Expression) {
 				expression((Expression)kid);
@@ -43,14 +84,14 @@ public class Compiler {
 			JuneMember member = (JuneMember)call.entity;
 			if (member instanceof JuneField) {
 				if (member.isStatic()) {
-					defaultConstructor.visitFieldInsn(
+					method.visitFieldInsn(
 							GETSTATIC,
 							member.declaringClass.internalName,
 							member.name,
 							member.getDescriptor());
 				}
 			} else if (member instanceof JuneMethod) {
-				defaultConstructor.visitMethodInsn(
+				method.visitMethodInsn(
 						member.isStatic() ? INVOKESTATIC : INVOKEVIRTUAL,
 						member.declaringClass.internalName,
 						member.name,
@@ -74,31 +115,11 @@ public class Compiler {
 				"java/lang/Object",
 				null);
 		writer.visitSource("TODO.june", null);
-		defaultConstructor =
-				writer.visitMethod(ACC_PUBLIC, "<init>", "()V", null, null);
-		defaultConstructor.visitVarInsn(ALOAD, 0);
-		defaultConstructor.visitMethodInsn(
-				INVOKESPECIAL,
-				"java/lang/Object",
-				"<init>",
-				"()V");
-		Label firstLabel = new Label();
 		for (Node kid: script.getKids()) {
 			if (kid instanceof Block) {
-				block(kid);
+				block((Block)kid, false);
 			}
 		}
-		Label lastLabel = new Label();
-		defaultConstructor.visitLocalVariable(
-				"this",
-				"Lpkg/Cls;",
-				null,
-				firstLabel,
-				lastLabel,
-				0);
-		defaultConstructor.visitInsn(RETURN);
-		defaultConstructor.visitMaxs(0, 0);
-		defaultConstructor.visitEnd();
 		writer.visitEnd();
 		final byte[] data = writer.toByteArray();
 		System.out.println("Class size: " + data.length);
@@ -119,10 +140,44 @@ public class Compiler {
 		}
 	}
 
+	private void def(Def def) {
+		// TODO Support pushing method on stack so we can nest them and so on.
+		method =
+				writer.visitMethod(
+						ACC_PRIVATE,
+						def.method.name,
+						"()V",
+						null,
+						null);
+		// method.visitVarInsn(ALOAD, 0);
+		// method.visitMethodInsn(
+		// INVOKESPECIAL,
+		// "java/lang/Object",
+		// "<init>",
+		// "()V");
+		// Label firstLabel = new Label();
+		for (Node kid: def.getKids()) {
+			if (kid instanceof Block) {
+				block((Block)kid, true);
+			}
+		}
+		// Label lastLabel = new Label();
+		// method.visitLocalVariable(
+		// "this",
+		// "Lpkg/Cls;",
+		// null,
+		// firstLabel,
+		// lastLabel,
+		// 0);
+		method.visitInsn(RETURN);
+		method.visitMaxs(0, 0);
+		method.visitEnd();
+	}
+
 	private void expression(Expression expression) {
 		if (expression instanceof StringNode) {
 			// TODO Track current method.
-			defaultConstructor.visitLdcInsn(((StringNode)expression).value);
+			method.visitLdcInsn(((StringNode)expression).value);
 		} else if (expression instanceof Call) {
 			// TODO See Analyzer for a discussion of how I might want to handle Call.
 			call((Call)expression);

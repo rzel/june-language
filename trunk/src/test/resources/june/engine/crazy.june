@@ -39,6 +39,8 @@ def html(block: do(with Html)) {
 
 switch(a) {
 	case(`hello) {
+		var b = static findSomething()
+		# And "/whatever/" is the same as "static Pattern.compile('whatever')"? Not generally. Can't be static unless constant.
 	}
 	case(3) {
 	}

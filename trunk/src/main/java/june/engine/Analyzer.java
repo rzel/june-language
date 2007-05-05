@@ -19,7 +19,7 @@ public class Analyzer {
 					"java.util",
 					"java.util.regex")));
 
-	// TODO Resolve names. Find higher-level bugs. More.
+	// TODO Mark errors. Find higher-level bugs. More.
 
 	// TODO Pass in a Resolver! (Into the constructor?)
 
@@ -61,6 +61,8 @@ public class Analyzer {
 		for (Node kid: block.getKids()) {
 			if (kid instanceof Expression) {
 				expression((Expression)kid);
+			} else if (kid instanceof Def) {
+				def((Def)kid);
 			}
 		}
 	}
@@ -103,6 +105,24 @@ public class Analyzer {
 		}
 	}
 
+	private void def(Def def) {
+		for (Node kid: def.getKids()) {
+			if (kid instanceof Token) {
+				Token token = (Token)kid;
+				if (token.type == ID) {
+					def.method.name = token.text.toString();
+					def.method.declaringClass = ((Block)def.parent).$class;
+					def.method.declaringClass.addMember(def.method);
+					System.out.println(def.method);
+				}
+			} else if (kid instanceof Params) {
+				params((Params)kid);
+			}
+		}
+		// TODO Record explicit types (required for all but private or local).
+		// TODO Mark unresolved types so we can complete in later pass.
+	}
+
 	/**
 	 * Load class details on demand with this method. Maybe we should just aggressively load everything at referring class load time?
 	 */
@@ -136,6 +156,10 @@ public class Analyzer {
 				}
 			}
 		}
+	}
+
+	private void params(Params params) {
+		// TODO Auto-generated method stub
 	}
 
 }
