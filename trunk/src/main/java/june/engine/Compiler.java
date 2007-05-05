@@ -8,6 +8,19 @@ import org.objectweb.asm.*;
 
 public class Compiler {
 
+	/**
+	 * TODO Use a count or a random number or a different classloader for unnamed scripts?
+	 */
+	static int count;
+
+	static {
+		count++;
+	}
+
+	String className = "pkg.Cls" + count;
+
+	String internalClassName = "pkg/Cls" + count;
+
 	private MethodVisitor method;
 
 	private ClassWriter writer;
@@ -56,7 +69,7 @@ public class Compiler {
 		Label lastLabel = new Label();
 		method.visitLocalVariable(
 				"this",
-				"Lpkg/Cls;",
+				"L" + internalClassName + ";",
 				null,
 				firstLabel,
 				lastLabel,
@@ -64,14 +77,6 @@ public class Compiler {
 		method.visitInsn(RETURN);
 		method.visitMaxs(0, 0);
 		method.visitEnd();
-	}
-
-	private void expressionsFor(Block block) {
-		for (Node kid: block.getKids()) {
-			if (kid instanceof Expression) {
-				expression((Expression)kid);
-			}
-		}
 	}
 
 	private void call(Call call) {
@@ -110,7 +115,7 @@ public class Compiler {
 		writer.visit(
 				V1_5,
 				ACC_PUBLIC + ACC_SUPER,
-				"pkg/Cls",
+				internalClassName,
 				null,
 				"java/lang/Object",
 				null);
@@ -122,19 +127,19 @@ public class Compiler {
 		}
 		writer.visitEnd();
 		final byte[] data = writer.toByteArray();
-		System.out.println("Class size: " + data.length);
+		// System.out.println("Class size: " + data.length);
 		ClassLoader loader = new ClassLoader(getClass().getClassLoader()) {
 			@Override
 			protected Class<?> findClass(String name)
 					throws ClassNotFoundException {
-				if (name.equals("pkg.Cls")) {
+				if (name.equals(className)) {
 					return defineClass(name, data, 0, data.length);
 				}
 				throw new ClassNotFoundException();
 			}
 		};
 		try {
-			return loader.loadClass("pkg.Cls");
+			return loader.loadClass(className);
 		} catch (Exception e) {
 			throw throwAny(e);
 		}
@@ -164,7 +169,7 @@ public class Compiler {
 		// Label lastLabel = new Label();
 		// method.visitLocalVariable(
 		// "this",
-		// "Lpkg/Cls;",
+		// "L" + internalClassName + ";",
 		// null,
 		// firstLabel,
 		// lastLabel,
@@ -186,6 +191,14 @@ public class Compiler {
 				if (kid instanceof Call) {
 					call((Call)kid);
 				}
+			}
+		}
+	}
+
+	private void expressionsFor(Block block) {
+		for (Node kid: block.getKids()) {
+			if (kid instanceof Expression) {
+				expression((Expression)kid);
 			}
 		}
 	}

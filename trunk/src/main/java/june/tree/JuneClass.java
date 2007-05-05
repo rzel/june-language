@@ -15,6 +15,13 @@ public class JuneClass extends JuneType implements GenericDeclaration {
 		ANNOTATION, ASPECT, CLASS, INTERFACE, ROLE
 	}
 
+	public JunePackage $package;
+
+	/**
+	 * With '$' or '.'? And what about the very base name (with neither)?
+	 */
+	public String baseName;
+
 	public String internalName;
 
 	public boolean loaded;

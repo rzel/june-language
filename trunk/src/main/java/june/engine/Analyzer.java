@@ -26,11 +26,10 @@ public class Analyzer {
 	/**
 	 * TODO Cache packages here too. Call it "globals"?
 	 */
-	private Map<String, JuneClass> classCache =
-			new HashMap<String, JuneClass>();
+	private Map<String, Entity> globals = new HashMap<String, Entity>();
 
 	private JuneClass accessClass(String className) {
-		return ClassBuilder.accessClass(classCache, className);
+		return ClassBuilder.accessClass(globals, className);
 	}
 
 	public void analyze(Script script) {
@@ -75,14 +74,14 @@ public class Analyzer {
 				if (token.type == ID) {
 					// TODO Do we need to know the arg types first?
 					usage.name = token.text.toString();
-					System.out.println(call.entity);
+					// System.out.println(call.entity);
 				}
 			} else if (kid instanceof Args) {
 				args((Args)kid, usage);
 			}
 		}
 		if (usage.name != null) {
-			System.out.println("call " + usage + " at " + context);
+			// System.out.println("call " + usage + " at " + context);
 			if (context instanceof Call) {
 				Entity entity = ((Call)context).entity;
 				if (entity instanceof JuneMember) {
@@ -95,7 +94,7 @@ public class Analyzer {
 				call.entity =
 						new Resolver.ImportResolver(
 								DEFAULT_IMPORTS,
-								classCache,
+								globals,
 								null).findEntity(usage);
 			}
 			if (call.entity instanceof JuneMember) {
@@ -113,7 +112,7 @@ public class Analyzer {
 					def.method.name = token.text.toString();
 					def.method.declaringClass = ((Block)def.parent).$class;
 					def.method.declaringClass.addMember(def.method);
-					System.out.println(def.method);
+					// System.out.println(def.method);
 				}
 			} else if (kid instanceof Params) {
 				params((Params)kid);
@@ -129,11 +128,8 @@ public class Analyzer {
 	private void ensureClassLoaded(JuneClass $class) {
 		if (!$class.loaded) {
 			String[] packageAndClass =
-					Resolver.splitPackageAndClass($class.name);
-			Resolver.loadClass(
-					classCache,
-					packageAndClass[0],
-					packageAndClass[1]);
+					Resolver.splitPackageAndClass(globals, $class.name);
+			Resolver.loadClass(globals, packageAndClass[0], packageAndClass[1]);
 		}
 	}
 

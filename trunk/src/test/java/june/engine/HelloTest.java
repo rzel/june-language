@@ -37,10 +37,21 @@ public class HelloTest<T extends Number & Runnable> extends TestCase {
 		}
 	}
 
+	public void testCompiler() {
+		Analyzer analyzer = new Analyzer();
+		Compiler compiler = new Compiler();
+		for (int i = 0; i < 1; i++) {
+			String helloSource = readHello();
+			Script script = new Parser().parse(helloSource);
+			analyzer.analyze(script);
+			compiler.compile(script);
+		}
+	}
+
 	public void testParser() {
 		String helloSource = readHello();
 		Script script = null;
-		for (int i = 0; i < 100; i++) {
+		for (int i = 0; i < 1; i++) {
 			Parser parser = new Parser();
 			script = parser.parse(helloSource);
 		}

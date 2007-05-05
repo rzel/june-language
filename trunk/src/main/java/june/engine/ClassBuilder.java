@@ -11,27 +11,39 @@ import org.objectweb.asm.*;
 class ClassBuilder implements ClassVisitor {
 
 	public static JuneClass accessClass(
-			Map<String, JuneClass> classCache,
+			Map<String, Entity> globals,
 			String className) {
-		JuneClass $class = classCache.get(className);
+		JuneClass $class = (JuneClass)globals.get(className);
 		if ($class == null) {
 			$class = new JuneClass();
 			$class.name = className;
-			classCache.put(className, $class);
+			globals.put(className, $class);
 		}
 		return $class;
 	}
 
+	public static JunePackage accessPackage(
+			Map<String, Entity> globals,
+			String packageName) {
+		JunePackage $package = (JunePackage)globals.get(packageName);
+		if ($package == null) {
+			$package = new JunePackage();
+			$package.name = packageName;
+			globals.put(packageName, $package);
+		}
+		return $package;
+	}
+
 	public JuneClass $class;
 
-	private Map<String, JuneClass> classCache;
+	private Map<String, Entity> globals;
 
-	public ClassBuilder(Map<String, JuneClass> classCache) {
-		this.classCache = classCache;
+	public ClassBuilder(Map<String, Entity> globals) {
+		this.globals = globals;
 	}
 
 	private JuneClass accessClass(String className) {
-		return accessClass(classCache, className);
+		return accessClass(globals, className);
 	}
 
 	private void applyModifiers(JuneMember member, int access) {
@@ -64,6 +76,17 @@ class ClassBuilder implements ClassVisitor {
 		String className = name.replace('/', '.');
 		$class = accessClass(className);
 		$class.internalName = name;
+		String packageName;
+		if (name.indexOf('/') >= 0) {
+			int lastSlash = name.lastIndexOf('/');
+			packageName = name.substring(0, lastSlash).replace('/', '.');
+			$class.baseName = name.substring(lastSlash + 1);
+		} else {
+			packageName = "";
+			$class.baseName = className;
+		}
+		JunePackage $package = accessPackage(globals, packageName);
+		$class.$package = $package;
 	}
 
 	public AnnotationVisitor visitAnnotation(String descriptor, boolean visible) {
