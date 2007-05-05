@@ -1,5 +1,8 @@
 package june.tree;
 
+/**
+ * TODO Rename this to NodeType and store all node types here?
+ */
 public enum TokenType {
 
 	ANNOTATION,

@@ -15,27 +15,27 @@ public abstract class Resolver {
 	 */
 	public static class ImportResolver extends Resolver {
 
-		private final Map<String, JuneClass> classCache;
-
 		/**
 		 * TODO Minimal VFS to support network, in-memory, and so on? Shouldn't use Java 6 APIs for Java 5 compatibility, however.
 		 */
 		private final List<String> classpath;
+
+		private final Map<String, Entity> globals;
 
 		private final Set<String> imports;
 
 		/**
 		 * @param imports
 		 *            (or should this be a list?) - can't really accommodate current package, since that has a specific priority. And what about "import bob: java.sql"?
-		 * @param classCache
+		 * @param globals
 		 * @param classpath
 		 */
 		public ImportResolver(
 				Set<String> imports,
-				Map<String, JuneClass> classCache,
+				Map<String, Entity> globals,
 				List<String> classpath) {
 			this.imports = imports;
-			this.classCache = classCache;
+			this.globals = globals;
 			this.classpath = classpath;
 		}
 
@@ -43,7 +43,8 @@ public abstract class Resolver {
 			try {
 				// TODO First check the last part of the imported package to see if it matches (if null argTypes). As in "sql" for "java.sql".
 				// TODO Use the provided classpath, and manually search it instead of using Package#getPackage(String).
-				String[] packageAndClass = splitPackageAndClass($import);
+				String[] packageAndClass =
+						splitPackageAndClass(globals, $import);
 				String packageName = packageAndClass[0];
 				String baseClassName = packageAndClass[1];
 				boolean expectClass = false;
@@ -60,9 +61,9 @@ public abstract class Resolver {
 					expectClass = true;
 				}
 				JuneClass $class =
-						loadClass(classCache, packageName, baseClassName);
+						loadClass(globals, packageName, baseClassName);
 				if ($class != null) {
-					System.out.println($class);
+					// System.out.println($class);
 					if (expectClass) {
 						matches.add($class);
 					} else {
@@ -114,7 +115,7 @@ public abstract class Resolver {
 	}
 
 	public static JuneClass loadClass(
-			Map<String, JuneClass> classCache,
+			Map<String, Entity> globals,
 			String packageName,
 			String baseClassName) {
 		try {
@@ -127,8 +128,8 @@ public abstract class Resolver {
 			URL url = Resolver.class.getClassLoader().getResource(resourceName);
 			if (url != null) {
 				// TODO Cache built classes by URL or by resourceName?
-				System.out.println(url);
-				ClassBuilder builder = new ClassBuilder(classCache);
+				// System.out.println(url);
+				ClassBuilder builder = new ClassBuilder(globals);
 				InputStream stream = url.openStream();
 				try {
 					new ClassReader(new BufferedInputStream(stream)).accept(
@@ -146,7 +147,18 @@ public abstract class Resolver {
 		}
 	}
 
-	public static String[] splitPackageAndClass(String qualifiedName) {
+	public static String[] splitPackageAndClass(
+			Map<String, Entity> globals,
+			String qualifiedName) {
+		Entity entity = globals.get(qualifiedName);
+		if (entity instanceof JunePackage) {
+			return new String[] {qualifiedName, null};
+		} else if (entity instanceof JuneClass) {
+			JuneClass $class = (JuneClass)entity;
+			if ($class.$package != null) {
+				return new String[] {$class.$package.name, $class.baseName};
+			}
+		}
 		String packageName = qualifiedName;
 		String baseClassName = null;
 		Package $package = Package.getPackage(packageName);
@@ -157,7 +169,12 @@ public abstract class Resolver {
 							+ (baseClassName == null ? "" : "." + baseClassName);
 			packageName = packageName.substring(0, lastDot < 0 ? 0 : lastDot);
 			$package = Package.getPackage(packageName);
-			// TODO Cache some of these search results?
+		}
+		// TODO Cache intermediate search results?
+		// TODO Cache not-founds to speed up even with lots of unresolved? Probably not.
+		if (packageName.length() > 0) {
+			// Might as well cache the package name for faster future reference.
+			ClassBuilder.accessPackage(globals, packageName);
 		}
 		return new String[] {packageName, baseClassName};
 	}
