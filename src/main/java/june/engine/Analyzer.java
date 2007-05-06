@@ -21,10 +21,10 @@ public class Analyzer {
 
 	// TODO Mark errors. Find higher-level bugs. More.
 
-	// TODO Pass in a Resolver! (Into the constructor?)
+	// TODO Pass in a Resolver? (Into the constructor?)
 
 	/**
-	 * TODO Cache packages here too. Call it "globals"?
+	 * Cache of packages and classes.
 	 */
 	private Map<String, Entity> globals = new HashMap<String, Entity>();
 
@@ -33,6 +33,9 @@ public class Analyzer {
 	}
 
 	public void analyze(Script script) {
+		// TODO Multiple passes across multiple files.
+		// TODO First find defs and vars (in all files), then find bindings to them.
+		// TODO Do multiple passes on locals and privates to determine types?
 		for (Node kid: script.getKids()) {
 			if (kid instanceof Block) {
 				block(kid);
@@ -83,19 +86,27 @@ public class Analyzer {
 		if (usage.name != null) {
 			// System.out.println("call " + usage + " at " + context);
 			if (context instanceof Call) {
-				Entity entity = ((Call)context).entity;
-				if (entity instanceof JuneMember) {
-					JuneClass $class = ((JuneClass)((JuneMember)entity).type);
+				// The namespace is bound to a particular object and/or class (hierarchy).
+				Entity contextEntity = ((Call)context).entity;
+				if (contextEntity instanceof JuneMember) {
+					JuneClass $class =
+							((JuneClass)((JuneMember)contextEntity).type);
 					ensureClassLoaded($class);
 					// TODO Do we need resolve the other types? Now or immediately when building the class?
 					call.entity = $class.getMember(usage);
 				}
 			} else {
-				call.entity =
-						new Resolver.ImportResolver(
-								DEFAULT_IMPORTS,
-								globals,
-								null).findEntity(usage);
+				// Lexical scoping falling out to imports and global namespacing.
+				if (context instanceof Block) {
+					// TODO Search lexical contexts - and inherited members for explicit classes.
+				}
+				if (call.entity == null) {
+					call.entity =
+							new Resolver.ImportResolver(
+									DEFAULT_IMPORTS,
+									globals,
+									null).findEntity(usage);
+				}
 			}
 			if (call.entity instanceof JuneMember) {
 				call.type = ((JuneMember)call.entity).type;
@@ -140,10 +151,10 @@ public class Analyzer {
 			expression.type = $class;
 		} else if (expression instanceof Call) {
 			// TODO Should this really be here? How should a dot series really look?
-			call(((Call)expression), null);
+			call(((Call)expression), expression.parentBlock());
 		} else {
 			// TODO Should this really be here? Should we have such arbitrary "expressions" or make Expression abstract?
-			Node context = expression.parent;
+			Node context = expression.parentBlock();
 			for (Node kid: expression.getKids()) {
 				if (kid instanceof Call) {
 					call((Call)kid, context);

@@ -72,6 +72,14 @@ public abstract class Node {
 		return 0;
 	}
 
+	public Block parentBlock() {
+		Node node = this;
+		do {
+			node = node.parent;
+		} while (node != null && !(node instanceof Block));
+		return (Block)node;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
