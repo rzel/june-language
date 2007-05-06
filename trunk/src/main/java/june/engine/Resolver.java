@@ -183,6 +183,9 @@ public abstract class Resolver {
 
 	// TODO How do we represent a signified entity (method, field, property, class, package)? Just saying "Object" for now.
 
+	/**
+	 * TODO So far I'm not using the cool hiearchy concept. Maybe get rid of it?
+	 */
 	public Resolver parent;
 
 	protected abstract Entity findCurrentEntity(Usage signature);
