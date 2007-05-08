@@ -7,4 +7,9 @@ public class Call extends Expression {
 
 	public Entity entity;
 
+	/**
+	 * Whether this call is free standing (e.g. "call") or tied explicitly (e.g., "something.call").
+	 */
+	public boolean open;
+
 }

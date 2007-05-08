@@ -28,18 +28,22 @@ public class Analyzer {
 	 */
 	private Map<String, Entity> globals = new HashMap<String, Entity>();
 
+	private Map<Call, Node> unsolvedCalls = new HashMap<Call, Node>();
+
 	private JuneClass accessClass(String className) {
 		return ClassBuilder.accessClass(globals, className);
 	}
 
 	public void analyze(Script script) {
-		// TODO Multiple passes across multiple files.
-		// TODO First find defs and vars (in all files), then find bindings to them.
-		// TODO Do multiple passes on locals and privates to determine types?
 		for (Node kid: script.getKids()) {
 			if (kid instanceof Block) {
 				block(kid);
 			}
+		}
+		// TODO Multiple passes across multiple files.
+		for (Map.Entry<Call, Node> pair: unsolvedCalls.entrySet()) {
+			// TODO Do multiple passes on locals and privates to determine types?
+			call(pair.getKey(), pair.getValue());
 		}
 	}
 
@@ -70,6 +74,7 @@ public class Analyzer {
 	}
 
 	private void call(Call call, Node context) {
+		// TODO If from an unsolvedCall, we might already know this stuff. Consider using cached info.
 		Usage usage = new Usage();
 		for (Node kid: call.getKids()) {
 			if (kid instanceof Token) {
@@ -97,8 +102,20 @@ public class Analyzer {
 				}
 			} else {
 				// Lexical scoping falling out to imports and global namespacing.
+				call.open = true;
 				if (context instanceof Block) {
-					// TODO Search lexical contexts - and inherited members for explicit classes.
+					Block block = (Block)context;
+					LEXICAL_SEARCH: while (call.entity == null && block != null) {
+						// TODO Search inherited members for explicit classes.
+						if (block.$class == null) {
+							// TODO Just hasn't been defined yet? Should this ever happen?
+							break LEXICAL_SEARCH;
+						} else {
+							call.entity = block.$class.getMember(usage);
+							// TODO Could it possibly be null because we don't have enough info yet on this pass?
+						}
+						block = block.parentBlock();
+					}
 				}
 				if (call.entity == null) {
 					call.entity =
@@ -111,6 +128,8 @@ public class Analyzer {
 			if (call.entity instanceof JuneMember) {
 				call.type = ((JuneMember)call.entity).type;
 				ensureClassLoaded((JuneClass)call.type);
+			} else if (call.entity == null) {
+				unsolvedCalls.put(call, context);
 			}
 		}
 	}
@@ -123,6 +142,9 @@ public class Analyzer {
 					def.method.name = token.text.toString();
 					def.method.declaringClass = ((Block)def.parent).$class;
 					def.method.declaringClass.addMember(def.method);
+					// TODO Um real typing and stuff.
+					def.method.type =
+							ClassBuilder.accessClass(globals, "java.lang.Void");
 					// System.out.println(def.method);
 				}
 			} else if (kid instanceof Params) {
