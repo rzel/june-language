@@ -64,19 +64,7 @@ public class Compiler {
 				"java/lang/Object",
 				"<init>",
 				"()V");
-		Label firstLabel = new Label();
 		expressionsFor(block);
-		Label lastLabel = new Label();
-		method.visitLocalVariable(
-				"this",
-				"L" + internalClassName + ";",
-				null,
-				firstLabel,
-				lastLabel,
-				0);
-		method.visitInsn(RETURN);
-		method.visitMaxs(0, 0);
-		method.visitEnd();
 	}
 
 	private void call(Call call) {
@@ -96,6 +84,9 @@ public class Compiler {
 							member.getDescriptor());
 				}
 			} else if (member instanceof JuneMethod) {
+				if (call.open && !member.isStatic()) {
+					method.visitVarInsn(ALOAD, 0);
+				}
 				method.visitMethodInsn(
 						member.isStatic() ? INVOKESTATIC : INVOKEVIRTUAL,
 						member.declaringClass.internalName,
@@ -122,6 +113,12 @@ public class Compiler {
 		writer.visitSource("TODO.june", null);
 		for (Node kid: script.getKids()) {
 			if (kid instanceof Block) {
+				// Should be only one top-level Block in a Script.
+				// TODO Invent names in the Analyzer if missing?
+				if (((Block)kid).$class.name == null) {
+					((Block)kid).$class.name = className;
+					((Block)kid).$class.internalName = internalClassName;
+				}
 				block((Block)kid, false);
 			}
 		}
@@ -154,29 +151,11 @@ public class Compiler {
 						"()V",
 						null,
 						null);
-		// method.visitVarInsn(ALOAD, 0);
-		// method.visitMethodInsn(
-		// INVOKESPECIAL,
-		// "java/lang/Object",
-		// "<init>",
-		// "()V");
-		// Label firstLabel = new Label();
 		for (Node kid: def.getKids()) {
 			if (kid instanceof Block) {
 				block((Block)kid, true);
 			}
 		}
-		// Label lastLabel = new Label();
-		// method.visitLocalVariable(
-		// "this",
-		// "L" + internalClassName + ";",
-		// null,
-		// firstLabel,
-		// lastLabel,
-		// 0);
-		method.visitInsn(RETURN);
-		method.visitMaxs(0, 0);
-		method.visitEnd();
 	}
 
 	private void expression(Expression expression) {
@@ -196,11 +175,25 @@ public class Compiler {
 	}
 
 	private void expressionsFor(Block block) {
+		// TODO Other locals.
+		// TODO Don't define "this" if we don't need it.
+		Label firstLabel = new Label();
 		for (Node kid: block.getKids()) {
 			if (kid instanceof Expression) {
 				expression((Expression)kid);
 			}
 		}
+		Label lastLabel = new Label();
+		method.visitLocalVariable(
+				"this",
+				"L" + internalClassName + ";",
+				null,
+				firstLabel,
+				lastLabel,
+				0);
+		method.visitInsn(RETURN);
+		method.visitMaxs(0, 0);
+		method.visitEnd();
 	}
 
 }
