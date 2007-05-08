@@ -37,7 +37,7 @@ public class Analyzer {
 	public void analyze(Script script) {
 		for (Node kid: script.getKids()) {
 			if (kid instanceof Block) {
-				block(kid);
+				block((Block)kid);
 			}
 		}
 		// TODO Multiple passes across multiple files.
@@ -63,7 +63,7 @@ public class Analyzer {
 		}
 	}
 
-	private void block(Node block) {
+	private void block(Block block) {
 		for (Node kid: block.getKids()) {
 			if (kid instanceof Expression) {
 				expression((Expression)kid);
@@ -149,6 +149,8 @@ public class Analyzer {
 				}
 			} else if (kid instanceof Params) {
 				params((Params)kid);
+			} else if (kid instanceof Block) {
+				block((Block)kid);
 			}
 		}
 		// TODO Record explicit types (required for all but private or local).
