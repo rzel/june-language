@@ -2,7 +2,7 @@ package june.tree;
 
 import java.util.*;
 
-public class Token extends Inline {
+public class Token extends Node {
 
 	public int line;
 

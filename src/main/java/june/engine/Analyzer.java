@@ -69,6 +69,8 @@ public class Analyzer {
 				expression((Expression)kid);
 			} else if (kid instanceof Def) {
 				def((Def)kid);
+			} else if (kid instanceof Var) {
+				var((Var)kid);
 			}
 		}
 	}
@@ -191,6 +193,18 @@ public class Analyzer {
 
 	private void params(Params params) {
 		// TODO Auto-generated method stub
+	}
+
+	private void var(Var var) {
+		System.out.println("Var: " + var.id.text);
+		// for (Node kid: var.getKids()) {
+		// if (kid instanceof Token) {
+		// Token token = (Token)kid;
+		// if (token.type == ID) {
+		// System.out.println("Var: " + token.text);
+		// }
+		// }
+		// }
 	}
 
 }
