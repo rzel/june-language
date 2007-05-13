@@ -117,7 +117,12 @@ public class Parser {
 
 	private void assignment() {
 		next();
-		expression();
+		push(new AssignedValue());
+		try {
+			expression();
+		} finally {
+			pop();
+		}
 	}
 
 	private boolean at(EnumSet<TokenType> types) {
