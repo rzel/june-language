@@ -63,6 +63,15 @@ public class Analyzer {
 		}
 	}
 
+	private void assignedValue(AssignedValue value) {
+		for (Node kid: value.getKids()) {
+			if (kid instanceof Expression) {
+				expression((Expression)kid);
+				value.expression = (Expression)kid;
+			}
+		}
+	}
+
 	private void block(Block block) {
 		for (Node kid: block.getKids()) {
 			if (kid instanceof Expression) {
@@ -196,15 +205,20 @@ public class Analyzer {
 	}
 
 	private void var(Var var) {
-		System.out.println("Var: " + var.id.text);
-		// for (Node kid: var.getKids()) {
-		// if (kid instanceof Token) {
-		// Token token = (Token)kid;
-		// if (token.type == ID) {
-		// System.out.println("Var: " + token.text);
-		// }
-		// }
-		// }
+		JuneType implicitType = null;
+		for (Node kid: var.getKids()) {
+			if (kid instanceof AssignedValue) {
+				assignedValue((AssignedValue)kid);
+				implicitType = ((AssignedValue)kid).expression.type;
+			} else if (kid instanceof TypeRef) {
+				// Explicit typing.
+			}
+		}
+		// TODO Field member and/or two method members.
+		// TODO No more "JuneField" but "JuneVar" instead? Could be fields, local vars, or properties (getters/setters).
+		if (var.type == null) {
+			var.type = implicitType;
+		}
 	}
 
 }

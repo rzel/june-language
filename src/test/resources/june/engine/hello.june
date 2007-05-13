@@ -27,3 +27,6 @@ def sayOsName {
 }
 
 var name = 'world'
+# TODO out.println(name)
+# TODO name = 'Tom'
+# TODO out.println(name)
