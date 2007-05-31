@@ -1,0 +1,6 @@
+<project name="june" default="dist">
+
+	<target name="dist">
+	</target>
+
+</project>
