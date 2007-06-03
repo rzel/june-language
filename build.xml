@@ -1,6 +1,57 @@
 <project name="june" default="dist">
 
-	<target name="dist">
+	<target name="clean">
+		<delete dir="output" />
+	</target>
+
+	<target name="compile" depends="clean">
+		<mkdir dir="output/temp/main" />
+		<javac srcdir="main"
+		       destdir="output/temp/main"
+		       classpath="lib/asm-3.0.jar"
+		       source="1.5" />
+		<mkdir dir="output/temp/test" />
+		<javac srcdir="test"
+		       destdir="output/temp/test"
+		       classpath="output/temp/main"
+		       source="1.5" />
+		<copy todir="output/temp/test">
+			<fileset dir="test" excludes="**/*.java" />
+		</copy>
+	</target>
+
+	<target name="dist" depends="jar">
+		<!-- Anything to do here? -->
+	</target>
+
+	<target name="jar" depends="compile">
+		<taskdef name="jarjar"
+		         classname="com.tonicsystems.jarjar.JarJarTask"
+		         classpath="lib/jarjar-1.0rc3.jar" />
+		<jarjar jarfile="output/june.jar">
+			<manifest>
+				<!-- TODO Find real values for lots of these or delete them. -->
+				<!-- TODO Separate manifest file. -->
+				<attribute name="Created-by"
+				           value="${java.vm.version} ${java.vm.vendor}" />
+				<attribute name="Specification-Title" value="June" />
+				<attribute name="Specification-Version"
+				           value="0.0.1-SNAPSHOT" />
+				<attribute name="Specification-Vendor"
+				           value="http://bagotricks.com/" />
+				<attribute name="Implementation-Title" value="June" />
+				<attribute name="Implementation-URL"
+				           value="http://bagotricks.com/" />
+				<attribute name="Implementation-Version"
+				           value="0.0.1-SNAPSHOT" />
+				<attribute name="Implementation-Vendor" value="Bag O' Tricks" />
+				<attribute name="Implementation-Vendor-Id"
+				           value="http://bagotricks.com/" />
+			</manifest>
+			<fileset dir="output/temp/main" />
+			<zipfileset src="lib/asm-3.0.jar" />
+			<rule pattern="org.objectweb.asm.**" result="june.asm.@1" />
+		</jarjar>
 	</target>
 
 </project>

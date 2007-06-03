@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<!-- This POM is for others' use in Maven. It is not use for actually building June. -->
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>june</groupId>
 	<artifactId>june</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>June</name>
 	<dependencies>
-		<dependency>
-			<groupId>asm</groupId>
-			<artifactId>asm</artifactId>
-			<version>3.0</version>
-		</dependency>
+		<!-- Don't list ASM since that's jarjar'd. -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
