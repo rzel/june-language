@@ -4,5 +4,6 @@ class:
 
 def hi(a*, b: b.B?) {
 	def that: That;
-	def a
+	def a;
+	def c: List[java.util.Map[String,String?,]]?
 }
