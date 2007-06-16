@@ -6,13 +6,24 @@ options {
 
 script	:	use* mainClass;
 
-content	:	statement+;
+block	:	'{' content? '}';
+
+content	:	statement (';' statement)* ';'?;
+
+defStatement
+	:	'def' ID ('(' params? ')')? (':' type)? block?;
 
 mainClass
-	:	('class' ':')? content;
+	:	('class' ':')? content?;
+
+param	:	ID ('?'|'*'|':' type)?;
+
+params	:	param (',' param)* ','?;
 
 statement
-	:	'def';
+	:	defStatement;
+
+type	:	ID ('.'! ID)* ('?'|'*')?; // Need parameters.
 
 use	:	'use'^ ID ('.'! ID)*;
 

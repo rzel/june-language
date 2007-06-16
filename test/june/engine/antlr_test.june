@@ -1,0 +1,8 @@
+use something.Other
+
+class:
+
+def hi(a*, b: b.B?) {
+	def that: That;
+	def a
+}
