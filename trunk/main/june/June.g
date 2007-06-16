@@ -23,7 +23,9 @@ params	:	param (',' param)* ','?;
 statement
 	:	defStatement;
 
-type	:	ID ('.'! ID)* ('?'|'*')?; // Need parameters.
+type	:	ID ('.'! ID)* ('[' types ']')? ('?'|'*')?; // Need parameters.
+
+types	:	type (',' type)* ','?;
 
 use	:	'use'^ ID ('.'! ID)*;
 
