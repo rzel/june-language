@@ -2,8 +2,18 @@ use something.Other
 
 class:
 
-def hi(a*, b: b.B?) {
-	def that: That;
-	def a;
-	def c: List[java.util.Map[String,String?,]]?
+class Name
+
+private:
+
+def hi(
+	a* # comments count as EOL only
+	b: b.B?) {
+	def that:...
+		That;
+	var b: Double = 5
+	def c: List[java.util.Map[
+		String
+		String?
+	]]?
 }

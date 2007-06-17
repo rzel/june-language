@@ -8,30 +8,60 @@ script	:	use* mainClass;
 
 block	:	'{' content? '}';
 
-content	:	statement (';' statement)* ';'?;
+classContent
+	:	 EOL* (statement|visibility) (eol (statement|visibility))* eol?;
+
+classStatement
+	:	'class' ID ('{' classContent? '}')?;
+
+classType
+	:	'annotation'|'class'|'interface'|'role';
+
+content	:	EOL* statement (eol statement)* eol?;
 
 defStatement
 	:	'def' ID ('(' params? ')')? (':' type)? block?;
 
+eoi	:	(','|EOL) EOL* ->;
+
+eol	:	(';'|EOL) EOL* ->;
+
+expression
+	:	ID | NUMBER;
+
 mainClass
-	:	('class' ':')? content?;
+	:	(classType ':')? EOL* classContent?;
 
 param	:	ID ('?'|'*'|':' type)?;
 
-params	:	param (',' param)* ','?;
+params	:	EOL* param (eoi param)* eoi?;
 
 statement
-	:	defStatement;
+	:	(classStatement|defStatement|varStatement);
 
 type	:	ID ('.'! ID)* ('[' types ']')? ('?'|'*')?;
 
-types	:	type (',' type)* ','?;
+types	:	EOL* type (eoi type)* eoi?;
 
-use	:	'use'^ ID ('.'! ID)*;
+use	:	'use'^ ID ('.'! ID)* eol;
+
+varStatement
+	:	'var' ID (':' type)? ('=' expression)?;
+
+visibility
+	:	('internal'|'protected'|'private'|'public') ':';
+
+COMMENT	:	'#' (~('\r'|'\n'))* {skip();};
+
+EOL	:	'\r'|('\r'? '\n');
 
 ID	:	(LETTER|'$') (LETTER|DIGIT|'_')*;
 
-WS	:	(' '|'\t'|'\r'|'\n')+ {skip();};
+NUMBER	:	DIGIT+;
+
+STRETCH	:	'...' EOL* {skip();};
+
+WS	:	(' '|'\t')+ {skip();};
 
 fragment
 DIGIT	:	'0'..'9';
