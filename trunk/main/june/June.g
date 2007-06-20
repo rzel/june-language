@@ -4,9 +4,17 @@ options {
 	output = AST;
 }
 
-script	:	use* mainClass;
+tokens {
+	PARAMS;
+	SCRIPT;
+	TYPEDEF;
+	TYPEREF;
+	VISIBILITY;
+}
 
-block	:	'{' content? '}';
+script	:	use* mainClass -> ^(SCRIPT use* mainClass);
+
+block	:	'{'! content? '}'!;
 
 classContent
 	:	 EOL* (statement|visibility) (eol (statement|visibility))* eol?;
@@ -14,13 +22,10 @@ classContent
 classStatement
 	:	'class' ID ('{' classContent? '}')?;
 
-classType
-	:	'annotation'|'class'|'interface'|'role';
-
 content	:	EOL* statement (eol statement)* eol?;
 
 defStatement
-	:	'def' ID ('(' params? ')')? (':' type)? block?;
+	:	DEF ID ('(' params? ')')? (':' type)? block? -> ^(DEF ID params? type? block?);
 
 eoi	:	(','|EOL) EOL* ->;
 
@@ -30,18 +35,24 @@ expression
 	:	ID | NUMBER;
 
 mainClass
-	:	(classType ':')? EOL* classContent?;
+	:	(typeKind ':')? EOL* classContent? -> ^(TYPEDEF typeKind? classContent?);
 
 param	:	ID ('?'|'*'|':' type)?;
 
-params	:	EOL* param (eoi param)* eoi?;
+params	:	EOL* param (eoi param)* eoi? -> ^(PARAMS param+);
 
 statement
-	:	(classStatement|defStatement|varStatement);
+	:	classStatement
+	|	defStatement
+	|	varStatement
+	;
 
-type	:	ID ('.'! ID)* ('[' types ']')? ('?'|'*')?;
+type	:	ID ('.' ID)* ('[' types ']')? (c='?'|c='*')? -> ^(TYPEREF ID+ types? $c?);
 
-types	:	EOL* type (eoi type)* eoi?;
+typeKind
+	:	'annotation'|'class'|'interface'|'role';
+
+types	:	EOL* type (eoi type)* eoi? -> type+;
 
 use	:	'use'^ ID ('.'! ID)* eol;
 
@@ -49,9 +60,11 @@ varStatement
 	:	'var' ID (':' type)? ('=' expression)?;
 
 visibility
-	:	('internal'|'protected'|'private'|'public') ':';
+	:	(v='internal'|v='protected'|v='private'|v='public') ':' -> ^(VISIBILITY $v);
 
 COMMENT	:	'#' (~('\r'|'\n'))* {skip();};
+
+DEF	:	'def';
 
 EOL	:	'\r'|('\r'? '\n');
 
@@ -60,6 +73,8 @@ ID	:	(LETTER|'$') (LETTER|DIGIT|'_')*;
 NUMBER	:	DIGIT+;
 
 STRETCH	:	'...' EOL* {skip();};
+
+VAR	:	'var';
 
 WS	:	(' '|'\t')+ {skip();};
 
