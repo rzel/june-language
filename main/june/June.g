@@ -5,27 +5,28 @@ options {
 }
 
 tokens {
+	BLOCK;
 	PARAMS;
 	SCRIPT;
-	TYPEDEF;
-	TYPEREF;
-	VISIBILITY;
+	TYPE_DEF;
+	TYPE_REF;
 }
 
 script	:	use* mainClass -> ^(SCRIPT use* mainClass);
 
-block	:	'{'! content? '}'!;
+block	:	'{' content? '}' -> content?;
 
+// TODO Should the visibility be grouping the statements?
 classContent
-	:	 EOL* (statement|visibility) (eol (statement|visibility))* eol?;
+	:	 EOL* (s+=statement|s+=visibility) (eol (s+=statement|s+=visibility))* eol? -> ^(BLOCK $s+);
 
 classStatement
-	:	'class' ID ('{' classContent? '}')?;
+	:	typeKind ID ('{' classContent? '}')? -> ^(TYPE_DEF typeKind ID classContent?);
 
-content	:	EOL* statement (eol statement)* eol?;
+content	:	EOL* statement (eol statement)* eol? -> ^(BLOCK statement+);
 
 defStatement
-	:	DEF ID ('(' params? ')')? (':' type)? block? -> ^(DEF ID params? type? block?);
+	:	DEF^ ID ('('! params? ')'!)? (':'! type)? block?;
 
 eoi	:	(','|EOL) EOL* ->;
 
@@ -35,32 +36,29 @@ expression
 	:	ID | NUMBER;
 
 mainClass
-	:	(typeKind ':')? EOL* classContent? -> ^(TYPEDEF typeKind? classContent?);
+	:	(typeKind ':')? EOL* classContent? -> ^(TYPE_DEF typeKind? classContent?);
 
-param	:	ID ('?'|'*'|':' type)?;
-
-params	:	EOL* param (eoi param)* eoi? -> ^(PARAMS param+);
+params	:	EOL* varDef (eoi varDef)* eoi? -> ^(PARAMS varDef+);
 
 statement
-	:	classStatement
-	|	defStatement
-	|	varStatement
-	;
+	:	(classStatement|defStatement|varStatement);
 
-type	:	ID ('.' ID)* ('[' types ']')? (c='?'|c='*')? -> ^(TYPEREF ID+ types? $c?);
+type	:	ID ('.' ID)* ('[' types ']')? (c='?'|c='*')? -> ^(TYPE_REF ID+ types? $c?);
 
 typeKind
 	:	'annotation'|'class'|'interface'|'role';
 
-types	:	EOL* type (eoi type)* eoi? -> type+;
+types	:	EOL* type (eoi type)* eoi? -> ^(PARAMS type+);
 
 use	:	'use'^ ID ('.'! ID)* eol;
 
+varDef	:	ID ('?'|'*'|':'! type)?;
+
 varStatement
-	:	'var' ID (':' type)? ('=' expression)?;
+	:	'var'^ varDef ('='! expression)?;
 
 visibility
-	:	(v='internal'|v='protected'|v='private'|v='public') ':' -> ^(VISIBILITY $v);
+	:	('internal'|'protected'|'private'|'public') ':'!;
 
 COMMENT	:	'#' (~('\r'|'\n'))* {skip();};
 
@@ -73,8 +71,6 @@ ID	:	(LETTER|'$') (LETTER|DIGIT|'_')*;
 NUMBER	:	DIGIT+;
 
 STRETCH	:	'...' EOL* {skip();};
-
-VAR	:	'var';
 
 WS	:	(' '|'\t')+ {skip();};
 
