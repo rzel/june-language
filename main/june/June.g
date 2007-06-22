@@ -6,6 +6,9 @@ options {
 
 tokens {
 	BLOCK;
+	LIST;
+	MAP;
+	PAIR;
 	PARAMS;
 	SCRIPT;
 	TYPE_DEF;
@@ -23,6 +26,11 @@ classContent
 classStatement
 	:	typeKind ID ('{' classContent? '}')? -> ^(TYPE_DEF typeKind ID classContent?);
 
+collection
+	:	'[' EOL* (expression (eoi expression)* eoi?)? ']' -> ^(LIST expression*)
+	|	'[' EOL* (pair (eoi pair expression)* eoi?)? ']' -> ^(MAP pair*)
+	|	'[' EOL* ':' EOL* ']' -> ^(MAP);
+
 content	:	EOL* statement (eol statement)* eol? -> ^(BLOCK statement+);
 
 defStatement
@@ -33,10 +41,12 @@ eoi	:	(','|EOL) EOL* ->;
 eol	:	(';'|EOL) EOL* ->;
 
 expression
-	:	ID | NUMBER;
+	:	collection | ID | NUMBER;
 
 mainClass
 	:	(typeKind ':')? EOL* classContent? -> ^(TYPE_DEF typeKind? classContent?);
+
+pair	:	ID ':' EOL* expression -> ^(PAIR ID expression); // ID or String (or Integer?)!
 
 params	:	EOL* varDef (eoi varDef)* eoi? -> ^(PARAMS varDef+);
 
@@ -52,7 +62,7 @@ types	:	EOL* type (eoi type)* eoi? -> ^(PARAMS type+);
 
 use	:	'use'^ ID ('.'! ID)* eol;
 
-varDef	:	ID ('?'|'*'|':'! type)?;
+varDef	:	ID ('?'|'*'|':'! EOL* type)?;
 
 varStatement
 	:	'var'^ varDef ('='! expression)?;
