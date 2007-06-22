@@ -6,11 +6,25 @@ class Name
 
 private:
 
+var a = [
+	a:
+		[1, c],
+	b: 2
+]
+var b = [:]
+var c = [
+]
+var d = [1, 2
+3]
+var e = [
+		:
+	]
+
 def hi(
 	a* # comments count as EOL only
 	b: b.B?) {
 	def that:...
-		That;
+That;
 	var b: Double = 5
 	def c: List[java.util.Map[
 		String
