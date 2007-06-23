@@ -23,11 +23,14 @@ var e = [
 def hi(
 	a* # comments count as EOL only
 	b: b.B?) {
-	def that:...
-That;
-	var b: Double = 5
+	def that: ...
+		That;
+	var b: Double ...
+		=
+			5
 	def c: List[java.util.Map[
 		String
 		String?
 	]]?
+	var d = a(4, [1, b]);
 }
