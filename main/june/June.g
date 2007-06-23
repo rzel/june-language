@@ -6,6 +6,7 @@ options {
 
 tokens {
 	BLOCK;
+	CALL;
 	LIST;
 	MAP;
 	PAIR;
@@ -17,7 +18,11 @@ tokens {
 
 script	:	use* mainClass -> ^(SCRIPT use* mainClass);
 
+args	:	EOL* (expression (eoi expression)* eoi?)? -> expression*;
+
 block	:	'{' content? '}' -> content?;
+
+call	:	ID ('(' args ')')? -> ^(CALL ID args?);
 
 // TODO Should the visibility be grouping the statements?
 classContent
@@ -27,7 +32,7 @@ classStatement
 	:	typeKind ID ('{' classContent? '}')? -> ^(TYPE_DEF typeKind ID classContent?);
 
 collection
-	:	'[' EOL* (expression (eoi expression)* eoi?)? ']' -> ^(LIST expression*)
+	:	'[' args ']' -> ^(LIST args)
 	|	'[' EOL* (pair (eoi pair expression)* eoi?)? ']' -> ^(MAP pair*)
 	|	'[' EOL* ':' EOL* ']' -> ^(MAP);
 
@@ -41,7 +46,7 @@ eoi	:	(','|EOL) EOL* ->;
 eol	:	(';'|EOL) EOL* ->;
 
 expression
-	:	collection | ID | NUMBER;
+	:	call | collection | NUMBER;
 
 mainClass
 	:	(typeKind ':')? EOL* classContent? -> ^(TYPE_DEF typeKind? classContent?);
@@ -62,10 +67,11 @@ types	:	EOL* type (eoi type)* eoi? -> ^(PARAMS type+);
 
 use	:	'use'^ ID ('.'! ID)* eol;
 
-varDef	:	ID ('?'|'*'|':'! EOL* type)?;
+varDef	:	ID (c='?'|c='*') -> ID $c
+	|	ID (':' EOL* type)? -> ID type?;
 
 varStatement
-	:	'var'^ varDef ('='! expression)?;
+	:	'var'^ varDef ('='! EOL!* expression)?;
 
 visibility
 	:	('internal'|'protected'|'private'|'public') ':'!;
