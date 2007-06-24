@@ -1,8 +1,15 @@
-use something.Other
+import something.Other
+import another.Something
 
 class:
 
 class Name
+
+role Fish {
+	def happy() {
+		println(this)
+	}
+}
 
 private:
 
@@ -21,8 +28,8 @@ var e = [
 	]
 
 def hi(
-	a* # comments count as EOL only
-	b: b.B?) {
+		a* # comments count as EOL only
+		b: b.B?) {
 	def that: ...
 		That;
 	var b: Double ...
@@ -32,5 +39,5 @@ def hi(
 		String
 		String?
 	]]?
-	var d = a(4, [1, b]);
+	var d = a(4, [1, c]);
 }
