@@ -10,13 +10,14 @@ tokens {
 	LIST;
 	MAP;
 	PAIR;
+	PARAM;
 	PARAMS;
 	SCRIPT;
 	TYPE_DEF;
 	TYPE_REF;
 }
 
-script	:	use* mainClass -> ^(SCRIPT use* mainClass);
+script	:	importStatement* mainClass -> ^(SCRIPT importStatement* mainClass);
 
 args	:	EOL* (expression (eoi expression)* eoi?)? -> expression*;
 
@@ -33,13 +34,13 @@ classStatement
 
 collection
 	:	'[' args ']' -> ^(LIST args)
-	|	'[' EOL* (pair (eoi pair expression)* eoi?)? ']' -> ^(MAP pair*)
+	|	'[' EOL* (pair (eoi pair)* eoi?)? ']' -> ^(MAP pair*)
 	|	'[' EOL* ':' EOL* ']' -> ^(MAP);
 
 content	:	EOL* statement (eol statement)* eol? -> ^(BLOCK statement+);
 
 defStatement
-	:	DEF^ ID ('('! params? ')'!)? (':'! type)? block?;
+	:	'def'^ ID ('('! params? ')'!)? (':'! type)? block?;
 
 eoi	:	(','|EOL) EOL* ->;
 
@@ -48,15 +49,21 @@ eol	:	(';'|EOL) EOL* ->;
 expression
 	:	call | collection | NUMBER;
 
+importStatement
+	:	'import'^ ID ('.'! ID)* eol;
+
 mainClass
 	:	(typeKind ':')? EOL* classContent? -> ^(TYPE_DEF typeKind? classContent?);
 
 pair	:	ID ':' EOL* expression -> ^(PAIR ID expression); // ID or String (or Integer?)!
 
-params	:	EOL* varDef (eoi varDef)* eoi? -> ^(PARAMS varDef+);
+params	:	EOL* varDef (eoi varDef)* eoi? -> ^(PARAMS ^(PARAM varDef)+);
 
 statement
-	:	(classStatement|defStatement|varStatement);
+	:	expression
+	|	classStatement
+	|	defStatement
+	|	varStatement;
 
 type	:	ID ('.' ID)* ('[' types ']')? (c='?'|c='*')? -> ^(TYPE_REF ID+ types? $c?);
 
@@ -64,8 +71,6 @@ typeKind
 	:	'annotation'|'class'|'interface'|'role';
 
 types	:	EOL* type (eoi type)* eoi? -> ^(PARAMS type+);
-
-use	:	'use'^ ID ('.'! ID)* eol;
 
 varDef	:	ID (c='?'|c='*') -> ID $c
 	|	ID (':' EOL* type)? -> ID type?;
@@ -77,8 +82,6 @@ visibility
 	:	('internal'|'protected'|'private'|'public') ':'!;
 
 COMMENT	:	'#' (~('\r'|'\n'))* {skip();};
-
-DEF	:	'def';
 
 EOL	:	'\r'|('\r'? '\n');
 
