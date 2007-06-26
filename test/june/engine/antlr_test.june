@@ -3,11 +3,13 @@ import another.Something
 
 class:
 
+a.b.c(1, 2)
+
 class Name
 
 role Fish {
 	def happy() {
-		println(this)
+		out.println(this)
 	}
 }
 
