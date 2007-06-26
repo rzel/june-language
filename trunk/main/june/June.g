@@ -7,6 +7,7 @@ options {
 tokens {
 	BLOCK;
 	CALL;
+	DRILL;
 	LIST;
 	MAP;
 	PAIR;
@@ -47,10 +48,13 @@ eoi	:	(','|EOL) EOL* ->;
 eol	:	(';'|EOL) EOL* ->;
 
 expression
-	:	call | collection | NUMBER;
+	:	introExpression (-> introExpression | ('.' call)+ -> ^(DRILL introExpression call+));
 
 importStatement
 	:	'import'^ ID ('.'! ID)* eol;
+
+introExpression
+	:	call | collection | NUMBER;
 
 mainClass
 	:	(typeKind ':')? EOL* classContent? -> ^(TYPE_DEF typeKind? classContent?);
