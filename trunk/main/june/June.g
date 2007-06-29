@@ -7,7 +7,6 @@ options {
 tokens {
 	BLOCK;
 	CALL;
-	DRILL;
 	LIST;
 	MAP;
 	PAIR;
@@ -19,6 +18,9 @@ tokens {
 }
 
 script	:	importStatement* mainClass -> ^(SCRIPT importStatement* mainClass);
+
+addExpression
+	:	memberExpression (('+'^|'-'^) memberExpression)*;
 
 args	:	EOL* (expression (eoi expression)* eoi?)? -> expression*;
 
@@ -48,7 +50,7 @@ eoi	:	(','|EOL) EOL* ->;
 eol	:	(';'|EOL) EOL* ->;
 
 expression
-	:	introExpression (-> introExpression | ('.' call)+ -> ^(DRILL introExpression call+));
+	:	addExpression;
 
 importStatement
 	:	'import'^ ID ('.'! ID)* eol;
@@ -58,6 +60,9 @@ introExpression
 
 mainClass
 	:	(typeKind ':')? EOL* classContent? -> ^(TYPE_DEF typeKind? classContent?);
+
+memberExpression
+	:	introExpression (('.'^|'?.'^) call)*;
 
 pair	:	ID ':' EOL* expression -> ^(PAIR ID expression); // ID or String (or Integer?)!
 
