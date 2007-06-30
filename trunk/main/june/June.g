@@ -8,6 +8,7 @@ tokens {
 	ARGS;
 	BLOCK;
 	CALL;
+	COMPARE;
 	LIST;
 	MAP;
 	PAIR;
@@ -21,13 +22,13 @@ tokens {
 script	:	importStatement* mainClass -> ^(SCRIPT importStatement* mainClass);
 
 addExpression
-	:	memberExpression (('+'^|'-'^) memberExpression)*;
+	:	multiplyExpression (('+'^|'-'^) multiplyExpression)*;
 
 args	:	EOL* (expression (eoi expression)* eoi?)? -> expression*;
 
 block	:	'{' content? '}' -> content?;
 
-call	:	ID ('(' args ')' block?)? -> ^(CALL ID ^(ARGS args)? block?);
+call	:	ID ('(' args ')')? block? -> ^(CALL ID ^(ARGS args)? block?);
 
 // TODO Should the visibility be grouping the statements?
 classContent
@@ -41,6 +42,14 @@ collection
 	|	'[' EOL* (pair (eoi pair)* eoi?)? ']' -> ^(MAP pair*)
 	|	'[' EOL* ':' EOL* ']' -> ^(MAP);
 
+compareExpression
+	:	addExpression (
+			 -> addExpression
+	|		(c='=='|c='!=') addExpression -> ^($c addExpression+)
+	|		((d+='<'|d+='<=') addExpression)+ -> ^(COMPARE $d+ addExpression+)
+	|		((d+='>'|d+='>=') addExpression)+ -> ^(COMPARE $d+ addExpression+)
+			);
+
 content	:	EOL* statement (eol statement)* eol? -> ^(BLOCK statement+);
 
 defStatement
@@ -51,7 +60,7 @@ eoi	:	(','|EOL) EOL* ->;
 eol	:	(';'|EOL) EOL* ->;
 
 expression
-	:	addExpression;
+	:	compareExpression;
 
 importStatement
 	:	'import'^ ID ('.'! ID)* eol;
@@ -64,6 +73,9 @@ mainClass
 
 memberExpression
 	:	introExpression (('.'^|'?.'^) call)*;
+
+multiplyExpression
+	:	memberExpression (('*'^|'/'^) memberExpression)*;
 
 pair	:	ID ':' EOL* expression -> ^(PAIR ID expression); // ID or String (or Integer?)!
 
