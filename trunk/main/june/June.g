@@ -5,6 +5,7 @@ options {
 }
 
 tokens {
+	ARGS;
 	BLOCK;
 	CALL;
 	LIST;
@@ -26,7 +27,7 @@ args	:	EOL* (expression (eoi expression)* eoi?)? -> expression*;
 
 block	:	'{' content? '}' -> content?;
 
-call	:	ID ('(' args ')')? -> ^(CALL ID args?);
+call	:	ID ('(' args ')' block?)? -> ^(CALL ID ^(ARGS args)? block?);
 
 // TODO Should the visibility be grouping the statements?
 classContent
@@ -56,7 +57,7 @@ importStatement
 	:	'import'^ ID ('.'! ID)* eol;
 
 introExpression
-	:	call | collection | NUMBER;
+	:	block | call | collection | NUMBER;
 
 mainClass
 	:	(typeKind ':')? EOL* classContent? -> ^(TYPE_DEF typeKind? classContent?);
@@ -96,7 +97,7 @@ EOL	:	'\r'|('\r'? '\n');
 
 ID	:	(LETTER|'$') (LETTER|DIGIT|'_')*;
 
-NUMBER	:	DIGIT+;
+NUMBER	:	DIGIT+;// ('.' DIGIT+)?;
 
 STRETCH	:	'...' EOL* {skip();};
 
