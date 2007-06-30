@@ -3,11 +3,11 @@ import another.Something
 
 class:
 
-if(a) {doSomething.a}.b
+numbers.where{0 <= a < 1}.select{it * 2}
 
-a.if (a) {
+if (a == b) {
 	doSomething.a
-	1
+	c.d() != e
 }
 
 9.toString
