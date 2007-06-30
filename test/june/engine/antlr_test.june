@@ -3,7 +3,16 @@ import another.Something
 
 class:
 
-a - a.b?.c(1, 2) + b - c
+if(a) {doSomething.a}.b
+
+a.if (a) {
+	doSomething.a
+	1
+}
+
+9.toString
+
+a() - a.b?.c(1, 2) + b - c
 
 class Name
 
