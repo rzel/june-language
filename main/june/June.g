@@ -44,7 +44,7 @@ collection
 
 compareExpression
 	:	addExpression (
-			 -> addExpression
+			-> addExpression
 	|		(c='=='|c='!=') addExpression -> ^($c addExpression+)
 	|		((d+='<'|d+='<=') addExpression)+ -> ^(COMPARE $d+ addExpression+)
 	|		((d+='>'|d+='>=') addExpression)+ -> ^(COMPARE $d+ addExpression+)
