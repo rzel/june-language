@@ -4,8 +4,12 @@
 		<delete dir="output" />
 	</target>
 
-	<target name="compile" depends="clean">
+	<target name="compile" depends="generate">
 		<mkdir dir="output/temp/main" />
+		<javac srcdir="output/generated/main"
+		       destdir="output/temp/main"
+		       classpath="lib/antlr-runtime-3.0.jar"
+		       source="1.5" />
 		<javac srcdir="main"
 		       destdir="output/temp/main"
 		       classpath="lib/asm-3.0.jar"
@@ -22,6 +26,14 @@
 
 	<target name="dist" depends="jar">
 		<!-- Anything to do here? -->
+	</target>
+
+	<target name="generate" depends="clean">
+		<java classname="org.antlr.Tool" classpath="lib/antlr-2.7.7.jar;lib/antlr-3.0.jar;lib/stringtemplate-3.0.jar" dir="main" fork="true">
+			<arg value="-o"/>
+			<arg value="../output/generated/main"/>
+			<arg value="june/June.g"/>
+		</java>
 	</target>
 
 	<target name="jar" depends="compile">
@@ -49,7 +61,9 @@
 				           value="http://bagotricks.com/" />
 			</manifest>
 			<fileset dir="output/temp/main" />
+			<zipfileset src="lib/antlr-runtime-3.0.jar" />
 			<zipfileset src="lib/asm-3.0.jar" />
+			<rule pattern="org.antlr.runtime.**" result="june.antlr.@1" />
 			<rule pattern="org.objectweb.asm.**" result="june.asm.@1" />
 		</jarjar>
 	</target>
