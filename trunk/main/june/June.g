@@ -19,6 +19,14 @@ tokens {
 	TYPE_REF;
 }
 
+@header {
+	package june;
+}
+
+@lexer::header {
+	package june;
+}
+
 script	:	importStatement* mainClass -> ^(SCRIPT importStatement* mainClass);
 
 addExpression
@@ -27,6 +35,9 @@ addExpression
 args	:	EOL* (expression (eoi expression)* eoi?)? -> expression*;
 
 block	:	'{' content? '}' -> content?;
+
+booleanExpression
+	:	compareExpression (('&&'^|'||'^) compareExpression)*;
 
 call	:	ID ('(' args ')')? block? -> ^(CALL ID ^(ARGS args)? block?);
 
@@ -43,12 +54,7 @@ collection
 	|	'[' EOL* ':' EOL* ']' -> ^(MAP);
 
 compareExpression
-	:	addExpression (
-			-> addExpression
-	|		(c='=='|c='!=') addExpression -> ^($c addExpression+)
-	|		((d+='<'|d+='<=') addExpression)+ -> ^(COMPARE $d+ addExpression+)
-	|		((d+='>'|d+='>=') addExpression)+ -> ^(COMPARE $d+ addExpression+)
-			);
+	:	addExpression (('=='^|'!='^|'<'^|'<='^|'>'^|'>='^) addExpression)?;
 
 content	:	EOL* statement (eol statement)* eol? -> ^(BLOCK statement+);
 
@@ -60,7 +66,7 @@ eoi	:	(','|EOL) EOL* ->;
 eol	:	(';'|EOL) EOL* ->;
 
 expression
-	:	compareExpression;
+	:	booleanExpression;
 
 importStatement
 	:	'import'^ ID ('.'! ID)* eol;
@@ -90,7 +96,7 @@ statement
 type	:	ID ('.' ID)* ('[' types ']')? (c='?'|c='*')? -> ^(TYPE_REF ID+ types? $c?);
 
 typeKind
-	:	'annotation'|'class'|'interface'|'role';
+	:	'annotation'|'aspect'|'class'|'interface'|'role'|'struct';
 
 types	:	EOL* type (eoi type)* eoi? -> ^(PARAMS type+);
 
