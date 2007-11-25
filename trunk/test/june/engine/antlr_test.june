@@ -3,7 +3,7 @@ import another.Something
 
 class:
 
-numbers.where{0 <= it < 1}.select{it * 2}
+numbers.where{0 <= it && it < 1}.select{it * 2}
 
 if (a == b) {
 	doSomething.a
