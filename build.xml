@@ -15,13 +15,13 @@
 		       classpath="lib/asm-3.0.jar"
 		       source="1.5" />
 		<mkdir dir="output/temp/test" />
-		<javac srcdir="test"
+		<!--javac srcdir="test"
 		       destdir="output/temp/test"
 		       classpath="output/temp/main"
 		       source="1.5" />
 		<copy todir="output/temp/test">
 			<fileset dir="test" excludes="**/*.java" />
-		</copy>
+		</copy-->
 	</target>
 
 	<target name="dist" depends="jar">
@@ -33,6 +33,13 @@
 			<arg value="-o"/>
 			<arg value="../output/generated/main"/>
 			<arg value="june/June.g"/>
+		</java>
+		<java classname="org.antlr.Tool" classpath="lib/antlr-2.7.7.jar;lib/antlr-3.0.jar;lib/stringtemplate-3.0.jar" dir="main" fork="true">
+			<arg value="-o"/>
+			<arg value="../output/generated/main"/>
+			<arg value="-lib"/>
+			<arg value="../output/generated/main/june"/>
+			<arg value="june/Analyzer.g"/>
 		</java>
 	</target>
 
