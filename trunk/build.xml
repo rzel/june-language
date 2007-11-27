@@ -15,16 +15,16 @@
 		       classpath="lib/asm-3.0.jar"
 		       source="1.5" />
 		<mkdir dir="output/temp/test" />
-		<!--javac srcdir="test"
+		<javac srcdir="test"
 		       destdir="output/temp/test"
-		       classpath="output/temp/main"
+		       classpath="output/temp/main;lib/antlr-runtime-3.0.jar;lib/testng-5.5-jdk15.jar"
 		       source="1.5" />
 		<copy todir="output/temp/test">
 			<fileset dir="test" excludes="**/*.java" />
-		</copy-->
+		</copy>
 	</target>
 
-	<target name="dist" depends="jar">
+	<target name="dist" depends="test,jar">
 		<!-- Anything to do here? -->
 	</target>
 
@@ -73,6 +73,13 @@
 			<rule pattern="org.antlr.runtime.**" result="june.antlr.@1" />
 			<rule pattern="org.objectweb.asm.**" result="june.asm.@1" />
 		</jarjar>
+	</target>
+
+	<target name="test" depends="compile">
+		<taskdef resource="testngtasks" classpath="lib/testng-5.5-jdk15.jar"/>
+		<testng workingdir="output/test" classpath="output/temp/test;output/temp/main;lib/antlr-runtime-3.0.jar" outputDir="output/reports/test">
+			<classfileset dir="output/temp/test" includes="**/*.class"/>
+		</testng>
 	</target>
 
 </project>
