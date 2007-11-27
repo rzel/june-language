@@ -4,14 +4,15 @@ import java.io.*;
 
 import june.*;
 import june.JuneParser.*;
-import junit.framework.*;
 
 import org.antlr.runtime.*;
 import org.antlr.runtime.tree.*;
+import org.testng.annotations.*;
 
-public class AntlrTest extends TestCase {
+public class AntlrTest {
 
-	public void testParse() {
+	@Test
+	public void parse() {
 		try {
 			InputStream stream = getClass().getResourceAsStream(
 					"antlr_test.june");

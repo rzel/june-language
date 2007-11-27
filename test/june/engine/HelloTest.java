@@ -5,9 +5,8 @@ import java.lang.reflect.*;
 import java.util.*;
 
 import june.tree.*;
-import junit.framework.*;
 
-public class HelloTest<T extends Number & Runnable> extends TestCase {
+public class HelloTest<T extends Number & Runnable> {
 
 	public T[] blah;
 

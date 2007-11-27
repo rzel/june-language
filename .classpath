@@ -4,7 +4,6 @@
 	<classpathentry kind="src" output="output/temp/test" path="test"/>
 	<classpathentry kind="src" path="output/generated/main"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3.8.1"/>
 	<classpathentry kind="lib" path="lib/asm-3.0.jar"/>
 	<classpathentry kind="lib" path="lib/jarjar-1.0rc3.jar"/>
 	<classpathentry kind="lib" path="lib/testng-5.5-jdk15.jar"/>
