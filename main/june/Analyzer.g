@@ -18,11 +18,19 @@ classStatement: ^(TYPE_DEF typeKind ID classContent?);
 
 content: ^(BLOCK statement+);
 
-defStatement: ^('def' ID params? type? block?) {System.out.println($ID.text)};
+defStatement: ^('def' ID params? type? block?) {System.out.println($ID);};
 
 expression:
 	^('&&' expression expression) |
-	^('||' expression expression);
+	^('||' expression expression) |
+	^('==' expression expression) |
+	^('!=' expression expression) |
+	^('<' expression expression) |
+	^('<=' expression expression) |
+	^('>' expression expression) |
+	^('>=' expression expression) |
+	^('+' expression expression) |
+	^('-' expression expression);
 
 importStatement: ^('import' ID+);
 
