@@ -10,7 +10,11 @@ options {
 
 script: ^(SCRIPT importStatement* mainClass);
 
+args: ^(ARGS expression*);
+
 block: content?;
+
+call: ^(CALL ID args? block?);
 
 classContent: ^(BLOCK (statement|visibility)+);
 
@@ -30,7 +34,12 @@ expression:
 	^('>' expression expression) |
 	^('>=' expression expression) |
 	^('+' expression expression) |
-	^('-' expression expression);
+	^('-' expression expression) |
+	^('*' expression expression) |
+	^('/' expression expression) |
+	^(('.'|'?.') expression call) |
+	call |
+	NUMBER;
 
 importStatement: ^('import' ID+);
 

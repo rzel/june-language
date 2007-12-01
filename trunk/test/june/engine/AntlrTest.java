@@ -14,6 +14,7 @@ public class AntlrTest {
 	@Test
 	public void parse() {
 		try {
+			// TODO How to fail on errors?
 			InputStream stream = getClass().getResourceAsStream(
 					"antlr_test.june");
 			script_return script = new JuneParser(new CommonTokenStream(

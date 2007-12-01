@@ -72,7 +72,7 @@ importStatement
 	:	'import'^ ID ('.'! ID)* eol;
 
 introExpression
-	:	block | call | collection | NUMBER;
+	:	block | call | collection | ('('! expression ')'!) | NUMBER;
 
 mainClass
 	:	(typeKind ':')? EOL* classContent? -> ^(TYPE_DEF typeKind? classContent?);
