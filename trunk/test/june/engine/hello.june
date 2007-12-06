@@ -12,9 +12,9 @@ out.print(
 	'Hello, world!
 	# 'done'
 )
-out.flush
+out.flush()
 
-sayOsName; sayOsName
+sayOsName(); sayOsName()
 
 
 
@@ -23,7 +23,7 @@ sayOsName; sayOsName
 def sayOsName {
 	err.print('This is on err: ')
 	err.println(getProperty('os.name'))
-	err.flush
+	err.flush()
 }
 
 var name = 'world'
