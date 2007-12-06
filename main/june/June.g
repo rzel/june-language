@@ -72,7 +72,7 @@ importStatement
 	:	'import'^ ID ('.'! ID)* eol;
 
 introExpression
-	:	block | call | collection | ('('! expression ')'!) | NUMBER;
+	:	block | call | collection | ('('! expression ')'!) | NUMBER | string;
 
 mainClass
 	:	(typeKind ':')? EOL* classContent? -> ^(TYPE_DEF typeKind? classContent?);
@@ -92,6 +92,8 @@ statement
 	|	classStatement
 	|	defStatement
 	|	varStatement;
+
+string: POWER_STRING | RAW_STRING;
 
 type	:	ID ('.' ID)* ('[' types ']')? (c='?'|c='*')? -> ^(TYPE_REF ID+ types? $c?);
 
@@ -116,6 +118,13 @@ EOL	:	'\r'|('\r'? '\n');
 ID	:	(LETTER|'$') (LETTER|DIGIT|'_')*;
 
 NUMBER	:	DIGIT+;// ('.' DIGIT+)?;
+
+// TODO So I do just have to parse this afterwards?
+POWER_STRING
+	:	'"' ('\\"'|~('"'|'\r'|'\n'))* ('"'|EOL);
+
+RAW_STRING
+	:	'\'' (~('\''|'\r'|'\n'))* ('\''|EOL);
 
 STRETCH	:	'...' EOL* {skip();};
 

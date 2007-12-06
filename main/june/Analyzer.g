@@ -42,6 +42,7 @@ expression:
 	^(('.'|'?.') expression call) |
 	call |
 	collection |
+	string |
 	NUMBER;
 
 importStatement: ^('import' ID+);
@@ -55,6 +56,8 @@ param: ^(PARAM varDef);
 params: ^(PARAMS param+);
 
 statement: expression|classStatement|defStatement|varStatement;
+
+string: RAW_STRING | POWER_STRING;
 
 type: ^(TYPE_REF ID+ types? ('?'|'*')?);
 
