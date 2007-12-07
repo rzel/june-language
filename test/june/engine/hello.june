@@ -4,8 +4,6 @@
 out.println('Hello, world!')
 
 
-
-
 # And here's some extra bother just for testing:
 
 out.print(
@@ -20,7 +18,7 @@ sayOsName(); sayOsName()
 
 # Neither methods nor vars have to be declared before use? Every block is like a class (to some degree).
 
-def sayOsName {
+def sayOsName() {
 	err.print('This is on err: ')
 	err.println(getProperty('os.name'))
 	err.flush()
