@@ -3,10 +3,7 @@ package june.engine;
 import java.io.*;
 
 import june.*;
-import june.JuneParser.*;
 
-import org.antlr.runtime.*;
-import org.antlr.runtime.tree.*;
 import org.testng.annotations.*;
 
 public class AntlrTest {
@@ -15,13 +12,12 @@ public class AntlrTest {
 	public void parse() {
 		try {
 			// TODO How to fail on errors?
-			InputStream stream = getClass().getResourceAsStream(
-					"hello.june");
-			script_return script = new JuneParser(new CommonTokenStream(
-					new JuneLexer(new ANTLRInputStream(stream)))).script();
-			june.Analyzer analyzer = new june.Analyzer(
-					new CommonTreeNodeStream(script.getTree()));
-			analyzer.script();
+			InputStream stream = getClass().getResourceAsStream("hello.june");
+			try {
+				new JuneCompiler().compile(new InputStreamReader(stream));
+			} finally {
+				stream.close();
+			}
 		} catch (Exception e) {
 			Helper.throwAny(e);
 		}

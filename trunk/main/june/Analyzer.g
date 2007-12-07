@@ -1,6 +1,7 @@
 tree grammar Analyzer;
 
 options {
+	ASTLabelType = JuneTree;
 	tokenVocab = June;
 }
 

@@ -1,6 +1,7 @@
 grammar June;
 
 options {
+	ASTLabelType = JuneTree;
 	output = AST;
 }
 
@@ -59,7 +60,7 @@ compareExpression
 content	:	EOL* statement (eol statement)* eol? -> ^(BLOCK statement+);
 
 defStatement
-	:	'def'^ ID ('('! params? ')'!)? (':'! type)? block?;
+	:	'def'^ ID '('! params? ')'! (':'! type)? block?;
 
 eoi	:	(','|EOL) EOL* ->;
 
@@ -121,7 +122,7 @@ NUMBER	:	DIGIT+;// ('.' DIGIT+)?;
 
 // TODO So I do just have to parse this afterwards?
 POWER_STRING
-	:	'"' ('\\"'|~('"'|'\r'|'\n'))* ('"'|EOL);
+	:	'"' (('\\'~('\r'|'\n'))|~('"'|'\r'|'\n'))* ('"'|EOL);
 
 RAW_STRING
 	:	'\'' (~('\''|'\r'|'\n'))* ('\''|EOL);

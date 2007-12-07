@@ -6,13 +6,18 @@
 
 	<target name="compile" depends="generate">
 		<mkdir dir="output/temp/main" />
-		<javac srcdir="output/generated/main"
+		<javac srcdir="main"
+		       includes="june/JuneTree.java"
 		       destdir="output/temp/main"
 		       classpath="lib/antlr-runtime-3.0.jar"
 		       source="1.5" />
+		<javac srcdir="output/generated/main"
+		       destdir="output/temp/main"
+		       classpath="lib/antlr-runtime-3.0.jar;output/temp/main"
+		       source="1.5" />
 		<javac srcdir="main"
 		       destdir="output/temp/main"
-		       classpath="lib/asm-3.0.jar"
+		       classpath="lib/antlr-runtime-3.0.jar;lib/asm-3.0.jar"
 		       source="1.5" />
 		<mkdir dir="output/temp/test" />
 		<javac srcdir="test"
@@ -29,17 +34,23 @@
 	</target>
 
 	<target name="generate" depends="clean">
-		<java classname="org.antlr.Tool" classpath="lib/antlr-2.7.7.jar;lib/antlr-3.0.jar;lib/stringtemplate-3.0.jar" dir="main" fork="true">
-			<arg value="-o"/>
-			<arg value="../output/generated/main"/>
-			<arg value="june/June.g"/>
+		<java classname="org.antlr.Tool"
+		      classpath="lib/antlr-2.7.7.jar;lib/antlr-3.0.jar;lib/stringtemplate-3.0.jar"
+		      dir="main"
+		      fork="true">
+			<arg value="-o" />
+			<arg value="../output/generated/main" />
+			<arg value="june/June.g" />
 		</java>
-		<java classname="org.antlr.Tool" classpath="lib/antlr-2.7.7.jar;lib/antlr-3.0.jar;lib/stringtemplate-3.0.jar" dir="main" fork="true">
-			<arg value="-o"/>
-			<arg value="../output/generated/main"/>
-			<arg value="-lib"/>
-			<arg value="../output/generated/main/june"/>
-			<arg value="june/Analyzer.g"/>
+		<java classname="org.antlr.Tool"
+		      classpath="lib/antlr-2.7.7.jar;lib/antlr-3.0.jar;lib/stringtemplate-3.0.jar"
+		      dir="main"
+		      fork="true">
+			<arg value="-o" />
+			<arg value="../output/generated/main" />
+			<arg value="-lib" />
+			<arg value="../output/generated/main/june" />
+			<arg value="june/Analyzer.g" />
 		</java>
 	</target>
 
@@ -76,9 +87,11 @@
 	</target>
 
 	<target name="test" depends="compile">
-		<taskdef resource="testngtasks" classpath="lib/testng-5.5-jdk15.jar"/>
-		<testng workingdir="output/temp/test" classpath="output/temp/test;output/temp/main;lib/antlr-runtime-3.0.jar" outputDir="output/reports/test">
-			<classfileset dir="output/temp/test" includes="**/*.class"/>
+		<taskdef resource="testngtasks" classpath="lib/testng-5.5-jdk15.jar" />
+		<testng workingdir="output/temp/test"
+		        classpath="output/temp/test;output/temp/main;lib/antlr-runtime-3.0.jar"
+		        outputDir="output/reports/test">
+			<classfileset dir="output/temp/test" includes="**/*.class" />
 		</testng>
 	</target>
 
