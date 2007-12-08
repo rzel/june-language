@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="main"/>
-	<classpathentry kind="src" output="output/temp/test" path="test"/>
+	<classpathentry kind="src" output="ide/test" path="test"/>
 	<classpathentry kind="src" path="output/generated/main"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/asm-3.0.jar"/>
 	<classpathentry kind="lib" path="lib/jarjar-1.0rc3.jar"/>
 	<classpathentry kind="lib" path="lib/testng-5.5-jdk15.jar"/>
 	<classpathentry kind="lib" path="lib/antlr-runtime-3.0.jar" sourcepath="lib/antlr-runtime-3.0.1-src.zip"/>
-	<classpathentry kind="output" path="output/temp/main"/>
+	<classpathentry kind="output" path="ide/main"/>
 </classpath>

@@ -5,26 +5,20 @@
 	</target>
 
 	<target name="compile" depends="generate">
-		<mkdir dir="output/temp/main" />
-		<javac srcdir="main"
-		       includes="june/JuneTree.java"
-		       destdir="output/temp/main"
-		       classpath="lib/antlr-runtime-3.0.jar"
-		       source="1.5" />
-		<javac srcdir="output/generated/main"
-		       destdir="output/temp/main"
-		       classpath="lib/antlr-runtime-3.0.jar;output/temp/main"
-		       source="1.5" />
-		<javac srcdir="main"
-		       destdir="output/temp/main"
+		<mkdir dir="output/classes/main" />
+		<javac srcdir="output/java/main"
+		       destdir="output/classes/main"
 		       classpath="lib/antlr-runtime-3.0.jar;lib/asm-3.0.jar"
 		       source="1.5" />
-		<mkdir dir="output/temp/test" />
+		<copy todir="output/classes/main">
+			<fileset dir="main" excludes="**/*.java" />
+		</copy>
+		<mkdir dir="output/classes/test" />
 		<javac srcdir="test"
-		       destdir="output/temp/test"
-		       classpath="output/temp/main;lib/antlr-runtime-3.0.jar;lib/testng-5.5-jdk15.jar"
+		       destdir="output/classes/test"
+		       classpath="output/classes/main;lib/testng-5.5-jdk15.jar"
 		       source="1.5" />
-		<copy todir="output/temp/test">
+		<copy todir="output/classes/test">
 			<fileset dir="test" excludes="**/*.java" />
 		</copy>
 	</target>
@@ -33,7 +27,7 @@
 		<!-- Anything to do here? -->
 	</target>
 
-	<target name="generate" depends="clean">
+	<target name="generate">
 		<java classname="org.antlr.Tool"
 		      classpath="lib/antlr-2.7.7.jar;lib/antlr-3.0.jar;lib/stringtemplate-3.0.jar"
 		      dir="main"
@@ -52,6 +46,12 @@
 			<arg value="../output/generated/main/june" />
 			<arg value="june/Analyzer.g" />
 		</java>
+		<copy todir="output/java/main">
+			<fileset dir="output/generated/main" includes="**/*.java" />
+		</copy>
+		<copy todir="output/java/main">
+			<fileset dir="main" includes="**/*.java" />
+		</copy>
 	</target>
 
 	<target name="jar" depends="compile">
@@ -78,7 +78,7 @@
 				<attribute name="Implementation-Vendor-Id"
 				           value="http://bagotricks.com/" />
 			</manifest>
-			<fileset dir="output/temp/main" />
+			<fileset dir="output/classes/main" />
 			<zipfileset src="lib/antlr-runtime-3.0.jar" />
 			<zipfileset src="lib/asm-3.0.jar" />
 			<rule pattern="org.antlr.runtime.**" result="june.antlr.@1" />
@@ -88,10 +88,10 @@
 
 	<target name="test" depends="compile">
 		<taskdef resource="testngtasks" classpath="lib/testng-5.5-jdk15.jar" />
-		<testng workingdir="output/temp/test"
-		        classpath="output/temp/test;output/temp/main;lib/antlr-runtime-3.0.jar"
+		<testng workingdir="output/classes/test"
+		        classpath="output/classes/test;output/classes/main;lib/antlr-runtime-3.0.jar"
 		        outputDir="output/reports/test">
-			<classfileset dir="output/temp/test" includes="**/*.class" />
+			<classfileset dir="output/classes/test" includes="**/*.class" />
 		</testng>
 	</target>
 
