@@ -16,17 +16,7 @@ scope Scope {
 	import java.util.HashMap;
 }
 
-script
-	scope Scope;
-	@init {
-		$Scope::symbols = new HashMap<String, JuneTree>();
-	}
-	@after {
-		System.out.println($Scope::symbols);
-	}
-:
-	^(SCRIPT importStatement* mainClass)
-;
+script: ^(SCRIPT importStatement* mainClass);
 
 args: ^(ARGS expression*);
 
@@ -34,13 +24,33 @@ block: content?;
 
 call: ^(CALL ID args? block?);
 
-classContent: ^(BLOCK (statement|visibility)+);
+classContent
+	scope Scope;
+	@init {
+		$Scope::symbols = new HashMap<String, JuneTree>();
+	}
+	@after {
+		System.out.println("Class with " + $Scope::symbols);
+	}
+:
+	^(BLOCK (statement|visibility)+)
+;
 
 classStatement: ^(TYPE_DEF typeKind ID classContent?);
 
 collection:	^(LIST expression*) | ^(MAP pair*);
 
-content: ^(BLOCK statement+);
+content
+	scope Scope;
+	@init {
+		$Scope::symbols = new HashMap<String, JuneTree>();
+	}
+	@after {
+		System.out.println("Block with " + $Scope::symbols);
+	}
+:
+	^(BLOCK statement+)
+;
 
 defStatement: ^('def' ID params? type? block?) {
 	$Scope::symbols.put($ID.text, $defStatement.start);
