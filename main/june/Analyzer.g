@@ -5,11 +5,28 @@ options {
 	tokenVocab = June;
 }
 
-@header {
-	package june;
+scope Scope {
+	Map<String, JuneTree> symbols;
 }
 
-script: ^(SCRIPT importStatement* mainClass);
+@header {
+	package june;
+
+	import java.util.Map;
+	import java.util.HashMap;
+}
+
+script
+	scope Scope;
+	@init {
+		$Scope::symbols = new HashMap<String, JuneTree>();
+	}
+	@after {
+		System.out.println($Scope::symbols);
+	}
+:
+	^(SCRIPT importStatement* mainClass)
+;
 
 args: ^(ARGS expression*);
 
@@ -25,7 +42,9 @@ collection:	^(LIST expression*) | ^(MAP pair*);
 
 content: ^(BLOCK statement+);
 
-defStatement: ^('def' ID params? type? block?) {System.out.println($ID);};
+defStatement: ^('def' ID params? type? block?) {
+	$Scope::symbols.put($ID.text, $defStatement.start);
+};
 
 expression:
 	^('&&' expression expression) |
@@ -43,7 +62,7 @@ expression:
 	^(('.'|'?.') expression call) |
 	call |
 	collection |
-	string |
+	string {$expression.start.type = String.class;} |
 	NUMBER;
 
 importStatement: ^('import' ID+);
@@ -68,6 +87,8 @@ typeKind: 'annotation'|'aspect'|'class'|'interface'|'role'|'struct';
 
 varDef:	ID ('?'|'*'|type)?;
 
-varStatement: ^('var' varDef expression?);
+varStatement: ^('var' varDef expression?) {
+	$Scope::symbols.put($varDef.start.getText(), $varStatement.start);
+};
 
 visibility: 'internal'|'protected'|'private'|'public';
