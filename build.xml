@@ -1,4 +1,6 @@
-<project name="june" default="dist">
+<project name="june"
+         default="dist"
+         xmlns:antlr="antlib:org/apache/tools/ant/antlr">
 
 	<target name="clean">
 		<delete dir="output" />
@@ -23,35 +25,33 @@
 		</copy>
 	</target>
 
-	<target name="dist" depends="test,jar">
+	<target name="dist" depends="clean,test,jar">
 		<!-- Anything to do here? -->
 	</target>
 
-	<target name="generate">
-		<java classname="org.antlr.Tool"
-		      classpath="lib/antlr-2.7.7.jar;lib/antlr-3.0.jar;lib/stringtemplate-3.0.jar"
-		      dir="main"
-		      fork="true">
-			<arg value="-o" />
-			<arg value="../output/generated/main" />
-			<arg value="june/June.g" />
-		</java>
-		<java classname="org.antlr.Tool"
-		      classpath="lib/antlr-2.7.7.jar;lib/antlr-3.0.jar;lib/stringtemplate-3.0.jar"
-		      dir="main"
-		      fork="true">
-			<arg value="-o" />
-			<arg value="../output/generated/main" />
-			<arg value="-lib" />
-			<arg value="../output/generated/main/june" />
-			<arg value="june/Analyzer.g" />
-		</java>
+	<target name="generate" depends="init">
+		<mkdir dir="output/generated/main/june" />
+		<antlr:antlr3 target="main/june/June.g"
+		              outputdirectory="output/generated/main/june">
+			<classpath path="lib/antlr-2.7.7.jar;lib/antlr-3.0.jar;lib/stringtemplate-3.0.jar" />
+		</antlr:antlr3>
+		<antlr:antlr3 target="main/june/Analyzer.g"
+		              libdirectory="output/generated/main/june"
+		              outputdirectory="output/generated/main/june">
+			<classpath path="lib/antlr-2.7.7.jar;lib/antlr-3.0.jar;lib/stringtemplate-3.0.jar" />
+		</antlr:antlr3>
 		<copy todir="output/java/main">
 			<fileset dir="output/generated/main" includes="**/*.java" />
 		</copy>
 		<copy todir="output/java/main">
 			<fileset dir="main" includes="**/*.java" />
 		</copy>
+	</target>
+
+	<target name="init">
+		<taskdef uri="antlib:org/apache/tools/ant/antlr"
+		         resource="org/apache/tools/ant/antlr/antlib.xml"
+		         classpath="lib/antlr3.jar" />
 	</target>
 
 	<target name="jar" depends="compile">
