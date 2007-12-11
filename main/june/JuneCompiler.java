@@ -17,10 +17,10 @@ public class JuneCompiler {
 							new ANTLRReaderStream(reader))));
 			parser.setTreeAdaptor(new JuneTreeAdaptor());
 			script_return script = parser.script();
-			june.Analyzer analyzer =
-					new june.Analyzer(
+			june.SymbolDefLister analyzer =
+					new june.SymbolDefLister(
 							new CommonTreeNodeStream(script.getTree()));
-			analyzer.script();
+			analyzer.fluff();
 		} catch (Exception e) {
 			Helper.throwAny(e);
 		}

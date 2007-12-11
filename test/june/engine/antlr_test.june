@@ -5,7 +5,7 @@ class:
 
 (a + b) * 4
 
-numbers.where{0 <= it && it < 1}.select{it * 2}
+numbers.where{0 <= it && it < 1}.select{a * 2}
 
 if (a == b) {
 	doSomething.a
@@ -43,12 +43,12 @@ var e = [
 def hi(
 		a* # comments count as EOL only
 		b: b.B?) {
-	def that: ...
+	def that(): ...
 		That;
 	var b: Double ...
 		=
 			5
-	def c: List[java.util.Map[
+	def c(): List[java.util.Map[
 		String
 		String?
 	]]?
