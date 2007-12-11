@@ -35,6 +35,11 @@
 		              outputdirectory="output/generated/main/june">
 			<classpath path="lib/antlr-2.7.7.jar;lib/antlr-3.0.jar;lib/stringtemplate-3.0.jar" />
 		</antlr:antlr3>
+		<antlr:antlr3 target="main/june/SymbolDefLister.g"
+		              libdirectory="output/generated/main/june"
+		              outputdirectory="output/generated/main/june">
+			<classpath path="lib/antlr-2.7.7.jar;lib/antlr-3.0.jar;lib/stringtemplate-3.0.jar" />
+		</antlr:antlr3>
 		<antlr:antlr3 target="main/june/Analyzer.g"
 		              libdirectory="output/generated/main/june"
 		              outputdirectory="output/generated/main/june">

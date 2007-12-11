@@ -1,7 +1,6 @@
 grammar June;
 
 options {
-	ASTLabelType = JuneTree;
 	output = AST;
 }
 
@@ -35,12 +34,17 @@ addExpression
 
 args	:	EOL* (expression (eoi expression)* eoi?)? -> expression*;
 
-block	:	'{' content? '}' -> content?;
+block	:	'{'! content? '}'!;
+
+blockExpression: //block;
+	block -> ^(DO block);// |
+	//DO '(' params ')' block -> ^(DO params block);// |
+	//'def' '(' params? ')' block -> ^('def' params? block);
 
 booleanExpression
 	:	compareExpression (('&&'^|'||'^) compareExpression)*;
 
-call	:	ID ('(' args ')')? block? -> ^(CALL ID ^(ARGS args)? block?);
+call	:	ID ('(' args ')')? blockExpression? -> ^(CALL ID ^(ARGS args)? blockExpression?);
 
 // TODO Should the visibility be grouping the statements?
 classContent
@@ -73,7 +77,7 @@ importStatement
 	:	'import'^ ID ('.'! ID)* eol;
 
 introExpression
-	:	block | call | collection | ('('! expression ')'!) | NUMBER | string;
+	:	blockExpression | call | collection | ('('! expression ')'!) | NUMBER | string;
 
 mainClass
 	:	(typeKind ':')? EOL* classContent? -> ^(TYPE_DEF typeKind? classContent?);
@@ -113,6 +117,8 @@ visibility
 	:	('internal'|'protected'|'private'|'public') ':'!;
 
 COMMENT	:	'#' (~('\r'|'\n'))* {skip();};
+
+DO: 'do';
 
 EOL	:	'\r'|('\r'? '\n');
 
