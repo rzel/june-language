@@ -16,7 +16,7 @@ scope Scope {
 	import java.util.HashMap;
 }
 
-fluff: ^(~(BLOCK|'def'|PARAM|PARAMS|TYPE_DEF|'var') fluff*) | block | classDef | defStatement | param | params | varStatement;
+script: fluff*;
 
 block
 	scope Scope;
@@ -30,13 +30,15 @@ block
 	^(BLOCK fluff*)
 ;
 
-classDef: ^(TYPE_DEF . ID fluff*) {
+classDef: ^(TYPE_DEF typeKind? ID? fluff*) {
 	$Scope::symbols.put($ID.text, $classDef.start);
 };
 
 defStatement: ^('def' ID params? type? block?) {
 	$Scope::symbols.put($ID.text, $defStatement.start);
 };
+
+fluff: ^(~(BLOCK|'def'|PARAM|PARAMS|TYPE_DEF|'var') fluff*) | block | classDef | defStatement | param | params | varStatement;
 
 param: ^(PARAM ID .*) {
 	$Scope::symbols.put($ID.text, $param.start);
@@ -57,7 +59,9 @@ params
 
 type: ^(TYPE_REF ID+ types? ('?'|'*')?);
 
-types: ^(PARAMS type+);
+typeKind: 'annotation'|'aspect'|'class'|'interface'|'role'|'struct';
+
+types: ^(TYPES type+);
 
 varStatement: ^('var' ID .*) {
 	$Scope::symbols.put($ID.text, $varStatement.start);

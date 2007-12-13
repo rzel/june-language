@@ -18,6 +18,7 @@ tokens {
 	SCRIPT;
 	TYPE_DEF;
 	TYPE_REF;
+	TYPES;
 }
 
 @header {
@@ -106,7 +107,7 @@ type	:	ID ('.' ID)* ('[' types ']')? (c='?'|c='*')? -> ^(TYPE_REF ID+ types? $c?
 typeKind
 	:	'annotation'|'aspect'|'class'|'interface'|'role'|'struct';
 
-types	:	EOL* type (eoi type)* eoi? -> ^(PARAMS type+);
+types	:	EOL* type (eoi type)* eoi? -> ^(TYPES type+);
 
 varDef	:	ID (c='?'|c='*') -> ID $c
 	|	ID (':' EOL* type)? -> ID type?;
