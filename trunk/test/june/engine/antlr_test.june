@@ -5,7 +5,7 @@ class:
 
 (a + b) * 4
 
-numbers.where{0 <= it && it < 1}.select{a * 2}
+numbers.where def(it) {0 <= it && it < 1}.select do(hmm) {hmm * 2}
 
 if (a == b) {
 	doSomething.a

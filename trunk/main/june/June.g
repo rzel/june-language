@@ -9,6 +9,7 @@ tokens {
 	BLOCK;
 	CALL;
 	COMPARE;
+	DEF_EXPR;
 	LIST;
 	MAP;
 	PAIR;
@@ -37,9 +38,9 @@ args	:	EOL* (expression (eoi expression)* eoi?)? -> expression*;
 block	:	'{'! content? '}'!;
 
 blockExpression: //block;
-	block -> ^(DO block);// |
-	//DO '(' params ')' block -> ^(DO params block);// |
-	//'def' '(' params? ')' block -> ^('def' params? block);
+	block |
+	'do'^ '('! params ')'! block |
+	'def' '(' params? ')' block -> ^(DEF_EXPR params? block);
 
 booleanExpression
 	:	compareExpression (('&&'^|'||'^) compareExpression)*;
@@ -117,8 +118,6 @@ visibility
 	:	('internal'|'protected'|'private'|'public') ':'!;
 
 COMMENT	:	'#' (~('\r'|'\n'))* {skip();};
-
-DO: 'do';
 
 EOL	:	'\r'|('\r'? '\n');
 
