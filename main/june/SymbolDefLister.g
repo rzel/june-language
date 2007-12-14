@@ -6,52 +6,75 @@ options {
 }
 
 scope Scope {
-	Map<String, JuneTree> symbols;
+	JuneTree block;
 }
 
 @header {
 	package june;
 
-	import java.util.Map;
-	import java.util.HashMap;
+	import java.util.*;
+	import org.antlr.runtime.BitSet;
 }
 
-script: fluff*;
+@members {
+
+	private void putSymbol(String id, JuneTree node) {
+		((Scope_scope)Scope_stack.peek()).block.symbols.put(id, node);
+	}
+
+	private void startBlock(JuneTree node) {
+		((Scope_scope)Scope_stack.peek()).block = node;
+		((Scope_scope)Scope_stack.peek()).block.symbols = new HashMap<String, JuneTree>();
+	}
+
+}
+
+script
+	scope Scope;
+	@init {
+		startBlock($script.start);
+	}
+	@after {
+		System.out.println("Script with " + $Scope::block.symbols);
+	}
+:
+	fluff*
+;
 
 block
 	scope Scope;
 	@init {
-		$Scope::symbols = new HashMap<String, JuneTree>();
+		startBlock($block.start);
 	}
 	@after {
-		System.out.println("Block with " + $Scope::symbols);
+		System.out.println("Block with " + $Scope::block.symbols);
 	}
 :
 	^(BLOCK fluff*)
 ;
 
 classDef: ^(TYPE_DEF typeKind? ID? fluff*) {
-	$Scope::symbols.put($ID.text, $classDef.start);
+	putSymbol($ID == null ? null : $ID.text, $classDef.start);
 };
 
 defStatement: ^('def' ID params? type? block?) {
-	$Scope::symbols.put($ID.text, $defStatement.start);
+	putSymbol($ID.text, $defStatement.start);
 };
 
 fluff: ^(~(BLOCK|'def'|PARAM|PARAMS|TYPE_DEF|'var') fluff*) | block | classDef | defStatement | param | params | varStatement;
 
 param: ^(PARAM ID .*) {
-	$Scope::symbols.put($ID.text, $param.start);
+	putSymbol($ID.text, $param.start);
 };
 
 params
 	scope Scope;
 	@init {
-		$Scope::symbols = new HashMap<String, JuneTree>();
+		startBlock($params.start);
 	}
 	@after {
 		// TODO Really need to get these into the scope of the method block.
-		System.out.println("Params with " + $Scope::symbols);
+		System.out.println("Params with " + $Scope::block.symbols);
 	}
 :
 	^(PARAMS param+)
@@ -64,5 +87,5 @@ typeKind: 'annotation'|'aspect'|'class'|'interface'|'role'|'struct';
 types: ^(TYPES type+);
 
 varStatement: ^('var' ID .*) {
-	$Scope::symbols.put($ID.text, $varStatement.start);
+	putSymbol($ID.text, $varStatement.start);
 };
