@@ -18,8 +18,16 @@ scope Scope {
 
 @members {
 
+	private void putOuterSymbol(String id, JuneTree node) {
+		putSymbol((Scope_scope)Scope_stack.get(Scope_stack.size() - 2), id, node);
+	}
+
 	private void putSymbol(String id, JuneTree node) {
-		((Scope_scope)Scope_stack.peek()).block.symbols.put(id, node);
+		putSymbol((Scope_scope)Scope_stack.peek(), id, node);
+	}
+
+	private void putSymbol(Scope_scope scope, String id, JuneTree node) {
+		scope.block.symbols.put(id, node);
 	}
 
 	private void startBlock(JuneTree node) {
@@ -41,50 +49,53 @@ script
 	fluff*
 ;
 
-block
+blockExpression
 	scope Scope;
 	@init {
-		startBlock($block.start);
+		startBlock($blockExpression.start);
 	}
 	@after {
 		System.out.println("Block with " + $Scope::block.symbols);
 	}
 :
-	^(BLOCK fluff*)
+	^(('do'|DEF_EXPR) fluff*)
 ;
 
-classDef: ^(TYPE_DEF typeKind? ID? fluff*) {
-	putSymbol($ID == null ? null : $ID.text, $classDef.start);
-};
+classDef
+	scope Scope;
+	@init {
+		startBlock($classDef.start);
+	}
+	@after {
+		System.out.println("Class with " + $Scope::block.symbols);
+	}
+:
+	^(TYPE_DEF typeKind? ID? fluff*) {
+		putOuterSymbol($ID == null ? null : $ID.text, $classDef.start);
+	}
+;
 
-defStatement: ^('def' ID params? type? block?) {
-	putSymbol($ID.text, $defStatement.start);
-};
+defStatement
+	scope Scope;
+	@init {
+		startBlock($defStatement.start);
+	}
+	@after {
+		System.out.println("Def ID with " + $Scope::block.symbols);
+	}
+:
+	^('def' ID fluff*) {
+		putOuterSymbol($ID.text, $defStatement.start);
+	}
+;
 
-fluff: ^(~(BLOCK|'def'|PARAM|PARAMS|TYPE_DEF|'var') fluff*) | block | classDef | defStatement | param | params | varStatement;
+fluff: ^(~('do'|DEF_EXPR|'def'|PARAM|TYPE_DEF|'var') fluff*) | blockExpression | classDef | defStatement | param | varStatement;
 
 param: ^(PARAM ID .*) {
 	putSymbol($ID.text, $param.start);
 };
 
-params
-	scope Scope;
-	@init {
-		startBlock($params.start);
-	}
-	@after {
-		// TODO Really need to get these into the scope of the method block.
-		System.out.println("Params with " + $Scope::block.symbols);
-	}
-:
-	^(PARAMS param+)
-;
-
-type: ^(TYPE_REF ID+ types? ('?'|'*')?);
-
 typeKind: 'annotation'|'aspect'|'class'|'interface'|'role'|'struct';
-
-types: ^(TYPES type+);
 
 varStatement: ^('var' ID .*) {
 	putSymbol($ID.text, $varStatement.start);
