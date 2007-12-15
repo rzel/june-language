@@ -2,102 +2,104 @@
          default="dist"
          xmlns:antlr="antlib:org/apache/tools/ant/antlr">
 
-	<target name="clean">
-		<delete dir="output" />
-	</target>
+    <target name="clean">
+        <delete dir="output" />
+    </target>
 
-	<target name="compile" depends="generate">
-		<mkdir dir="output/classes/main" />
-		<javac srcdir="output/java/main"
-		       destdir="output/classes/main"
-		       classpath="lib/antlr-runtime-3.0.jar;lib/asm-3.0.jar"
-		       source="1.5" />
-		<copy todir="output/classes/main">
-			<fileset dir="main" excludes="**/*.java" />
-		</copy>
-		<mkdir dir="output/classes/test" />
-		<javac srcdir="test"
-		       destdir="output/classes/test"
-		       classpath="output/classes/main;lib/testng-5.5-jdk15.jar"
-		       source="1.5" />
-		<copy todir="output/classes/test">
-			<fileset dir="test" excludes="**/*.java" />
-		</copy>
-	</target>
+    <target name="compile" depends="generate">
+        <mkdir dir="output/classes/main" />
+        <javac srcdir="output/java/main"
+               destdir="output/classes/main"
+               classpath="lib/antlr-runtime-3.0.jar;lib/asm-3.0.jar"
+               source="1.5"
+               debug="true" />
+        <copy todir="output/classes/main">
+            <fileset dir="main" excludes="**/*.java" />
+        </copy>
+        <mkdir dir="output/classes/test" />
+        <javac srcdir="test"
+               destdir="output/classes/test"
+               classpath="output/classes/main;lib/testng-5.5-jdk15.jar"
+               source="1.5"
+               debug="true" />
+        <copy todir="output/classes/test">
+            <fileset dir="test" excludes="**/*.java" />
+        </copy>
+    </target>
 
-	<target name="dist" depends="clean,test,jar">
-		<!-- Anything to do here? -->
-	</target>
+    <target name="dist" depends="clean,test,jar">
+        <!-- Anything to do here? -->
+    </target>
 
-	<target name="generate" depends="init">
-		<mkdir dir="output/generated/main/june" />
-		<antlr:antlr3 target="main/june/June.g"
-		              outputdirectory="output/generated/main/june">
-			<classpath path="lib/antlr-2.7.7.jar;lib/antlr-3.0.jar;lib/stringtemplate-3.0.jar" />
-		</antlr:antlr3>
-		<antlr:antlr3 target="main/june/SymbolDefLister.g"
-		              libdirectory="output/generated/main/june"
-		              outputdirectory="output/generated/main/june">
-			<classpath path="lib/antlr-2.7.7.jar;lib/antlr-3.0.jar;lib/stringtemplate-3.0.jar" />
-		</antlr:antlr3>
-		<antlr:antlr3 target="main/june/Analyzer.g"
-		              libdirectory="output/generated/main/june"
-		              outputdirectory="output/generated/main/june">
-			<classpath path="lib/antlr-2.7.7.jar;lib/antlr-3.0.jar;lib/stringtemplate-3.0.jar" />
-		</antlr:antlr3>
-		<copy todir="output/java/main">
-			<fileset dir="output/generated/main" includes="**/*.java" />
-		</copy>
-		<copy todir="output/java/main">
-			<fileset dir="main" includes="**/*.java" />
-		</copy>
-	</target>
+    <target name="generate" depends="init">
+        <mkdir dir="output/generated/main/june" />
+        <antlr:antlr3 target="main/june/June.g"
+                      outputdirectory="output/generated/main/june">
+            <classpath path="lib/antlr-2.7.7.jar;lib/antlr-3.0.jar;lib/stringtemplate-3.0.jar" />
+        </antlr:antlr3>
+        <antlr:antlr3 target="main/june/SymbolDefLister.g"
+                      libdirectory="output/generated/main/june"
+                      outputdirectory="output/generated/main/june">
+            <classpath path="lib/antlr-2.7.7.jar;lib/antlr-3.0.jar;lib/stringtemplate-3.0.jar" />
+        </antlr:antlr3>
+        <antlr:antlr3 target="main/june/Analyzer.g"
+                      libdirectory="output/generated/main/june"
+                      outputdirectory="output/generated/main/june">
+            <classpath path="lib/antlr-2.7.7.jar;lib/antlr-3.0.jar;lib/stringtemplate-3.0.jar" />
+        </antlr:antlr3>
+        <copy todir="output/java/main">
+            <fileset dir="output/generated/main" includes="**/*.java" />
+        </copy>
+        <copy todir="output/java/main">
+            <fileset dir="main" includes="**/*.java" />
+        </copy>
+    </target>
 
-	<target name="init">
-		<taskdef uri="antlib:org/apache/tools/ant/antlr"
-		         resource="org/apache/tools/ant/antlr/antlib.xml"
-		         classpath="lib/antlr3.jar" />
-	</target>
+    <target name="init">
+        <taskdef uri="antlib:org/apache/tools/ant/antlr"
+                 resource="org/apache/tools/ant/antlr/antlib.xml"
+                 classpath="lib/antlr3.jar" />
+    </target>
 
-	<target name="jar" depends="compile">
-		<taskdef name="jarjar"
-		         classname="com.tonicsystems.jarjar.JarJarTask"
-		         classpath="lib/jarjar-1.0rc3.jar" />
-		<jarjar jarfile="output/june.jar">
-			<manifest>
-				<!-- TODO Find real values for lots of these or delete them. -->
-				<!-- TODO Separate manifest file. -->
-				<attribute name="Created-by"
-				           value="${java.vm.version} ${java.vm.vendor}" />
-				<attribute name="Specification-Title" value="June" />
-				<attribute name="Specification-Version"
-				           value="0.0.1-SNAPSHOT" />
-				<attribute name="Specification-Vendor"
-				           value="http://bagotricks.com/" />
-				<attribute name="Implementation-Title" value="June" />
-				<attribute name="Implementation-URL"
-				           value="http://bagotricks.com/" />
-				<attribute name="Implementation-Version"
-				           value="0.0.1-SNAPSHOT" />
-				<attribute name="Implementation-Vendor" value="Bag O' Tricks" />
-				<attribute name="Implementation-Vendor-Id"
-				           value="http://bagotricks.com/" />
-			</manifest>
-			<fileset dir="output/classes/main" />
-			<zipfileset src="lib/antlr-runtime-3.0.jar" />
-			<zipfileset src="lib/asm-3.0.jar" />
-			<rule pattern="org.antlr.runtime.**" result="june.antlr.@1" />
-			<rule pattern="org.objectweb.asm.**" result="june.asm.@1" />
-		</jarjar>
-	</target>
+    <target name="jar" depends="compile">
+        <taskdef name="jarjar"
+                 classname="com.tonicsystems.jarjar.JarJarTask"
+                 classpath="lib/jarjar-1.0rc3.jar" />
+        <jarjar jarfile="output/june.jar">
+            <manifest>
+                <!-- TODO Find real values for lots of these or delete them. -->
+                <!-- TODO Separate manifest file. -->
+                <attribute name="Created-by"
+                           value="${java.vm.version} ${java.vm.vendor}" />
+                <attribute name="Specification-Title" value="June" />
+                <attribute name="Specification-Version"
+                           value="0.0.1-SNAPSHOT" />
+                <attribute name="Specification-Vendor"
+                           value="http://bagotricks.com/" />
+                <attribute name="Implementation-Title" value="June" />
+                <attribute name="Implementation-URL"
+                           value="http://bagotricks.com/" />
+                <attribute name="Implementation-Version"
+                           value="0.0.1-SNAPSHOT" />
+                <attribute name="Implementation-Vendor" value="Bag O' Tricks" />
+                <attribute name="Implementation-Vendor-Id"
+                           value="http://bagotricks.com/" />
+            </manifest>
+            <fileset dir="output/classes/main" />
+            <zipfileset src="lib/antlr-runtime-3.0.jar" />
+            <zipfileset src="lib/asm-3.0.jar" />
+            <rule pattern="org.antlr.runtime.**" result="june.antlr.@1" />
+            <rule pattern="org.objectweb.asm.**" result="june.asm.@1" />
+        </jarjar>
+    </target>
 
-	<target name="test" depends="compile">
-		<taskdef resource="testngtasks" classpath="lib/testng-5.5-jdk15.jar" />
-		<testng workingdir="output/classes/test"
-		        classpath="output/classes/test;output/classes/main;lib/antlr-runtime-3.0.jar"
-		        outputDir="output/reports/test">
-			<classfileset dir="output/classes/test" includes="**/*.class" />
-		</testng>
-	</target>
+    <target name="test" depends="compile">
+        <taskdef resource="testngtasks" classpath="lib/testng-5.5-jdk15.jar" />
+        <testng workingdir="output/classes/test"
+                classpath="output/classes/test;output/classes/main;lib/antlr-runtime-3.0.jar"
+                outputDir="output/reports/test">
+            <classfileset dir="output/classes/test" includes="**/*.class" />
+        </testng>
+    </target>
 
 </project>
