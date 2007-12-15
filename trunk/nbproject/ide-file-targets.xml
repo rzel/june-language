@@ -1,0 +1,23 @@
+<project basedir=".." name="june-IDE">
+
+	<import file="../build.xml"/>
+
+	<target name="debug-nb" depends="compile">
+		<path id="cp">
+			<pathelement path="output/classes/test"/>
+			<pathelement path="output/classes/main"/>
+			<pathelement path="lib/antlr-runtime-3.0.jar"/>
+		</path>
+		<nbjpdastart addressproperty="jpda.address" name="june" transport="dt_socket">
+			<classpath refid="cp"/>
+		</nbjpdastart>
+		<taskdef resource="testngtasks" classpath="lib/testng-5.5-jdk15.jar" />
+		<testng workingdir="output/classes/test" outputDir="output/reports/test">
+			<classpath refid="cp"/>
+			<classfileset dir="output/classes/test" includes="**/*.class" />
+			<jvmarg value="-Xdebug"/>
+			<jvmarg value="-Xrunjdwp:transport=dt_socket,address=${jpda.address}"/>
+		</testng>
+	</target>
+
+</project>
