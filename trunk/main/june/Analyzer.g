@@ -5,56 +5,31 @@ options {
 	tokenVocab = June;
 }
 
-scope Scope {
-	Map<String, JuneTree> symbols;
-}
-
 @header {
 	package june;
-
-	import java.util.Map;
-	import java.util.HashMap;
 }
 
 script: ^(SCRIPT importStatement* mainClass);
 
-args: ^(ARGS expression*);
+args: expression*;
 
 block: content?;
 
-call: ^(CALL ID args? block?);
+blockExpression: ^(('do'|DEF_EXPR) params? block);
 
-classContent
-	scope Scope;
-	@init {
-		$Scope::symbols = new HashMap<String, JuneTree>();
-	}
-	@after {
-		System.out.println("Class with " + $Scope::symbols);
-	}
-:
-	^(BLOCK (statement|visibility)+)
-;
+call: ^(CALL ID callArgs? blockExpression?);
+
+callArgs: ^(ARGS args);
+
+classContent: ^(BLOCK (statement|visibility)+);
 
 classStatement: ^(TYPE_DEF typeKind ID classContent?);
 
 collection:	^(LIST expression*) | ^(MAP pair*);
 
-content
-	scope Scope;
-	@init {
-		$Scope::symbols = new HashMap<String, JuneTree>();
-	}
-	@after {
-		System.out.println("Block with " + $Scope::symbols);
-	}
-:
-	^(BLOCK statement+)
-;
+content: ^(BLOCK statement+);
 
-defStatement: ^('def' ID params? type? block?) {
-	$Scope::symbols.put($ID.text, $defStatement.start);
-};
+defStatement: ^('def' ID params? type? block?);
 
 expression:
 	^('&&' expression expression) |
@@ -87,18 +62,16 @@ params: ^(PARAMS param+);
 
 statement: expression|classStatement|defStatement|varStatement;
 
-string: RAW_STRING | POWER_STRING;
+string: POWER_STRING | RAW_STRING;
 
 type: ^(TYPE_REF ID+ types? ('?'|'*')?);
 
-types: ^(PARAMS type+);
+types: ^(TYPES type+);
 
 typeKind: 'annotation'|'aspect'|'class'|'interface'|'role'|'struct';
 
 varDef:	ID ('?'|'*'|type)?;
 
-varStatement: ^('var' varDef expression?) {
-	$Scope::symbols.put($varDef.start.getText(), $varStatement.start);
-};
+varStatement: ^('var' varDef expression?);
 
 visibility: 'internal'|'protected'|'private'|'public';

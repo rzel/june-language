@@ -38,7 +38,7 @@ args	:	EOL* (expression (eoi expression)* eoi?)? -> expression*;
 
 block	:	'{'! content? '}'!;
 
-blockExpression: //block;
+blockExpression:
 	block -> ^('do' block) |
 	'do'^ '('! params ')'! block |
 	'def' '(' params? ')' block -> ^(DEF_EXPR params? block);
