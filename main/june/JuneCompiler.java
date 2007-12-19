@@ -2,7 +2,6 @@ package june;
 
 import java.io.*;
 
-import june.JuneParser.*;
 import june.engine.*;
 
 import org.antlr.runtime.*;
@@ -23,16 +22,23 @@ public class JuneCompiler {
 
 	public void compile(Reader reader) {
 		try {
+			// Parse the source into a tree.
 			JuneParser parser =
 					new JuneParser(new CommonTokenStream(new JuneLexer(
 							new ANTLRReaderStream(reader))));
 			parser.setTreeAdaptor(new JuneTreeAdaptor());
-			script_return script = parser.script();
-			JuneTree tree = (JuneTree)script.getTree();
+			JuneTree tree = (JuneTree)parser.script().getTree();
+			// List the symbols defined for each scope.
 			june.SymbolDefLister symbolDefLister =
 					new june.SymbolDefLister(new CommonTreeNodeStream(tree));
 			symbolDefLister.script();
 			assignBlocks(tree, null);
+			// TODO Gather up symbol IDs across all source files before proceeding.
+			// Determine the entities and types referred to.
+			june.Analyzer analyzer = new june.Analyzer(new CommonTreeNodeStream(tree));
+			analyzer.script();
+			// TODO Generate bytecode.
+			// TODO Supply result via a ClassLoader or on disk or in memory or something.
 		} catch (Exception e) {
 			Helper.throwAny(e);
 		}
