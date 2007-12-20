@@ -48,9 +48,9 @@ def hi(
 	var b: Double ...
 		=
 			5
-	def c(): List[java.util.Map[
+	def c(): List<java.util.Map<
 		String
 		String?
-	]]?
+	>>?
 	var d = a(4, [1, c]);
 }
