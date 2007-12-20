@@ -18,7 +18,9 @@ tokens {
 	SCRIPT;
 	TYPE_DEF;
 	TYPE_REF;
-	TYPES;
+	TYPE_ARGS;
+	TYPE_PARAM;
+	TYPE_PARAMS;
 }
 
 @header {
@@ -53,7 +55,7 @@ classContent
 	:	 EOL* (s+=statement|s+=visibility) (eol (s+=statement|s+=visibility))* eol? -> ^(BLOCK $s+);
 
 classStatement
-	:	typeKind ID ('{' classContent? '}')? -> ^(TYPE_DEF typeKind ID classContent?);
+	:	typeKind ID typeParams? ('{' classContent? '}')? -> ^(TYPE_DEF typeKind ID typeParams? classContent?);
 
 collection
 	:	'[' args ']' -> ^(LIST args)
@@ -66,7 +68,7 @@ compareExpression
 content	:	EOL* statement (eol statement)* eol? -> ^(BLOCK statement+);
 
 defStatement
-	:	'def'^ ID '('! params? ')'! (':'! type)? block?;
+	:	'def'^ ID typeParams? '('! params? ')'! (':'! type)? block?;
 
 eoi	:	(','|EOL) EOL* ->;
 
@@ -82,7 +84,7 @@ introExpression
 	:	blockExpression | call | collection | ('('! expression ')'!) | NUMBER | string;
 
 mainClass
-	:	(typeKind ':')? EOL* classContent? -> ^(TYPE_DEF typeKind? classContent?);
+	:	(typeKind typeParams? ':')? EOL* classContent? -> ^(TYPE_DEF typeKind? typeParams? classContent?);
 
 memberExpression
 	:	introExpression (('.'^|'?.'^) call)*;
@@ -102,12 +104,16 @@ statement
 
 string: POWER_STRING | RAW_STRING;
 
-type	:	ID ('.' ID)* ('<' types '>')? (c='?'|c='*')? -> ^(TYPE_REF ID+ types? $c?);
+type	:	ID ('.' ID)* ('<' typeArgs '>')? (c='?'|c='*')? -> ^(TYPE_REF ID+ typeArgs? $c?);
+
+typeArgs: EOL* type (eoi type)* eoi? -> ^(TYPE_ARGS type+);
 
 typeKind
 	:	'annotation'|'aspect'|'class'|'interface'|'role'|'struct';
 
-types	:	EOL* type (eoi type)* eoi? -> ^(TYPES type+);
+typeParam: ID -> ^(TYPE_PARAM ID);
+
+typeParams: '<' EOL* typeParam (eoi typeParam)* eoi? '>' -> ^(TYPE_PARAMS typeParam+);
 
 varDef	:	ID (c='?'|c='*') -> ID $c
 	|	ID (':' EOL* type)? -> ID type?;

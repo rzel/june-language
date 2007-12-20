@@ -49,13 +49,25 @@ script
 	fluff*
 ;
 
+block
+	scope Scope;
+	@init {
+		startBlock($block.start);
+	}
+	@after {
+		System.out.println("Block with " + $Scope::block.symbols);
+	}
+:
+	^(BLOCK fluff*)
+;
+
 blockExpression
 	scope Scope;
 	@init {
 		startBlock($blockExpression.start);
 	}
 	@after {
-		System.out.println("Block with " + $Scope::block.symbols);
+		System.out.println("Block expression with " + $Scope::block.symbols);
 	}
 :
 	^(('do'|DEF_EXPR) fluff*)
@@ -89,13 +101,22 @@ defStatement
 	}
 ;
 
-fluff: ^(~('do'|DEF_EXPR|'def'|PARAM|TYPE_DEF|'var') fluff*) | blockExpression | classDef | defStatement | param | varStatement;
+fluff:
+	^(~(BLOCK|'do'|DEF_EXPR|'def'|PARAM|TYPE_DEF|TYPE_PARAM|'var') fluff*) |
+	block | blockExpression | classDef | defStatement | param | typeParam | varStatement
+;
 
 param: ^(PARAM ID .*) {
 	putSymbol($ID.text, $param.start);
 };
 
 typeKind: 'annotation'|'aspect'|'class'|'interface'|'role'|'struct';
+
+typeParam: ^(TYPE_PARAM ID) {
+	putSymbol($ID.text, $typeParam.start);
+};
+
+typeParams: ^(TYPE_PARAMS typeParam+);
 
 varStatement: ^('var' ID .*) {
 	putSymbol($ID.text, $varStatement.start);

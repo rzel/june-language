@@ -12,7 +12,7 @@ public class AntlrTest {
 	public void parse() {
 		try {
 			// TODO How to fail on errors?
-			InputStream stream = getClass().getResourceAsStream("hello.june");
+			InputStream stream = getClass().getResourceAsStream("antlr_test.june");
 			try {
 				new JuneCompiler().compile(new InputStreamReader(stream));
 			} finally {
