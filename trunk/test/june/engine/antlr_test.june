@@ -16,7 +16,7 @@ if (a == b) {
 
 a() - a.b?.c(1, 2) + b - c
 
-class Name
+class Name<What>
 
 role Fish {
 	def happy() {
@@ -40,10 +40,10 @@ var e = [
 		:
 	]
 
-def hi(
+def hi<Bloo>(
 		a* # comments count as EOL only
 		b: b.B?) {
-	def that(): ...
+	def that<That, There>(): ...
 		That;
 	var b: Double ...
 		=

@@ -23,13 +23,13 @@ callArgs: ^(ARGS args);
 
 classContent: ^(BLOCK (statement|visibility)+);
 
-classStatement: ^(TYPE_DEF typeKind ID classContent?);
+classStatement: ^(TYPE_DEF typeKind ID typeParams? classContent?);
 
 collection:	^(LIST expression*) | ^(MAP pair*);
 
 content: ^(BLOCK statement+);
 
-defStatement: ^('def' ID params? type? block?);
+defStatement: ^('def' ID typeParams? params? type? block?);
 
 expression:
 	^('&&' expression expression) |
@@ -52,7 +52,7 @@ expression:
 
 importStatement: ^('import' ID+);
 
-mainClass: ^(TYPE_DEF typeKind? classContent?);
+mainClass: ^(TYPE_DEF typeKind? typeParams? classContent?);
 
 pair: ^(PAIR ID expression);
 
@@ -66,7 +66,11 @@ string: POWER_STRING | RAW_STRING;
 
 type: ^(TYPE_REF ID+ types? ('?'|'*')?);
 
-types: ^(TYPES type+);
+types: ^(TYPE_ARGS type+);
+
+typeParam: ^(TYPE_PARAM ID);
+
+typeParams: ^(TYPE_PARAMS typeParam+);
 
 typeKind: 'annotation'|'aspect'|'class'|'interface'|'role'|'struct';
 
