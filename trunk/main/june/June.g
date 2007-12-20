@@ -102,7 +102,7 @@ statement
 
 string: POWER_STRING | RAW_STRING;
 
-type	:	ID ('.' ID)* ('[' types ']')? (c='?'|c='*')? -> ^(TYPE_REF ID+ types? $c?);
+type	:	ID ('.' ID)* ('<' types '>')? (c='?'|c='*')? -> ^(TYPE_REF ID+ types? $c?);
 
 typeKind
 	:	'annotation'|'aspect'|'class'|'interface'|'role'|'struct';
