@@ -53,4 +53,7 @@ def hi<Bloo>(
 		String?
 	>>?
 	var d = a(4, [1, c]);
+	var b = ['a', 'b']
+	b[1] = 'c'
+	b = []
 }
