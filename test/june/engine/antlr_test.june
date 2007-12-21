@@ -53,7 +53,8 @@ def hi<Bloo>(
 		String?
 	>>?
 	var d = a(4, [1, c]);
-	var b = ['a', 'b']
-	b[1] = 'c'
-	b = []
+	var c = ['a', 'b']
+	#b[1] = 'c'
+	#b = []
+	# TODO Whole line strings with `And so on and ignore other ` just like comments with #
 }
