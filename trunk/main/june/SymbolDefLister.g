@@ -19,20 +19,20 @@ scope Scope {
 @members {
 
 	private void putOuterSymbol(String id, JuneTree node) {
-		putSymbol((Scope_scope)Scope_stack.get(Scope_stack.size() - 2), id, node);
+		addSymbol((Scope_scope)Scope_stack.get(Scope_stack.size() - 2), id, node);
 	}
 
-	private void putSymbol(String id, JuneTree node) {
-		putSymbol((Scope_scope)Scope_stack.peek(), id, node);
+	private void addSymbol(String id, JuneTree node) {
+		addSymbol((Scope_scope)Scope_stack.peek(), id, node);
 	}
 
-	private void putSymbol(Scope_scope scope, String id, JuneTree node) {
-		scope.block.symbols.put(id, node);
+	private void addSymbol(Scope_scope scope, String id, JuneTree node) {
+		scope.block.addSymbol(id, node);
 	}
 
 	private void startBlock(JuneTree node) {
 		((Scope_scope)Scope_stack.peek()).block = node;
-		((Scope_scope)Scope_stack.peek()).block.symbols = new HashMap<String, JuneTree>();
+		((Scope_scope)Scope_stack.peek()).block.symbols = new HashMap<String, Set<JuneTree>>();
 	}
 
 }
@@ -107,17 +107,17 @@ fluff:
 ;
 
 param: ^(PARAM ID .*) {
-	putSymbol($ID.text, $param.start);
+	addSymbol($ID.text, $param.start);
 };
 
 typeKind: 'annotation'|'aspect'|'class'|'interface'|'role'|'struct';
 
 typeParam: ^(TYPE_PARAM ID) {
-	putSymbol($ID.text, $typeParam.start);
+	addSymbol($ID.text, $typeParam.start);
 };
 
 typeParams: ^(TYPE_PARAMS typeParam+);
 
 varStatement: ^('var' ID .*) {
-	putSymbol($ID.text, $varStatement.start);
+	addSymbol($ID.text, $varStatement.start);
 };
