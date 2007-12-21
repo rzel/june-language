@@ -1,7 +1,7 @@
 import something.Other
 import another.Something
 
-class:
+class<T>:
 
 (a + b) * 4
 
