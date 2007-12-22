@@ -43,7 +43,7 @@ script
 		startBlock($script.start);
 	}
 	@after {
-		System.out.println("Script with " + $Scope::block.symbols);
+		//System.out.println("Script with " + $Scope::block.symbols);
 	}
 :
 	fluff*
@@ -55,7 +55,7 @@ block
 		startBlock($block.start);
 	}
 	@after {
-		System.out.println("Block with " + $Scope::block.symbols);
+		//System.out.println("Block with " + $Scope::block.symbols);
 	}
 :
 	^(BLOCK fluff*)
@@ -67,7 +67,7 @@ blockExpression
 		startBlock($blockExpression.start);
 	}
 	@after {
-		System.out.println("Block expression with " + $Scope::block.symbols);
+		//System.out.println("Block expression with " + $Scope::block.symbols);
 	}
 :
 	^(('do'|DEF_EXPR) fluff*)
@@ -79,7 +79,7 @@ classDef
 		startBlock($classDef.start);
 	}
 	@after {
-		System.out.println("Class with " + $Scope::block.symbols);
+		//System.out.println("Class with " + $Scope::block.symbols);
 	}
 :
 	^(TYPE_DEF typeKind? ID? fluff*) {
@@ -93,7 +93,7 @@ defStatement
 		startBlock($defStatement.start);
 	}
 	@after {
-		System.out.println("Def ID with " + $Scope::block.symbols);
+		//System.out.println("Def ID with " + $Scope::block.symbols);
 	}
 :
 	^('def' ID fluff*) {

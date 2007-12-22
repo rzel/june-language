@@ -12,7 +12,6 @@ public class JuneCompiler {
 	private void assignBlocks(JuneTree tree, JuneTree block) {
 		tree.block = block;
 		if (tree.isBlock()) {
-			System.out.println(tree);
 			block = tree;
 		}
 		for (JuneTree child: tree.getChildren()) {

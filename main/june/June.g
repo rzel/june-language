@@ -108,8 +108,7 @@ type	:	ID ('.' ID)* ('<' typeArgs '>')? (c='?'|c='*')? -> ^(TYPE_REF ID+ typeArg
 
 typeArgs: EOL* type (eoi type)* eoi? -> ^(TYPE_ARGS type+);
 
-typeKind
-	:	'annotation'|'aspect'|'class'|'interface'|'role'|'struct';
+typeKind: 'annotation'|'aspect'|'class'|'interface'|'role';
 
 typeParam: ID -> ^(TYPE_PARAM ID);
 
