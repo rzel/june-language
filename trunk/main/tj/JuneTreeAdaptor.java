@@ -1,4 +1,4 @@
-package june;
+package tj;
 
 import org.antlr.runtime.*;
 import org.antlr.runtime.tree.*;

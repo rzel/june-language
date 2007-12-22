@@ -24,11 +24,11 @@ tokens {
 }
 
 @header {
-	package june;
+	package tj;
 }
 
 @lexer::header {
-	package june;
+	package tj;
 }
 
 script	:	importStatement* mainClass -> ^(SCRIPT importStatement* mainClass);

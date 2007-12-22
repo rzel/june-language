@@ -1,4 +1,4 @@
-package june;
+package tj;
 
 import java.util.*;
 
@@ -66,6 +66,7 @@ public class JuneTree extends CommonTree {
 				}
 				block = block.block;
 			}
+			// TODO If no good matches still, then check imports, classes in this packages, and top level package names.
 		} else {
 			// Search the target.
 		}

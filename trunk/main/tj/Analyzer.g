@@ -6,7 +6,7 @@ options {
 }
 
 @header {
-	package june;
+	package tj;
 }
 
 script: ^(SCRIPT importStatement* mainClass);

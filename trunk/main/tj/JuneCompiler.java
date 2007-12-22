@@ -1,4 +1,4 @@
-package june;
+package tj;
 
 import java.io.*;
 
@@ -28,13 +28,13 @@ public class JuneCompiler {
 			parser.setTreeAdaptor(new JuneTreeAdaptor());
 			JuneTree tree = (JuneTree)parser.script().getTree();
 			// List the symbols defined for each scope.
-			june.SymbolDefLister symbolDefLister =
-					new june.SymbolDefLister(new CommonTreeNodeStream(tree));
+			SymbolDefLister symbolDefLister =
+					new SymbolDefLister(new CommonTreeNodeStream(tree));
 			symbolDefLister.script();
 			assignBlocks(tree, null);
 			// TODO Gather up symbol IDs across all source files before proceeding.
 			// Determine the entities and types referred to.
-			june.Analyzer analyzer = new june.Analyzer(new CommonTreeNodeStream(tree));
+			Analyzer analyzer = new Analyzer(new CommonTreeNodeStream(tree));
 			analyzer.script();
 			// TODO Generate bytecode.
 			// TODO Supply result via a ClassLoader or on disk or in memory or something.

@@ -10,7 +10,7 @@ scope Scope {
 }
 
 @header {
-	package june;
+	package tj;
 
 	import java.util.*;
 	import org.antlr.runtime.BitSet;
