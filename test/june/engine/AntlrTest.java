@@ -2,9 +2,9 @@ package june.engine;
 
 import java.io.*;
 
-import june.*;
-
 import org.testng.annotations.*;
+
+import tj.*;
 
 public class AntlrTest {
 

@@ -32,19 +32,19 @@
     </target>
 
     <target name="generate" depends="init">
-        <mkdir dir="output/generated/main/june" />
-        <antlr:antlr3 target="main/june/June.g"
-                      outputdirectory="output/generated/main/june">
+        <mkdir dir="output/generated/main/tj" />
+        <antlr:antlr3 target="main/tj/June.g"
+                      outputdirectory="output/generated/main/tj">
             <classpath path="lib/antlr-2.7.7.jar;lib/antlr-3.0.jar;lib/stringtemplate-3.0.jar" />
         </antlr:antlr3>
-        <antlr:antlr3 target="main/june/SymbolDefLister.g"
-                      libdirectory="output/generated/main/june"
-                      outputdirectory="output/generated/main/june">
+        <antlr:antlr3 target="main/tj/SymbolDefLister.g"
+                      libdirectory="output/generated/main/tj"
+                      outputdirectory="output/generated/main/tj">
             <classpath path="lib/antlr-2.7.7.jar;lib/antlr-3.0.jar;lib/stringtemplate-3.0.jar" />
         </antlr:antlr3>
-        <antlr:antlr3 target="main/june/Analyzer.g"
-                      libdirectory="output/generated/main/june"
-                      outputdirectory="output/generated/main/june">
+        <antlr:antlr3 target="main/tj/Analyzer.g"
+                      libdirectory="output/generated/main/tj"
+                      outputdirectory="output/generated/main/tj">
             <classpath path="lib/antlr-2.7.7.jar;lib/antlr-3.0.jar;lib/stringtemplate-3.0.jar" />
         </antlr:antlr3>
         <copy todir="output/java/main">
@@ -88,8 +88,8 @@
             <fileset dir="output/classes/main" />
             <zipfileset src="lib/antlr-runtime-3.0.jar" />
             <zipfileset src="lib/asm-3.0.jar" />
-            <rule pattern="org.antlr.runtime.**" result="june.antlr.@1" />
-            <rule pattern="org.objectweb.asm.**" result="june.asm.@1" />
+            <rule pattern="org.antlr.runtime.**" result="tj.antlr.@1" />
+            <rule pattern="org.objectweb.asm.**" result="tj.asm.@1" />
         </jarjar>
     </target>
 
