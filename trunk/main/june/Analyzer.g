@@ -17,7 +17,10 @@ block: content?;
 
 blockExpression: ^(('do'|DEF_EXPR) params? block);
 
-call: ^(CALL ID callArgs? blockExpression?);
+call[JuneTree target]: ^(CALL ID callArgs? blockExpression?) {
+	// TODO Include argument types and so on.
+	$call.start.findEntities(target, $ID.text);
+};
 
 callArgs: ^(ARGS args);
 
@@ -44,10 +47,12 @@ expression:
 	^('-' expression expression) |
 	^('*' expression expression) |
 	^('/' expression expression) |
-	^(('.'|'?.') expression call) |
-	call |
+	^(('.'|'?.') target=expression call[$target.start]) |
+	call[null] |
 	collection |
-	string {$expression.start.type = String.class;} |
+	string {
+		/*$expression.start.addEntity($string.text);*/
+	} |
 	NUMBER;
 
 importStatement: ^('import' ID+);
