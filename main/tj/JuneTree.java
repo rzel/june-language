@@ -2,7 +2,9 @@ package tj;
 
 import java.util.*;
 
-import org.antlr.runtime.*;
+import june.tree.*;
+
+import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.*;
 
 public class JuneTree extends CommonTree {
@@ -18,7 +20,7 @@ public class JuneTree extends CommonTree {
 	 */
 	public Set<Object> entities;
 
-	public List<String> imports;
+	public Set<String> imports;
 
 	/**
 	 * If this is a block, then non-null, a map from IDs to nodes.
@@ -39,6 +41,7 @@ public class JuneTree extends CommonTree {
 		if (entities == null) {
 			entities = new HashSet<Object>();
 		}
+		System.out.println("addEntity " + entity);
 		entities.add(entity);
 	}
 
@@ -56,8 +59,15 @@ public class JuneTree extends CommonTree {
 		return children == null ? Collections.emptyList() : children;
 	}
 
+	public JuneType getEntityType() {
+		return null;
+	}
+
 	public void initScript() {
-		imports = new ArrayList<String>();
+		imports =
+				new HashSet<String>(Arrays.asList(
+						"java.lang",
+						"java.lang.System"));
 	}
 
 	public boolean isBlock() {

@@ -7,6 +7,7 @@ public class JuneTreeAdaptor extends CommonTreeAdaptor {
 
 	@Override
 	public JuneTree create(Token payload) {
+		// TODO Make different classes for different token types?
 		return new JuneTree(payload);
 	}
 

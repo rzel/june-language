@@ -4,11 +4,14 @@ import java.io.*;
 import java.util.*;
 
 import june.engine.*;
+import june.tree.*;
 
 import org.antlr.runtime.*;
 import org.antlr.runtime.tree.*;
 
 public class JuneEngine {
+
+	private Map<String, Entity> globals = new HashMap<String, Entity>();
 
 	private void assignBlocks(JuneTree tree, JuneTree block) {
 		tree.block = block;
@@ -51,12 +54,20 @@ public class JuneEngine {
 		if (target == null) {
 			// Search the scope.
 			JuneTree block = node.isBlock() ? node : node.block;
+			JuneTree script = null;
 			while (block != null) {
+				if (block.getType() == JuneParser.SCRIPT) {
+					script = block;
+				}
 				Set<JuneTree> entities = block.symbols.get(id);
 				if (entities != null) {
 					System.out.println(entities);
 				}
 				block = block.block;
+			}
+			if (script != null) {
+				// Need types for Usage.
+				new Resolver.ImportResolver(script.imports, globals, null);
 			}
 			// TODO If no good matches still, then check imports, classes in this packages, and top level package names.
 		} else {

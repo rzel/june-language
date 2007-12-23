@@ -54,9 +54,7 @@ expression:
 	^(('.'|'?.') target=expression call[$target.start]) |
 	call[null] |
 	collection |
-	string {
-		/*$expression.start.addEntity($string.text);*/
-	} |
+	string |
 	NUMBER;
 
 importStatement: ^('import' ID+);
@@ -71,7 +69,7 @@ params: ^(PARAMS param+);
 
 statement: expression|classStatement|defStatement|varStatement;
 
-string: POWER_STRING | RAW_STRING;
+string: POWER_STRING | RAW_STRING {$string.start.addEntity($RAW_STRING.text);};
 
 type: ^(TYPE_REF ID+ types? ('?'|'*')?);
 

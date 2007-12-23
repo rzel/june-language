@@ -96,7 +96,7 @@
     <target name="test" depends="compile">
         <taskdef resource="testngtasks" classpath="lib/testng-5.5-jdk15.jar" />
         <testng workingdir="output/classes/test"
-                classpath="output/classes/test;output/classes/main;lib/antlr-runtime-3.0.jar"
+                classpath="output/classes/test;output/classes/main;lib/antlr-runtime-3.0.jar;lib/asm-3.0.jar"
                 outputDir="output/reports/test">
             <classfileset dir="output/classes/test" includes="**/*.class" />
         </testng>

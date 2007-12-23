@@ -46,7 +46,7 @@ public class JuneClass extends JuneType implements GenericDeclaration {
 		Set<JuneMember> candidates = members.get(usage.name);
 		if (candidates != null) {
 			for (JuneMember candidate: candidates) {
-				// TODO Varargs of all arrays and lists (and sets and other iterables?).
+				// TODO Varargs of all arrays and lists (and sets and other iterables?). Or no varargs in June?
 				// TODO Actually check. Do we need a distance metric or something multidimensional?
 				if (usage.argTypes == null) {
 					if (candidate instanceof JuneField) {
