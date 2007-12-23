@@ -6,7 +6,7 @@ import org.antlr.runtime.tree.*;
 public class JuneTreeAdaptor extends CommonTreeAdaptor {
 
 	@Override
-	public Object create(Token payload) {
+	public JuneTree create(Token payload) {
 		return new JuneTree(payload);
 	}
 
