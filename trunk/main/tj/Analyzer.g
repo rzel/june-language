@@ -9,6 +9,10 @@ options {
 	package tj;
 }
 
+@members {
+	JuneEngine engine;
+}
+
 script: ^(SCRIPT importStatement* mainClass);
 
 args: expression*;
@@ -19,7 +23,7 @@ blockExpression: ^(('do'|DEF_EXPR) params? block);
 
 call[JuneTree target]: ^(CALL ID callArgs? blockExpression?) {
 	// TODO Include argument types and so on.
-	$call.start.findEntities(target, $ID.text);
+	engine.findEntities(target, $call.start, $ID.text);
 };
 
 callArgs: ^(ARGS args);

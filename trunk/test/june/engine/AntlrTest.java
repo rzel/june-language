@@ -14,7 +14,7 @@ public class AntlrTest {
 			// TODO How to fail on errors?
 			InputStream stream = getClass().getResourceAsStream("hello.june");
 			try {
-				new JuneCompiler().compile(new InputStreamReader(stream));
+				new JuneEngine().compile(new InputStreamReader(stream));
 			} finally {
 				stream.close();
 			}

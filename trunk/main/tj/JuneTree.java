@@ -18,6 +18,8 @@ public class JuneTree extends CommonTree {
 	 */
 	public Set<Object> entities;
 
+	public List<String> imports;
+
 	/**
 	 * If this is a block, then non-null, a map from IDs to nodes.
 	 */
@@ -54,22 +56,8 @@ public class JuneTree extends CommonTree {
 		return children == null ? Collections.emptyList() : children;
 	}
 
-	public void findEntities(JuneTree target, String id) {
-		System.out.println("findEntities for " + id + " on " + target);
-		if (target == null) {
-			// Search the scope.
-			JuneTree block = isBlock() ? this : this.block;
-			while (block != null) {
-				Set<JuneTree> entities = block.symbols.get(id);
-				if (entities != null) {
-					System.out.println(entities);
-				}
-				block = block.block;
-			}
-			// TODO If no good matches still, then check imports, classes in this packages, and top level package names.
-		} else {
-			// Search the target.
-		}
+	public void initScript() {
+		imports = new ArrayList<String>();
 	}
 
 	public boolean isBlock() {
