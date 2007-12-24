@@ -112,7 +112,7 @@ param: ^(PARAM ID .*) {
 
 typeKind: 'annotation'|'aspect'|'class'|'interface'|'role'|'struct';
 
-typeParam: ^(TYPE_PARAM ID) {
+typeParam: ^(TYPE_PARAM ID .*) {
 	addSymbol($ID.text, $typeParam.start);
 };
 
