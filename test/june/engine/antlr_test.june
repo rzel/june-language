@@ -54,9 +54,10 @@ def hi<Bloo>(
 		String
 		String?
 	>>?
-	var d = a(4, [1, c]);
-	var c = ['a', 'b']
+	val d = a(4, [1, c]);
+	var c = ['a', 'b', d]
+	var e = [`Yes with `any' character.
+	]
 	#b[1] = 'c'
 	#b = []
-	# TODO Whole line strings with `And so on and ignore other ` just like comments with #
 }

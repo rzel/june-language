@@ -107,7 +107,7 @@ statement
 
 supers: 'is'^ type ('&'! type)*;
 
-string: POWER_STRING | RAW_STRING;
+string: LINE_STRING | POWER_STRING | RAW_STRING;
 
 throwsClause: 'throws'^ type ('|'! type)*;
 
@@ -125,25 +125,25 @@ varDef	:	ID (c='?'|c='*') -> ID $c
 	|	ID (':' EOL* type)? -> ID type?;
 
 varStatement
-	:	'var'^ varDef ('='! EOL!* expression)?;
+	:	('val'^|'var'^) varDef ('='! EOL!* expression)?;
 
 visibility
 	:	('internal'|'protected'|'private'|'public') ':'!;
 
-COMMENT	:	'#' (~('\r'|'\n'))* {skip();};
+COMMENT: '#' (~('\r'|'\n'))* {skip();};
 
 EOL	:	'\r'|('\r'? '\n');
 
 ID	:	(LETTER|'$') (LETTER|DIGIT|'_')*;
 
+LINE_STRING: '`' (~('\r'|'\n'))*;
+
 NUMBER	:	DIGIT+;// ('.' DIGIT+)?;
 
 // TODO So I do just have to parse this afterwards?
-POWER_STRING
-	:	'"' (('\\'~('\r'|'\n'))|~('"'|'\r'|'\n'))* ('"'|EOL);
+POWER_STRING: '"' (('\\'~('\r'|'\n'))|~('"'|'\r'|'\n'))* ('"'|EOL);
 
-RAW_STRING
-	:	'\'' (~('\''|'\r'|'\n'))* ('\''|EOL);
+RAW_STRING: '\'' (~('\''|'\r'|'\n'))* ('\''|EOL);
 
 STRETCH	:	'...' EOL* {skip();};
 

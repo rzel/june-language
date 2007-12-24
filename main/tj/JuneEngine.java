@@ -50,7 +50,7 @@ public class JuneEngine {
 	}
 
 	void findEntities(JuneTree target, JuneTree node, String id) {
-		System.out.println("findEntities2 for " + id + " on " + target);
+		System.out.println("findEntities for " + id + " on " + target);
 		if (target == null) {
 			// Search the scope.
 			JuneTree block = node.isBlock() ? node : node.block;

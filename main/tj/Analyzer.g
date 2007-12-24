@@ -72,7 +72,11 @@ params: ^(PARAMS param+);
 
 statement: expression|classStatement|defStatement|varStatement;
 
-string: POWER_STRING | RAW_STRING {$string.start.addEntity($RAW_STRING.text);};
+string:
+	LINE_STRING {$string.start.addEntity($LINE_STRING.text);} |
+	POWER_STRING |
+	RAW_STRING {$string.start.addEntity($RAW_STRING.text);}
+;
 
 supers: ^('is' type+);
 
@@ -90,6 +94,6 @@ typeKind: 'annotation'|'aspect'|'class'|'interface'|'role'|'struct';
 
 varDef:	ID ('?'|'*'|type)?;
 
-varStatement: ^('var' varDef expression?);
+varStatement: ^(('val'|'var') varDef expression?);
 
 visibility: 'internal'|'protected'|'private'|'public';
