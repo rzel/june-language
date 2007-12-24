@@ -1,7 +1,7 @@
 import something.Other
 import another.Something
 
-class<T>:
+class<T is Comparable<T>> is Map<String, T> & Happy:
 
 (a + b) * 4
 
@@ -10,6 +10,8 @@ numbers.where def(it) {0 <= it && it < 1}.select do(hmm) {hmm * 2}
 if (a == b) {
 	doSomething.a
 	c.d() != e
+} else {
+	doOtherStuff()
 }
 
 9.toString
@@ -19,7 +21,7 @@ a() - a.b?.c(1, 2) + b - c
 class Name<What>
 
 role Fish {
-	def happy() {
+	def happy() throws Fish | Bear {
 		out.println(this)
 	}
 }

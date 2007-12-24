@@ -8,6 +8,7 @@ tokens {
 	ARGS;
 	BLOCK;
 	CALL;
+	CALL_PART;
 	COMPARE;
 	DEF_EXPR;
 	LIST;
@@ -48,14 +49,16 @@ blockExpression:
 booleanExpression
 	:	compareExpression (('&&'^|'||'^) compareExpression)*;
 
-call	:	ID ('(' args ')')? blockExpression? -> ^(CALL ID ^(ARGS args)? blockExpression?);
+call	:	ID ('(' args ')')? blockExpression? callPart* -> ^(CALL ID ^(ARGS args)? blockExpression? callPart*);
+
+callPart: (ID ('(' a=args ')')?) blockExpression? -> ^(CALL_PART ID ^(ARGS args)? blockExpression?);
 
 // TODO Should the visibility be grouping the statements?
 classContent
 	:	 EOL* (s+=statement|s+=visibility) (eol (s+=statement|s+=visibility))* eol? -> ^(BLOCK $s+);
 
 classStatement
-	:	typeKind ID typeParams? ('{' classContent? '}')? -> ^(TYPE_DEF typeKind ID typeParams? classContent?);
+	:	typeKind ID typeParams? supers? ('{' classContent? '}')? -> ^(TYPE_DEF typeKind ID typeParams? supers? classContent?);
 
 collection
 	:	'[' args ']' -> ^(LIST args)
@@ -68,7 +71,7 @@ compareExpression
 content	:	EOL* statement (eol statement)* eol? -> ^(BLOCK statement+);
 
 defStatement
-	:	'def'^ ID typeParams? '('! params? ')'! (':'! type)? block?;
+	:	'def'^ ID typeParams? '('! params? ')'! (':'! type)? throwsClause? block?;
 
 eoi	:	(','|EOL) EOL* ->;
 
@@ -84,7 +87,7 @@ introExpression
 	:	blockExpression | call | collection | ('('! expression ')'!) | NUMBER | string;
 
 mainClass
-	:	(typeKind typeParams? ':')? EOL* classContent? -> ^(TYPE_DEF typeKind? typeParams? classContent?);
+	:	(typeKind typeParams? supers? ':')? EOL* classContent? -> ^(TYPE_DEF typeKind? typeParams? supers? classContent?);
 
 memberExpression
 	:	introExpression (('.'^|'?.'^) call)*;
@@ -102,7 +105,11 @@ statement
 	|	defStatement
 	|	varStatement;
 
+supers: 'is'^ type ('&'! type)*;
+
 string: POWER_STRING | RAW_STRING;
+
+throwsClause: 'throws'^ type ('|'! type)*;
 
 type	:	ID ('.' ID)* ('<' typeArgs '>')? (c='?'|c='*')? -> ^(TYPE_REF ID+ typeArgs? $c?);
 
@@ -110,7 +117,7 @@ typeArgs: EOL* type (eoi type)* eoi? -> ^(TYPE_ARGS type+);
 
 typeKind: 'annotation'|'aspect'|'class'|'interface'|'role';
 
-typeParam: ID -> ^(TYPE_PARAM ID);
+typeParam: ID supers? -> ^(TYPE_PARAM ID supers?);
 
 typeParams: '<' EOL* typeParam (eoi typeParam)* eoi? '>' -> ^(TYPE_PARAMS typeParam+);
 
