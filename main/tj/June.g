@@ -41,9 +41,6 @@ addExpression
 
 args	:	EOL* (expression (eoi expression)* eoi?)? -> expression*;
 
-// TODO How to guarantee a good left side? Fancy grammar or a check in the Analyzer?
-assignment: expression '='^ expression;
-
 block	:	'{'! content? '}'!;
 
 blockExpression:
@@ -82,6 +79,9 @@ eoi	:	(','|EOL) EOL* ->;
 
 eol	:	(';'|EOL) EOL* ->;
 
+// TODO How to guarantee a good left side? Fancy grammar or a check in the Analyzer?
+expressionOrAssignment: expression ('='^ expression)?;
+
 expression
 	:	booleanExpression;
 
@@ -102,7 +102,7 @@ pair	:	ID ':' EOL* expression -> ^(PAIR ID expression); // ID or String (or Inte
 
 params	:	EOL* varDef (eoi varDef)* eoi? -> ^(PARAMS ^(PARAM varDef)+);
 
-statement: assignment | expression | classStatement | defStatement | varStatement;
+statement: expressionOrAssignment | classStatement | defStatement | varStatement;
 
 supers: 'is'^ type ('&'! type)*;
 
