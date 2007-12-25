@@ -17,7 +17,9 @@ script: ^(SCRIPT importStatement* mainClass);
 
 args: expression*;
 
-assignment: ^('=' expression expression);
+assignment: ^('=' target=expression expression) {
+	System.out.println("Assignment on " + $target.start);
+};
 
 block: content?;
 
