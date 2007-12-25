@@ -96,7 +96,7 @@ defStatement
 		//System.out.println("Def ID with " + $Scope::block.symbols);
 	}
 :
-	^('def' ID fluff*) {
+	^('def' ('final'|'native'|'override')* ID fluff*) {
 		putOuterSymbol($ID.text, $defStatement.start);
 	}
 ;
