@@ -17,6 +17,8 @@ script: ^(SCRIPT importStatement* mainClass);
 
 args: expression*;
 
+assignment: ^('=' expression expression);
+
 block: content?;
 
 blockExpression: ^(('do'|DEF_EXPR) params? block);
@@ -38,7 +40,7 @@ collection:	^(LIST expression*) | ^(MAP pair*);
 
 content: ^(BLOCK statement+);
 
-defStatement: ^('def' ID typeParams? params? type? throwsClause? block?);
+defStatement: ^('def' ('final'|'native'|'override')* ID typeParams? params? type? throwsClause? block?);
 
 expression:
 	^('&&' expression expression) |
@@ -54,10 +56,11 @@ expression:
 	^('*' expression expression) |
 	^('/' expression expression) |
 	^(('.'|'?.') target=expression call[$target.start]) |
+	^('[' expression expression*) |
 	blockExpression |
 	call[null] |
 	collection |
-	string |
+	strings |
 	NUMBER;
 
 importStatement: ^('import' ID+);
@@ -70,13 +73,15 @@ param: ^(PARAM varDef);
 
 params: ^(PARAMS param+);
 
-statement: expression|classStatement|defStatement|varStatement;
+statement: assignment | expression | classStatement | defStatement | varStatement;
 
 string:
 	LINE_STRING {$string.start.addEntity($LINE_STRING.text);} |
 	POWER_STRING |
 	RAW_STRING {$string.start.addEntity($RAW_STRING.text);}
 ;
+
+strings: ^(STRINGS string+);
 
 supers: ^('is' type+);
 

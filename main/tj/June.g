@@ -11,12 +11,14 @@ tokens {
 	CALL_PART;
 	COMPARE;
 	DEF_EXPR;
+	GET_AT;
 	LIST;
 	MAP;
 	PAIR;
 	PARAM;
 	PARAMS;
 	SCRIPT;
+	STRINGS;
 	TYPE_DEF;
 	TYPE_REF;
 	TYPE_ARGS;
@@ -38,6 +40,9 @@ addExpression
 	:	multiplyExpression (('+'^|'-'^) multiplyExpression)*;
 
 args	:	EOL* (expression (eoi expression)* eoi?)? -> expression*;
+
+// TODO How to guarantee a good left side? Fancy grammar or a check in the Analyzer?
+assignment: expression '='^ expression;
 
 block	:	'{'! content? '}'!;
 
@@ -71,7 +76,7 @@ compareExpression
 content	:	EOL* statement (eol statement)* eol? -> ^(BLOCK statement+);
 
 defStatement
-	:	'def'^ ID typeParams? '('! params? ')'! (':'! type)? throwsClause? block?;
+	:	('final'|'native'|'override')* 'def'^ ID typeParams? '('! params? ')'! (':'! type)? throwsClause? block?;
 
 eoi	:	(','|EOL) EOL* ->;
 
@@ -84,30 +89,26 @@ importStatement
 	:	'import'^ ID ('.'! ID)* eol;
 
 introExpression
-	:	blockExpression | call | collection | ('('! expression ')'!) | NUMBER | string;
+	:	blockExpression | call | collection | ('('! expression ')'!) | NUMBER | strings;
 
 mainClass
 	:	(typeKind typeParams? supers? ':')? EOL* classContent? -> ^(TYPE_DEF typeKind? typeParams? supers? classContent?);
 
-memberExpression
-	:	introExpression (('.'^|'?.'^) call)*;
+memberExpression: introExpression ((('.'^|'?.'^) call) | ('['^ args ']'!))*;
 
-multiplyExpression
-	:	memberExpression (('*'^|'/'^) memberExpression)*;
+multiplyExpression: memberExpression (('*'^|'/'^) memberExpression)*;
 
 pair	:	ID ':' EOL* expression -> ^(PAIR ID expression); // ID or String (or Integer?)!
 
 params	:	EOL* varDef (eoi varDef)* eoi? -> ^(PARAMS ^(PARAM varDef)+);
 
-statement
-	:	expression
-	|	classStatement
-	|	defStatement
-	|	varStatement;
+statement: assignment | expression | classStatement | defStatement | varStatement;
 
 supers: 'is'^ type ('&'! type)*;
 
 string: LINE_STRING | POWER_STRING | RAW_STRING;
+
+strings: string+ -> ^(STRINGS string+);
 
 throwsClause: 'throws'^ type ('|'! type)*;
 
@@ -128,7 +129,7 @@ varStatement
 	:	('val'^|'var'^) varDef ('='! EOL!* expression)?;
 
 visibility
-	:	('internal'|'protected'|'private'|'public') ':'!;
+	:	('internal'|'protected'|'private'|'public') 'static'? ':'!;
 
 COMMENT: '#' (~('\r'|'\n'))* {skip();};
 
