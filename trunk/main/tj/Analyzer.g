@@ -42,6 +42,13 @@ collection:	^(LIST expression*) | ^(MAP pair*);
 
 content: ^(BLOCK statement+);
 
+controlStatement:
+	^('return' expression) |
+	^('throw' expression) |
+	^('break' ID? expression?) |
+	^('continue' ID? expression?) |
+	^('redo' ID?);
+
 defStatement: ^('def' ('final'|'native'|'override')* ID typeParams? params? type? throwsClause? block?);
 
 expression:
@@ -75,7 +82,7 @@ param: ^(PARAM varDef);
 
 params: ^(PARAMS param+);
 
-statement: assignment | expression | classStatement | defStatement | varStatement;
+statement: assignment | classStatement | controlStatement | defStatement | expression | varStatement;
 
 string:
 	LINE_STRING {$string.start.addEntity($LINE_STRING.text);} |

@@ -48,16 +48,14 @@ blockExpression:
 	'do'^ '('! params ')'! block |
 	'def' '(' params? ')' block -> ^(DEF_EXPR params? block);
 
-booleanExpression
-	:	compareExpression (('&&'^|'||'^) compareExpression)*;
+booleanExpression: compareExpression (('&&'^|'||'^) compareExpression)*;
 
-call	:	ID ('(' args ')')? blockExpression? callPart* -> ^(CALL ID ^(ARGS args)? blockExpression? callPart*);
+call: ID ('(' args ')')? blockExpression? callPart* -> ^(CALL ID ^(ARGS args)? blockExpression? callPart*);
 
 callPart: (ID ('(' a=args ')')?) blockExpression? -> ^(CALL_PART ID ^(ARGS args)? blockExpression?);
 
 // TODO Should the visibility be grouping the statements?
-classContent
-	:	 EOL* (s+=statement|s+=visibility) (eol (s+=statement|s+=visibility))* eol? -> ^(BLOCK $s+);
+classContent: EOL* (s+=statement|s+=visibility) (eol (s+=statement|s+=visibility))* eol? -> ^(BLOCK $s+);
 
 classStatement
 	:	typeKind ID typeParams? supers? ('{' classContent? '}')? -> ^(TYPE_DEF typeKind ID typeParams? supers? classContent?);
@@ -70,14 +68,20 @@ collection
 compareExpression
 	:	addExpression (('=='^|'!='^|'<'^|'<='^|'>'^|'>='^) addExpression)?;
 
-content	:	EOL* statement (eol statement)* eol? -> ^(BLOCK statement+);
+content: EOL* statement (eol statement)* eol? -> ^(BLOCK statement+);
 
-defStatement
-	:	('final'|'native'|'override')* 'def'^ ID typeParams? '('! params? ')'! (':'! type)? throwsClause? block?;
+controlStatement:
+	'return'^ expression |
+	'throw'^ expression |
+	'break'^ ID? (':'! expression)? |
+	'continue'^ ID? (':'! expression)? |
+	'redo'^ ID?;
 
-eoi	:	(','|EOL) EOL* ->;
+defStatement: ('final'|'native'|'override')* 'def'^ ID typeParams? '('! params? ')'! (':'! type)? throwsClause? block?;
 
-eol	:	(';'|EOL) EOL* ->;
+eoi: (','|EOL) EOL* ->;
+
+eol: (';'|EOL) EOL* ->;
 
 // TODO How to guarantee a good left side? Fancy grammar or a check in the Analyzer?
 expressionOrAssignment: expression ('='^ expression)?;
@@ -102,7 +106,7 @@ pair	:	ID ':' EOL* expression -> ^(PAIR ID expression); // ID or String (or Inte
 
 params	:	EOL* varDef (eoi varDef)* eoi? -> ^(PARAMS ^(PARAM varDef)+);
 
-statement: expressionOrAssignment | classStatement | defStatement | varStatement;
+statement: classStatement | controlStatement | defStatement | expressionOrAssignment | varStatement;
 
 supers: 'is'^ type ('&'! type)*;
 
