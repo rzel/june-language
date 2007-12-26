@@ -10,8 +10,10 @@ numbers.where def(it) {0 <= it && it < 1}.select do(hmm) {hmm * 2}
 if (a == b) {
 	doSomething.a
 	c.d() != e
+	break: true
 } else {
 	doOtherStuff()
+	continue MORE: stuff.andAgain()
 }
 
 9.toString()
@@ -23,6 +25,8 @@ class Name<What>
 role Fish {
 	def happy() throws Fish | Bear {
 		out.println(this)
+		if(true) {throw apples}
+		return bob
 	}
 }
 
@@ -34,6 +38,9 @@ val a = [
 	b: 2
 ]
 var b = [:]
+
+#public static:
+
 var c = [
 ]
 var d = [1, 2
@@ -41,6 +48,8 @@ var d = [1, 2
 var e = [
 		:
 	]
+
+public:
 
 final ...
 override def hi<Bloo>(
