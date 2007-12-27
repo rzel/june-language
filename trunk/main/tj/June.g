@@ -39,7 +39,11 @@ script	:	importStatement* mainClass -> ^(SCRIPT importStatement* mainClass);
 addExpression
 	:	multiplyExpression (('+'^|'-'^) multiplyExpression)*;
 
-args	:	EOL* (expression (eoi expression)* eoi?)? -> expression*;
+annotation: '@'^ type (stringMapNotEmpty | args)? eol*;
+
+annotations: annotation+;
+
+args: '(' items ')' -> ^(ARGS items);
 
 block	:	'{'! content? '}'!;
 
@@ -50,19 +54,20 @@ blockExpression:
 
 booleanExpression: compareExpression (('&&'^|'||'^) compareExpression)*;
 
-call: ID ('(' args ')')? blockExpression? callPart* -> ^(CALL ID ^(ARGS args)? blockExpression? callPart*);
+call: ID args? blockExpression? callPart* -> ^(CALL ID args? blockExpression? callPart*);
 
-callPart: (ID ('(' a=args ')')?) blockExpression? -> ^(CALL_PART ID ^(ARGS args)? blockExpression?);
+callPart: ID args? blockExpression? -> ^(CALL_PART ID args? blockExpression?);
 
 // TODO Should the visibility be grouping the statements?
 classContent: EOL* (s+=statement|s+=visibility) (eol (s+=statement|s+=visibility))* eol? -> ^(BLOCK $s+);
 
-classStatement
-	:	typeKind ID typeParams? supers? ('{' classContent? '}')? -> ^(TYPE_DEF typeKind ID typeParams? supers? classContent?);
+classStatement:
+	annotations? typeKind ID typeParams? supers? ('{' classContent? '}')? ->
+	^(TYPE_DEF typeKind ID annotations? typeParams? supers? classContent?);
 
 collection
-	:	'[' args ']' -> ^(LIST args)
-	|	'[' EOL* (pair (eoi pair)* eoi?)? ']' -> ^(MAP pair*)
+	:	'[' items ']' -> ^(LIST items)
+	|	stringMapNotEmpty
 	|	'[' EOL* ':' EOL* ']' -> ^(MAP);
 
 compareExpression
@@ -90,15 +95,17 @@ expression
 	:	booleanExpression;
 
 importStatement
-	:	'import'^ ID ('.'! ID)* eol;
+	:	'import'^ ('advice'?) ID ('.'! ID)* eol;
 
 introExpression
 	:	blockExpression | call | collection | ('('! expression ')'!) | NUMBER | strings;
 
+items: EOL* (expression (eoi expression)* eoi?)? -> expression*;
+
 mainClass
 	:	(typeKind typeParams? supers? ':')? EOL* classContent? -> ^(TYPE_DEF typeKind? typeParams? supers? classContent?);
 
-memberExpression: introExpression ((('.'^|'?.'^) call) | ('['^ args ']'!))*;
+memberExpression: introExpression ((('.'^|'?.'^) call) | ('['^ items ']'!))*;
 
 multiplyExpression: memberExpression (('*'^|'/'^) memberExpression)*;
 
@@ -111,6 +118,8 @@ statement: classStatement | controlStatement | defStatement | expressionOrAssign
 supers: 'is'^ type ('&'! type)*;
 
 string: LINE_STRING | POWER_STRING | RAW_STRING;
+
+stringMapNotEmpty: '[' EOL* (pair (eoi pair)* eoi?)? ']' -> ^(MAP pair*);
 
 strings: string+ -> ^(STRINGS string+);
 
