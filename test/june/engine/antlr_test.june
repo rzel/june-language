@@ -7,7 +7,7 @@ class<T is Comparable<T>> is Map<String, T> & Happy:
 
 numbers.where def(it) {0 <= it && it < 1}.select do(hmm) {hmm * 2}
 
-if (a == b) {
+if(a == b) {
 	doSomething.a
 	c.d() != e
 	break: true
@@ -22,6 +22,8 @@ a() - a.b?.c(1, 2) + b.glub[duper, 5][glum].brr[a + b] - c
 
 class Name<What>
 
+@Whatever @bob.bill.More(1)
+@Source[author: 'Tom', date: 'then']
 role Fish {
 	def happy() throws Fish | Bear {
 		out.println(this)

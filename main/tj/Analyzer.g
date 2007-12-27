@@ -15,7 +15,13 @@ options {
 
 script: ^(SCRIPT importStatement* mainClass);
 
-args: expression*;
+annotation: ^('@' type (map | args)?) {
+	System.out.println("Annotation " + $type.start);
+};
+
+annotations: annotation+;
+
+args: ^(ARGS expression*);
 
 assignment: ^('=' target=expression expression) {
 	System.out.println("Assignment on " + $target.start);
@@ -25,20 +31,18 @@ block: content?;
 
 blockExpression: ^(('do'|DEF_EXPR) params? block);
 
-call[JuneTree target]: ^(CALL ID callArgs? expression? callPart*) {
+call[JuneTree target]: ^(CALL ID args? expression? callPart*) {
 	// TODO Include argument types and so on.
 	engine.findEntities(target, $call.start, $ID.text);
 };
 
-callArgs: ^(ARGS args);
-
-callPart: ^(CALL_PART ID callArgs? blockExpression?);
+callPart: ^(CALL_PART ID args? blockExpression?);
 
 classContent: ^(BLOCK (statement|visibility)+);
 
-classStatement: ^(TYPE_DEF typeKind ID typeParams? supers? classContent?);
+classStatement: ^(TYPE_DEF typeKind ID annotations? typeParams? supers? classContent?);
 
-collection:	^(LIST expression*) | ^(MAP pair*);
+collection:	^(LIST expression*) | map;
 
 content: ^(BLOCK statement+);
 
@@ -75,6 +79,8 @@ expression:
 importStatement: ^('import' ID+);
 
 mainClass: ^(TYPE_DEF typeKind? typeParams? supers? classContent?);
+
+map: ^(MAP pair*);
 
 pair: ^(PAIR ID expression);
 
