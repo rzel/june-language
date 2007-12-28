@@ -10,6 +10,7 @@ tokens {
 	CALL;
 	CALL_PART;
 	COMPARE;
+	DECLARATION;
 	DEF_EXPR;
 	GET_AT;
 	LIST;
@@ -39,9 +40,9 @@ script	:	importStatement* mainClass -> ^(SCRIPT importStatement* mainClass);
 addExpression
 	:	multiplyExpression (('+'^|'-'^) multiplyExpression)*;
 
-annotation: '@'^ type (stringMapNotEmpty | args)? eol*;
+annotation: '@'^ type constructorArgs? eol*;
 
-annotations: annotation+;
+annotations: annotation*;
 
 args: '(' items ')' -> ^(ARGS items);
 
@@ -62,8 +63,8 @@ callPart: ID args? blockExpression? -> ^(CALL_PART ID args? blockExpression?);
 classContent: EOL* (s+=statement|s+=visibility) (eol (s+=statement|s+=visibility))* eol? -> ^(BLOCK $s+);
 
 classStatement:
-	annotations? typeKind ID typeParams? supers? ('{' classContent? '}')? ->
-	^(TYPE_DEF typeKind ID annotations? typeParams? supers? classContent?);
+	typeKind ID typeParams? supers? ('{' classContent? '}')? ->
+	^(TYPE_DEF typeKind ID typeParams? supers? classContent?);
 
 collection
 	:	'[' items ']' -> ^(LIST items)
@@ -72,6 +73,10 @@ collection
 
 compareExpression
 	:	addExpression (('=='^|'!='^|'<'^|'<='^|'>'^|'>='^) addExpression)?;
+
+constructorArgs:
+	'(' EOL* (expression (eoi expression)* (eoi pair)* eoi? | pair (eoi pair)* eoi?) ')'
+	-> ^(ARGS expression* pair*);
 
 content: EOL* statement (eol statement)* eol? -> ^(BLOCK statement+);
 
@@ -82,7 +87,9 @@ controlStatement:
 	'continue'^ ID? (':'! expression)? |
 	'redo'^ ID?;
 
-defStatement: ('final'|'native'|'override')* 'def'^ ID typeParams? '('! params? ')'! (':'! type)? throwsClause? block?;
+defStatement:
+	('final'|'native'|'override')* 'def'^
+	ID typeParams? '('! params? ')'! (':'! type)? throwsClause? block?;
 
 eoi: (','|EOL) EOL* ->;
 
@@ -113,7 +120,13 @@ pair	:	ID ':' EOL* expression -> ^(PAIR ID expression); // ID or String (or Inte
 
 params	:	EOL* varDef (eoi varDef)* eoi? -> ^(PARAMS ^(PARAM varDef)+);
 
-statement: classStatement | controlStatement | defStatement | expressionOrAssignment | varStatement;
+statement:
+	controlStatement | expressionOrAssignment |
+	annotations (
+		classStatement -> ^(DECLARATION annotations classStatement) |
+		defStatement -> ^(DECLARATION annotations defStatement) |
+		varStatement -> ^(DECLARATION annotations varStatement)
+	);
 
 supers: 'is'^ type ('&'! type)*;
 

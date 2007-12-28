@@ -15,11 +15,11 @@ options {
 
 script: ^(SCRIPT importStatement* mainClass);
 
-annotation: ^('@' type (map | args)?) {
+annotation: ^('@' type constructorArgs?) {
 	System.out.println("Annotation " + $type.start);
 };
 
-annotations: annotation+;
+annotations: annotation*;
 
 args: ^(ARGS expression*);
 
@@ -40,9 +40,11 @@ callPart: ^(CALL_PART ID args? blockExpression?);
 
 classContent: ^(BLOCK (statement|visibility)+);
 
-classStatement: ^(TYPE_DEF typeKind ID annotations? typeParams? supers? classContent?);
+classStatement: ^(TYPE_DEF typeKind ID typeParams? supers? classContent?);
 
 collection:	^(LIST expression*) | map;
+
+constructorArgs: ^(ARGS expression* pair*);
 
 content: ^(BLOCK statement+);
 
@@ -88,7 +90,10 @@ param: ^(PARAM varDef);
 
 params: ^(PARAMS param+);
 
-statement: assignment | classStatement | controlStatement | defStatement | expression | varStatement;
+statement:
+	assignment | controlStatement | expression |
+	^(DECLARATION annotations (classStatement | defStatement | varStatement))
+;
 
 string:
 	LINE_STRING {$string.start.addEntity($LINE_STRING.text);} |
