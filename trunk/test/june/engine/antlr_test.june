@@ -23,8 +23,12 @@ a() - a.b?.c(1, 2) + b.glub[duper, 5][glum].brr[a + b] - c
 class Name<What>
 
 @Whatever @bob.bill.More(1)
-@Source[author: 'Tom', date: 'then']
+@Source(author: 'Tom', date: 'then')
 role Fish {
+	@More(
+		year: '1999'
+		comment: 'yep'
+	)
 	def happy() throws Fish | Bear {
 		out.println(this)
 		if(true) {throw apples}
@@ -34,6 +38,7 @@ role Fish {
 
 private:
 
+@Whatever
 val a = [
 	a:
 		[1, c],
