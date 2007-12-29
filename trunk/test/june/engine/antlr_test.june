@@ -3,7 +3,7 @@ import another.Something
 
 class<T is Comparable<T>> is Map<String, T> & Happy:
 
-(a + b) * 4
+(a + b) * 4 + new Something<N>()
 
 numbers.where def(it) {0 <= it && it < 1}.select do(hmm) {hmm * 2}
 
@@ -32,7 +32,12 @@ role Fish {
 	def happy() throws Fish | Bear {
 		out.println(this)
 		if(true) {throw apples}
-		return bob
+		return new(1, name: fig.grow()) {
+			private:
+			def blah() {
+				blue.&yellow
+			}
+		}
 	}
 }
 
@@ -71,8 +76,8 @@ override def hi<Bloo>(
 		String
 		String?
 	>>?
-	val d = a(4, [1, c]);
-	var c = ['a' 'gain', 'b', d]
+	val d = a(4, [1, c.d.&fine(Grapes<Wrath?>).name]);
+	var c = ['a' 'gain' "embedded {expressions} here", 'b', d]
 	var e = [`Yes with `any' character.
 	]
 	b[1] = 'c'
