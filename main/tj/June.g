@@ -15,6 +15,7 @@ tokens {
 	GET_AT;
 	LIST;
 	MAP;
+	MEMBER_REF;
 	PAIR;
 	PARAM;
 	PARAMS;
@@ -57,6 +58,8 @@ booleanExpression: compareExpression (('&&'^|'||'^) compareExpression)*;
 
 call: ID args? blockExpression? callPart* -> ^(CALL ID args? blockExpression? callPart*);
 
+callNew: 'new'^ type? constructorArgs ('{'! classContent? '}'!)?;
+
 callPart: ID args? blockExpression? -> ^(CALL_PART ID args? blockExpression?);
 
 // TODO Should the visibility be grouping the statements?
@@ -75,7 +78,7 @@ compareExpression
 	:	addExpression (('=='^|'!='^|'<'^|'<='^|'>'^|'>='^) addExpression)?;
 
 constructorArgs:
-	'(' EOL* (expression (eoi expression)* (eoi pair)* eoi? | pair (eoi pair)* eoi?) ')'
+	'(' EOL* (expression (eoi expression)* (eoi pair)* eoi? | pair (eoi pair)* eoi?)? ')'
 	-> ^(ARGS expression* pair*);
 
 content: EOL* statement (eol statement)* eol? -> ^(BLOCK statement+);
@@ -105,14 +108,16 @@ importStatement
 	:	'import'^ ('advice'?) ID ('.'! ID)* eol;
 
 introExpression
-	:	blockExpression | call | collection | ('('! expression ')'!) | NUMBER | strings;
+	:	blockExpression | call | callNew | collection | ('('! expression ')'!) | NUMBER | strings;
 
 items: EOL* (expression (eoi expression)* eoi?)? -> expression*;
 
 mainClass
 	:	(typeKind typeParams? supers? ':')? EOL* classContent? -> ^(TYPE_DEF typeKind? typeParams? supers? classContent?);
 
-memberExpression: introExpression ((('.'^|'?.'^) call) | ('['^ items ']'!))*;
+memberExpression: introExpression ((('.'^|'?.'^) call) | ('['^ items ']'!) | ('.&'^ memberRef))*;
+
+memberRef: ID ('(' typeArgs? ')')? -> ^(MEMBER_REF ID typeArgs?);
 
 multiplyExpression: memberExpression (('*'^|'/'^) memberExpression)*;
 

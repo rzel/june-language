@@ -27,7 +27,7 @@ assignment: ^('=' target=expression expression) {
 	System.out.println("Assignment on " + $target.start);
 };
 
-block: content?;
+block: ^(BLOCK statement+);
 
 blockExpression: ^(('do'|DEF_EXPR) params? block);
 
@@ -35,6 +35,8 @@ call[JuneTree target]: ^(CALL ID args? expression? callPart*) {
 	// TODO Include argument types and so on.
 	engine.findEntities(target, $call.start, $ID.text);
 };
+
+callNew: ^('new' type? constructorArgs classContent?);
 
 callPart: ^(CALL_PART ID args? blockExpression?);
 
@@ -45,8 +47,6 @@ classStatement: ^(TYPE_DEF typeKind ID typeParams? supers? classContent?);
 collection:	^(LIST expression*) | map;
 
 constructorArgs: ^(ARGS expression* pair*);
-
-content: ^(BLOCK statement+);
 
 controlStatement:
 	^('return' expression) |
@@ -71,9 +71,11 @@ expression:
 	^('*' expression expression) |
 	^('/' expression expression) |
 	^(('.'|'?.') target=expression call[$target.start]) |
+	^('.&' expression memberRef) |
 	^('[' expression expression*) |
 	blockExpression |
 	call[null] |
+	callNew |
 	collection |
 	strings |
 	NUMBER;
@@ -83,6 +85,8 @@ importStatement: ^('import' ID+);
 mainClass: ^(TYPE_DEF typeKind? typeParams? supers? classContent?);
 
 map: ^(MAP pair*);
+
+memberRef: ^(MEMBER_REF ID typeArgs?);
 
 pair: ^(PAIR ID expression);
 
@@ -107,9 +111,9 @@ supers: ^('is' type+);
 
 throwsClause: ^('throws' type+);
 
-type: ^(TYPE_REF ID+ types? ('?'|'*')?);
+type: ^(TYPE_REF ID+ typeArgs? ('?'|'*')?);
 
-types: ^(TYPE_ARGS type+);
+typeArgs: ^(TYPE_ARGS type+);
 
 typeParam: ^(TYPE_PARAM ID supers?);
 
