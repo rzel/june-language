@@ -13,6 +13,7 @@ tokens {
 	DECLARATION;
 	DEF_EXPR;
 	GET_AT;
+	LABEL;
 	LIST;
 	MAP;
 	MEMBER_REF;
@@ -115,7 +116,7 @@ items: EOL* (expression (eoi expression)* eoi?)? -> expression*;
 mainClass
 	:	(typeKind typeParams? supers? ':')? EOL* classContent? -> ^(TYPE_DEF typeKind? typeParams? supers? classContent?);
 
-memberExpression: introExpression ((('.'^|'?.'^) call) | ('['^ items ']'!) | ('.&'^ memberRef))*;
+memberExpression: staticExpression ((('.'^|'?.'^) call) | ('['^ items ']'!) | ('.&'^ memberRef))*;
 
 memberRef: ID ('(' typeArgs? ')')? -> ^(MEMBER_REF ID typeArgs?);
 
@@ -127,6 +128,10 @@ params	:	EOL* varDef (eoi varDef)* eoi? -> ^(PARAMS ^(PARAM varDef)+);
 
 statement:
 	controlStatement | expressionOrAssignment |
+	ID ':' (
+		controlStatement -> ^(LABEL ID controlStatement) |
+		expressionOrAssignment -> ^(LABEL ID expressionOrAssignment)
+	) |
 	annotations (
 		classStatement -> ^(DECLARATION annotations classStatement) |
 		defStatement -> ^(DECLARATION annotations defStatement) |
@@ -134,6 +139,8 @@ statement:
 	);
 
 supers: 'is'^ type ('&'! type)*;
+
+staticExpression: 'static'^ introExpression | introExpression;
 
 string: LINE_STRING | POWER_STRING | RAW_STRING;
 
@@ -147,7 +154,7 @@ type	:	ID ('.' ID)* ('<' typeArgs '>')? (c='?'|c='*')? -> ^(TYPE_REF ID+ typeArg
 
 typeArgs: EOL* type (eoi type)* eoi? -> ^(TYPE_ARGS type+);
 
-typeKind: 'annotation'|'aspect'|'class'|'interface'|'role';
+typeKind: 'annotation' | 'class' | 'interface' | 'role';
 
 typeParam: ID supers? -> ^(TYPE_PARAM ID supers?);
 
