@@ -38,7 +38,7 @@ call[JuneTree target]: ^(CALL ID args? expression? callPart*) {
 
 callNew: ^('new' type? constructorArgs classContent?);
 
-callPart: ^(CALL_PART ID args? blockExpression?);
+callPart: ^(CALL_PART ID args? expression?);
 
 classContent: ^(BLOCK (statement|visibility)+);
 
@@ -81,11 +81,13 @@ expression:
 	strings |
 	NUMBER;
 
-importStatement: ^('import' ID+);
+expressionPair: ^(PAIR expression expression);
+
+importStatement: ^('import' 'advice'? ID+);
 
 mainClass: ^(TYPE_DEF typeKind? typeParams? supers? classContent?);
 
-map: ^(MAP pair*);
+map: ^(MAP (pair+ | expressionPair*));
 
 memberRef: ^(MEMBER_REF ID typeArgs?);
 

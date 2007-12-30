@@ -57,11 +57,12 @@ blockExpression:
 
 booleanExpression: compareExpression (('&&'^|'||'^) compareExpression)*;
 
-call: ID args? blockExpression? callPart* -> ^(CALL ID args? blockExpression? callPart*);
+call: ID args? (blockExpression|map)? callPart* ->
+	^(CALL ID args? blockExpression? map? callPart*);
 
 callNew: 'new'^ type? constructorArgs ('{'! classContent? '}'!)?;
 
-callPart: ID args? blockExpression? -> ^(CALL_PART ID args? blockExpression?);
+callPart: ID args? (blockExpression|map)? -> ^(CALL_PART ID args? blockExpression? map?);
 
 // TODO Should the visibility be grouping the statements?
 classContent: EOL* (s+=statement|s+=visibility) (eol (s+=statement|s+=visibility))* eol? -> ^(BLOCK $s+);
@@ -70,10 +71,7 @@ classStatement:
 	typeKind ID typeParams? supers? ('{' classContent? '}')? ->
 	^(TYPE_DEF typeKind ID typeParams? supers? classContent?);
 
-collection
-	:	'[' items ']' -> ^(LIST items)
-	|	stringMapNotEmpty
-	|	'[' EOL* ':' EOL* ']' -> ^(MAP);
+collection: '[' items ']' -> ^(LIST items) | map;
 
 compareExpression
 	:	addExpression (('=='^|'!='^|'<'^|'<='^|'>'^|'>='^) addExpression)?;
@@ -99,11 +97,13 @@ eoi: (','|EOL) EOL* ->;
 
 eol: (';'|EOL) EOL* ->;
 
+expression
+	:	booleanExpression;
+
 // TODO How to guarantee a good left side? Fancy grammar or a check in the Analyzer?
 expressionOrAssignment: expression ('='^ expression)?;
 
-expression
-	:	booleanExpression;
+expressionPair: expression ':' EOL* expression -> ^(PAIR expression+);
 
 importStatement
 	:	'import'^ ('advice'?) ID ('.'! ID)* eol;
@@ -116,13 +116,16 @@ items: EOL* (expression (eoi expression)* eoi?)? -> expression*;
 mainClass
 	:	(typeKind typeParams? supers? ':')? EOL* classContent? -> ^(TYPE_DEF typeKind? typeParams? supers? classContent?);
 
+map: stringMapNotEmpty |
+	'[' EOL* ':' EOL* (expressionPair (eoi expressionPair)* eoi?)? ']' -> ^(MAP expressionPair*);
+
 memberExpression: staticExpression ((('.'^|'?.'^) call) | ('['^ items ']'!) | ('.&'^ memberRef))*;
 
 memberRef: ID ('(' typeArgs? ')')? -> ^(MEMBER_REF ID typeArgs?);
 
 multiplyExpression: memberExpression (('*'^|'/'^) memberExpression)*;
 
-pair	:	ID ':' EOL* expression -> ^(PAIR ID expression); // ID or String (or Integer?)!
+pair: ID ':' EOL* expression -> ^(PAIR ID expression); // ID or String (or Integer?)!
 
 params	:	EOL* varDef (eoi varDef)* eoi? -> ^(PARAMS ^(PARAM varDef)+);
 
