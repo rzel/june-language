@@ -7,7 +7,7 @@ class<T is Comparable<T>> is Map<String, T> & Happy:
 
 numbers.where def(it) {0 <= it && it < 1}.select do(hmm) {hmm * 2}
 
-if(a == b) {
+MORE: if(a == b) {
 	doSomething.a
 	c.d() != e
 	break: true
@@ -76,7 +76,7 @@ override def hi<Bloo>(
 		String
 		String?
 	>>?
-	val d = a(4, [1, c.d.&fine(Grapes<Wrath?>).name]);
+	val d = static a(4, [1, c.d.&fine(Grapes<Wrath?>).name]);
 	var c = ['a' 'gain' "embedded {expressions} here", 'b', d]
 	var e = [`Yes with `any' character.
 	]

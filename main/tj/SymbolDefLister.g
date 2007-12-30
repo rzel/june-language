@@ -101,9 +101,13 @@ defStatement
 	}
 ;
 
+label: ^(LABEL ID fluff*) {
+	addSymbol($ID.text, $label.start);
+};
+
 fluff:
-	^(~(BLOCK|'do'|DEF_EXPR|'def'|PARAM|TYPE_DEF|TYPE_PARAM|'var') fluff*) |
-	block | blockExpression | classDef | defStatement | param | typeParam | varStatement
+	^(~(BLOCK|'do'|DEF_EXPR|'def'|LABEL|PARAM|TYPE_DEF|TYPE_PARAM|'var') fluff*) |
+	block | blockExpression | classDef | defStatement | label | param | typeParam | varStatement
 ;
 
 param: ^(PARAM ID .*) {

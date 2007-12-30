@@ -73,6 +73,7 @@ expression:
 	^(('.'|'?.') target=expression call[$target.start]) |
 	^('.&' expression memberRef) |
 	^('[' expression expression*) |
+	^('static' expression) |
 	blockExpression |
 	call[null] |
 	callNew |
@@ -96,6 +97,7 @@ params: ^(PARAMS param+);
 
 statement:
 	assignment | controlStatement | expression |
+	^(LABEL ID (assignment | controlStatement | expression)) |
 	^(DECLARATION annotations (classStatement | defStatement | varStatement))
 ;
 
