@@ -1,5 +1,6 @@
 import something.Other
 import another.Something
+import advice sure.Whatever
 
 class<T is Comparable<T>> is Map<String, T> & Happy:
 
@@ -40,6 +41,11 @@ role Fish {
 		}
 	}
 }
+
+switch(a) [:
+	happy: a
+	so('sad'): b
+]
 
 private:
 
