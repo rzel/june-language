@@ -86,6 +86,8 @@ override def hi<Bloo>(
 	var c = ['a' 'gain' "embedded {expressions} here", 'b', d]
 	var e = [`Yes with `any' character.
 	]
-	b[1] = 'c'
+	b[1] =
+		'any string can be left unterminated
+		'but multiline needs to work here, too
 	b = []
 }

@@ -101,7 +101,7 @@ expression
 	:	booleanExpression;
 
 // TODO How to guarantee a good left side? Fancy grammar or a check in the Analyzer?
-expressionOrAssignment: expression ('='^ expression)?;
+expressionOrAssignment: expression ('='^ EOL!* expression)?;
 
 expressionPair: expression ':' EOL* expression -> ^(PAIR expression+);
 
@@ -149,7 +149,7 @@ string: LINE_STRING | POWER_STRING | RAW_STRING;
 
 stringMapNotEmpty: '[' EOL* (pair (eoi pair)* eoi?)? ']' -> ^(MAP pair*);
 
-strings: string+ -> ^(STRINGS string+);
+strings: string (EOL* string)* -> ^(STRINGS string+);
 
 throwsClause: 'throws'^ type ('|'! type)*;
 
@@ -183,9 +183,9 @@ LINE_STRING: '`' (~('\r'|'\n'))*;
 NUMBER	:	DIGIT+;// ('.' DIGIT+)?;
 
 // TODO So I do just have to parse this afterwards?
-POWER_STRING: '"' (('\\'~('\r'|'\n'))|~('"'|'\r'|'\n'))* ('"'|EOL);
+POWER_STRING: '"' (('\\'~('\r'|'\n'))|~('"'|'\r'|'\n'))* '"'?;
 
-RAW_STRING: '\'' (~('\''|'\r'|'\n'))* ('\''|EOL);
+RAW_STRING: '\'' (~('\''|'\r'|'\n'))* '\''?;
 
 STRETCH	:	'...' EOL* {skip();};
 
