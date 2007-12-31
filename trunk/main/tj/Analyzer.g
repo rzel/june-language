@@ -72,6 +72,9 @@ expression:
 	^('/' expression expression) |
 	^(('.'|'?.') target=expression call[$target.start]) |
 	^('.&' expression memberRef) |
+	// TODO Need a 'this' object for the call arg.
+	^(IMPLIED_THIS '.' call[null]) |
+	^(IMPLIED_THIS '.&' memberRef) |
 	^('[' expression expression*) |
 	^('static' expression) |
 	blockExpression |
@@ -105,7 +108,7 @@ statement:
 
 string:
 	LINE_STRING {$string.start.addEntity($LINE_STRING.text);} |
-	POWER_STRING |
+	POWER_STRING {$string.start.addEntity($POWER_STRING.text);} |
 	RAW_STRING {$string.start.addEntity($RAW_STRING.text);}
 ;
 

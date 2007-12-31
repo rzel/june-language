@@ -13,6 +13,7 @@ tokens {
 	DECLARATION;
 	DEF_EXPR;
 	GET_AT;
+	IMPLIED_THIS;
 	LABEL;
 	LIST;
 	MAP;
@@ -105,6 +106,10 @@ expressionOrAssignment: expression ('='^ EOL!* expression)?;
 
 expressionPair: expression ':' EOL* expression -> ^(PAIR expression+);
 
+impliedThis:
+	(d='.' call) -> ^(IMPLIED_THIS $d call) |
+	(d='.&' memberRef) -> ^(IMPLIED_THIS $d memberRef);
+
 importStatement
 	:	'import'^ ('advice'?) ID ('.'! ID)* eol;
 
@@ -119,7 +124,9 @@ mainClass
 map: stringMapNotEmpty |
 	'[' EOL* ':' EOL* (expressionPair (eoi expressionPair)* eoi?)? ']' -> ^(MAP expressionPair*);
 
-memberExpression: staticExpression ((('.'^|'?.'^) call) | ('['^ items ']'!) | ('.&'^ memberRef))*;
+memberExpression:
+	(staticExpression | impliedThis)
+	((('.'^|'?.'^) call) | ('['^ items ']'!) | ('.&'^ memberRef))*;
 
 memberRef: ID ('(' typeArgs? ')')? -> ^(MEMBER_REF ID typeArgs?);
 
