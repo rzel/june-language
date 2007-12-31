@@ -83,7 +83,7 @@ override def hi<Bloo>(
 		String?
 	>>?
 	val d = static a(4, [1, c.d.&fine(Grapes<Wrath?>).name]);
-	var c = ['a' 'gain' "embedded {expressions} here", 'b', d]
+	var c = ['a' 'gain' "embedded {expressions} here and \" and stuff\\", 'b', d]
 	var e = [`Yes with `any' character.
 	]
 	b[1] =
@@ -91,3 +91,7 @@ override def hi<Bloo>(
 		'but multiline needs to work here, too
 	b = []
 }
+
+.okayIGuess.andStuff()
+.sure = thing
+bindTo(.&height)
