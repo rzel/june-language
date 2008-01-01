@@ -126,7 +126,7 @@ map: stringMapNotEmpty |
 
 memberExpression:
 	(staticExpression | impliedThis)
-	((('.'^|'?.'^) call) | ('['^ items ']'!) | ('.&'^ memberRef))*;
+	(('.'^ call) | ('['^ items ']'!) | ('.&'^ memberRef))*;
 
 memberRef: ID ('(' typeArgs? ')')? -> ^(MEMBER_REF ID typeArgs?);
 

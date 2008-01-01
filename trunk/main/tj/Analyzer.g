@@ -70,7 +70,7 @@ expression:
 	^('-' expression expression) |
 	^('*' expression expression) |
 	^('/' expression expression) |
-	^(('.'|'?.') target=expression call[$target.start]) |
+	^('.' target=expression call[$target.start]) |
 	^('.&' expression memberRef) |
 	// TODO Need a 'this' object for the call arg.
 	^(IMPLIED_THIS '.' call[null]) |

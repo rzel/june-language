@@ -19,7 +19,7 @@ MORE: if(a == b) {
 
 9.toString()
 
-a() - a.b?.c(1, 2) + b.glub[duper, 5][glum].brr[a + b] - c
+a() - a.b.c(1, 2) + b.glub[duper, 5][glum].brr[a + b] - c
 
 class Name<What>
 
