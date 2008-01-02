@@ -118,7 +118,7 @@ supers: ^('is' type+);
 
 throwsClause: ^('throws' type+);
 
-type: ^(TYPE_REF ID+ typeArgs? ('?'|'*')?);
+type: ^(TYPE_REF ID+ typeArgs? ('?'|'*')?) | ^(TYPE_REF ('do'|'def') typeArgs? type?);
 
 typeArgs: ^(TYPE_ARGS type+);
 
