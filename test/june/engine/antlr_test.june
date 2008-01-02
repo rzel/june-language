@@ -30,7 +30,7 @@ role Fish {
 		year: '1999'
 		comment: 'yep'
 	)
-	def happy() throws Fish | Bear {
+	def happy(a: do String) throws Fish | Bear {
 		out.println(this)
 		if(true) {throw apples}
 		return new(1, name: fig.grow()) {
@@ -72,7 +72,7 @@ public:
 final ...
 override def hi<Bloo>(
 		a* # comments count as EOL only
-		b: b.B?) {
+		b: def(b.B?)) {
 	def that<That, There>(): ...
 		That;
 	var b: Double ...

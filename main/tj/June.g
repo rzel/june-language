@@ -43,7 +43,7 @@ script	:	importStatement* mainClass -> ^(SCRIPT importStatement* mainClass);
 addExpression
 	:	multiplyExpression (('+'^|'-'^) multiplyExpression)*;
 
-annotation: '@'^ type constructorArgs? eol*;
+annotation: '@'^ typeNoDo constructorArgs? eol*;
 
 annotations: annotation*;
 
@@ -61,7 +61,7 @@ booleanExpression: compareExpression (('&&'^|'||'^) compareExpression)*;
 call: ID args? (blockExpression|map)? callPart* ->
 	^(CALL ID args? blockExpression? map? callPart*);
 
-callNew: 'new'^ type? constructorArgs ('{'! classContent? '}'!)?;
+callNew: 'new'^ typeNoDo? constructorArgs ('{'! classContent? '}'!)?;
 
 callPart: ID args? (blockExpression|map)? -> ^(CALL_PART ID args? blockExpression? map?);
 
@@ -160,7 +160,9 @@ strings: string (EOL* string)* -> ^(STRINGS string+);
 
 throwsClause: 'throws'^ type ('|'! type)*;
 
-type	:	ID ('.' ID)* ('<' typeArgs '>')? (c='?'|c='*')? -> ^(TYPE_REF ID+ typeArgs? $c?);
+type: typeNoDo | (d='do'|d='def') ('(' typeArgs ')')? type? -> ^(TYPE_REF $d typeArgs? type?);
+
+typeNoDo: ID ('.' ID)* ('<' typeArgs '>')? (c='?'|c='*')? -> ^(TYPE_REF ID+ typeArgs? $c?);
 
 typeArgs: EOL* type (eoi type)* eoi? -> ^(TYPE_ARGS type+);
 
