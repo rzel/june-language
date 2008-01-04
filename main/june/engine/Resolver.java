@@ -26,7 +26,7 @@ public abstract class Resolver {
 
 		/**
 		 * @param imports
-		 *            (or should this be a list?) - can't really accommodate current package, since that has a specific priority. And what about "import bob: java.sql"?
+		 *            can't really accommodate current package, since that has a specific priority. And what about "import bob: java.sql"?
 		 * @param globals
 		 * @param classpath
 		 */
@@ -80,13 +80,13 @@ public abstract class Resolver {
 		}
 
 		@Override
-		protected Entity findCurrentEntity(Usage signature) {
+		protected Entity findCurrentEntity(Usage usage) {
 			Set<Entity> matches = new HashSet<Entity>();
 			// First, make sure to check the root.
-			addMatches(matches, "", signature);
+			addMatches(matches, "", usage);
 			// Now, check the each of the imports.
 			for (String $import: imports) {
-				addMatches(matches, $import, signature);
+				addMatches(matches, $import, usage);
 			}
 			if (matches.isEmpty()) {
 				return null;
@@ -94,7 +94,7 @@ public abstract class Resolver {
 				// TODO Find if there is a "best" match.
 				// TODO Custom exception type so a correct error message can be given.
 				throw new RuntimeException(matches.size() + " matches for "
-						+ signature + " in " + imports);
+						+ usage + " in " + imports);
 			}
 			return matches.iterator().next();
 		}
@@ -107,7 +107,7 @@ public abstract class Resolver {
 	public static class MemberResolver extends Resolver {
 
 		@Override
-		protected Entity findCurrentEntity(Usage signature) {
+		protected Entity findCurrentEntity(Usage usage) {
 			// TODO Auto-generated method stub
 			return null;
 		}
@@ -184,16 +184,16 @@ public abstract class Resolver {
 	// TODO How do we represent a signified entity (method, field, property, class, package)? Just saying "Object" for now.
 
 	/**
-	 * TODO So far I'm not using the cool hiearchy concept. Maybe get rid of it?
+	 * TODO So far I'm not using the cool hierarchy concept. Maybe get rid of it?
 	 */
 	public Resolver parent;
 
-	protected abstract Entity findCurrentEntity(Usage signature);
+	protected abstract Entity findCurrentEntity(Usage usage);
 
-	public Entity findEntity(Usage signature) {
-		Entity entity = findCurrentEntity(signature);
+	public Entity findEntity(Usage usage) {
+		Entity entity = findCurrentEntity(usage);
 		if (entity == null && parent != null) {
-			entity = parent.findEntity(signature);
+			entity = parent.findEntity(usage);
 		}
 		return entity;
 	}

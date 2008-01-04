@@ -49,8 +49,10 @@ public class JuneEngine {
 		}
 	}
 
-	void findEntities(JuneTree target, JuneTree node, String id) {
-		System.out.println("findEntities for " + id + " on " + target);
+	void findEntities(JuneTree target, JuneTree node, String name) {
+		System.out.println("findEntities for " + name + " on " + target);
+		Set<JuneTree> treeNodes = null;
+		Set<Entity> entities = new HashSet<Entity>();
 		if (target == null) {
 			// Search the scope.
 			JuneTree block = node.isBlock() ? node : node.block;
@@ -59,20 +61,32 @@ public class JuneEngine {
 				if (block.getType() == JuneParser.SCRIPT) {
 					script = block;
 				}
-				Set<JuneTree> entities = block.symbols.get(id);
-				if (entities != null) {
-					System.out.println(entities);
+				treeNodes = block.symbols.get(name);
+				if (treeNodes != null) {
+					//System.out.println(treeNodes);
 				}
 				block = block.block;
 			}
 			if (script != null) {
 				// Need types for Usage.
-				new Resolver.ImportResolver(script.imports, globals, null);
+				Resolver.ImportResolver importResolver =
+						new Resolver.ImportResolver(
+								script.imports,
+								globals,
+								null);
+				Usage usage = new Usage();
+				usage.name = name;
+				Entity entity = importResolver.findEntity(usage);
+				if (entity != null) {
+					entities.add(entity);
+				}
 			}
 			// TODO If no good matches still, then check imports, classes in this packages, and top level package names.
 		} else {
 			// Search the target.
 		}
+		System.out.println(treeNodes);
+		System.out.println(entities);
 	}
 
 }
