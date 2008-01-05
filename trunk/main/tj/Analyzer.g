@@ -57,7 +57,9 @@ controlStatement:
 
 defStatement: ^('def' ('final'|'native'|'override')* ID typeParams? params? type? throwsClause? block?);
 
-enumContent: ^(LIST ID*);
+enumContent: ^(LIST enumItem*);
+
+enumItem: ^(DECLARATION annotations ID);
 
 enumStatement: ^('enum' ID enumContent);
 

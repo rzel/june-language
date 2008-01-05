@@ -113,7 +113,7 @@ enumContent
 	^(LIST enumItem*)
 ;
 
-enumItem: ID {
+enumItem: ^(DECLARATION fluff* ID) {
 	addSymbol($ID.text, $enumItem.start);
 };
 

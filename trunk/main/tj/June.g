@@ -94,7 +94,9 @@ defStatement:
 	('final'|'native'|'override')* 'def'^
 	ID typeParams? '('! params? ')'! (':'! type)? throwsClause? block?;
 
-enumContent: EOL* (ID (eoi ID)* eoi?)? -> ^(LIST ID*);
+enumContent: EOL* (enumItem (eoi enumItem)* eoi?)? -> ^(LIST enumItem*);
+
+enumItem: annotations ID -> ^(DECLARATION annotations ID);
 
 enumStatement: 'enum' ID '[' enumContent ']' -> ^('enum' ID enumContent);
 
