@@ -1,5 +1,0 @@
-import java.lang.System
-
-def yodle {
-	out.println('yodle')
-}
