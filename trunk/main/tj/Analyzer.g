@@ -55,7 +55,9 @@ controlStatement:
 	^('continue' ID? expression?) |
 	^('redo' ID?);
 
-defStatement: ^('def' ('final'|'native'|'override')* ID typeParams? params? type? throwsClause? block?);
+defPart: ID typeParams? ('?'|'*')? params?;
+
+defStatement: ^('def' ('final'|'native'|'override')* ID typeParams? params? defPart* type? throwsClause? block?);
 
 enumContent: ^(LIST enumItem*);
 
@@ -138,4 +140,4 @@ varDef:	ID ('?'|'*'|type)?;
 
 varStatement: ^(('val'|'var') varDef expression?);
 
-visibility: 'internal'|'protected'|'private'|'public';
+visibility: 'internal'|'protected'|'private'|'public' 'static'?;

@@ -28,6 +28,11 @@ public class JuneTree extends CommonTree {
 	public Map<String, Set<JuneTree>> symbols;
 
 	/**
+	 * TODO Use this instead of 'symbols'.
+	 */
+	public JuneClass blockClass;
+
+	/**
 	 * TODO Need expected types and given types as separate lists (and dependent
 	 * types for overloaded potential method matches?).
 	 */

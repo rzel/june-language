@@ -6,13 +6,13 @@ import org.testng.annotations.*;
 
 import tj.*;
 
-public class AntlrTest {
+public class JuneTest {
 
 	@Test
 	public void parse() {
 		try {
 			// TODO How to fail on errors?
-			InputStream stream = getClass().getResourceAsStream("hello.june");
+			InputStream stream = getClass().getClassLoader().getResourceAsStream("june/Core.june");
 			try {
 				new JuneEngine().compile(new InputStreamReader(stream));
 			} finally {

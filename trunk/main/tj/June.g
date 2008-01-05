@@ -90,9 +90,11 @@ controlStatement:
 	'continue'^ ID? (':'! expression)? |
 	'redo'^ ID?;
 
+defPart: ID typeParams? ('?'|'*')? '('! params? ')'!;
+
 defStatement:
 	('final'|'native'|'override')* 'def'^
-	ID typeParams? '('! params? ')'! (':'! type)? throwsClause? block?;
+	ID typeParams? '('! params? ')'! defPart* (':'! type)? throwsClause? block?;
 
 enumContent: EOL* (enumItem (eoi enumItem)* eoi?)? -> ^(LIST enumItem*);
 
