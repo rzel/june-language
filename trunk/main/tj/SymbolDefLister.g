@@ -84,6 +84,9 @@ classDef
 :
 	^(TYPE_DEF typeKind? ID? fluff*) {
 		putOuterSymbol($ID == null ? null : $ID.text, $classDef.start);
+	} |
+	^('enum' ID enumContent) {
+		putOuterSymbol($ID.text, $classDef.start);
 	}
 ;
 
@@ -101,12 +104,25 @@ defStatement
 	}
 ;
 
+enumContent
+	scope Scope;
+	@init {
+		startBlock($enumContent.start);
+	}
+:
+	^(LIST enumItem*)
+;
+
+enumItem: ID {
+	addSymbol($ID.text, $enumItem.start);
+};
+
 label: ^(LABEL ID fluff*) {
 	addSymbol($ID.text, $label.start);
 };
 
 fluff:
-	^(~(BLOCK|'do'|DEF_EXPR|'def'|LABEL|PARAM|TYPE_DEF|TYPE_PARAM|'var') fluff*) |
+	^(~(BLOCK|'do'|DEF_EXPR|'def'|'enum'|LABEL|PARAM|TYPE_DEF|TYPE_PARAM|'var') fluff*) |
 	block | blockExpression | classDef | defStatement | label | param | typeParam | varStatement
 ;
 

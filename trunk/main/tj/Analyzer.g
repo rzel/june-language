@@ -57,6 +57,10 @@ controlStatement:
 
 defStatement: ^('def' ('final'|'native'|'override')* ID typeParams? params? type? throwsClause? block?);
 
+enumContent: ^(LIST ID*);
+
+enumStatement: ^('enum' ID enumContent);
+
 expression:
 	^('&&' expression expression) |
 	^('||' expression expression) |
@@ -103,7 +107,7 @@ params: ^(PARAMS param+);
 statement:
 	assignment | controlStatement | expression |
 	^(LABEL ID (assignment | controlStatement | expression)) |
-	^(DECLARATION annotations (classStatement | defStatement | varStatement))
+	^(DECLARATION annotations (classStatement | defStatement | enumStatement | varStatement))
 ;
 
 string:
