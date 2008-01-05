@@ -49,6 +49,10 @@ role Fish {
 	}
 }
 
+# Next empty on purpose
+def more() {
+}
+
 switch(a) [:
 	happy: a
 	so('sad'): b

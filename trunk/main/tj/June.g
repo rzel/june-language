@@ -49,7 +49,7 @@ annotations: annotation*;
 
 args: '(' items ')' -> ^(ARGS items);
 
-block	:	'{'! content? '}'!;
+block: '{'! EOL!* content? '}'!;
 
 blockExpression:
 	block -> ^('do' block) |
@@ -81,7 +81,7 @@ constructorArgs:
 	'(' EOL* (expression (eoi expression)* (eoi pair)* eoi? | pair (eoi pair)* eoi?)? ')'
 	-> ^(ARGS expression* pair*);
 
-content: EOL* statement (eol statement)* eol? -> ^(BLOCK statement+);
+content: statement (eol statement)* eol? -> ^(BLOCK statement+);
 
 controlStatement:
 	'return'^ expression |
