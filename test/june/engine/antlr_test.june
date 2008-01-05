@@ -6,6 +6,7 @@ class<T is Comparable<T>> is Map<String, T> & Happy:
 
 enum Alignment [
 	CENTER
+	@Synonym(term: 'left', context: 'LTR languages')
 	LEADING
 	TRAILING
 ]
