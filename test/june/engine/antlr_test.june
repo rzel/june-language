@@ -4,6 +4,12 @@ import advice sure.Whatever
 
 class<T is Comparable<T>> is Map<String, T> & Happy:
 
+enum Alignment [
+	CENTER
+	LEADING
+	TRAILING
+]
+
 (a + b) * 4 + new Something<N>()
 
 numbers.where def(it) {0 <= it && it < 1}.select do(hmm) {hmm * 2}

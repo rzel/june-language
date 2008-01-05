@@ -94,6 +94,10 @@ defStatement:
 	('final'|'native'|'override')* 'def'^
 	ID typeParams? '('! params? ')'! (':'! type)? throwsClause? block?;
 
+enumContent: EOL* (ID (eoi ID)* eoi?)? -> ^(LIST ID*);
+
+enumStatement: 'enum' ID '[' enumContent ']' -> ^('enum' ID enumContent);
+
 eoi: (','|EOL) EOL* ->;
 
 eol: (';'|EOL) EOL* ->;
@@ -145,6 +149,7 @@ statement:
 	annotations (
 		classStatement -> ^(DECLARATION annotations classStatement) |
 		defStatement -> ^(DECLARATION annotations defStatement) |
+		enumStatement -> ^(DECLARATION annotations enumStatement) |
 		varStatement -> ^(DECLARATION annotations varStatement)
 	);
 
@@ -166,7 +171,7 @@ typeNoDo: ID ('.' ID)* ('<' typeArgs '>')? (c='?'|c='*')? -> ^(TYPE_REF ID+ type
 
 typeArgs: EOL* type (eoi type)* eoi? -> ^(TYPE_ARGS type+);
 
-typeKind: 'annotation' | 'class' | 'interface' | 'role';
+typeKind: 'annotation' | 'class' | 'enum' | 'interface' | 'role';
 
 typeParam: ID supers? -> ^(TYPE_PARAM ID supers?);
 
