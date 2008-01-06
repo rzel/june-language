@@ -110,7 +110,10 @@ expression
 	:	booleanExpression;
 
 // TODO How to guarantee a good left side? Fancy grammar or a check in the Analyzer?
-expressionOrAssignment: expression ('='^ EOL!* expression)?;
+expressionOrAssignment: expression (
+	('='^|'+='^|'-='^|'*='^|'/='^) EOL!* expression |
+	('++'^|'--'^)
+)?;
 
 expressionPair: expression ':' EOL* expression -> ^(PAIR expression+);
 

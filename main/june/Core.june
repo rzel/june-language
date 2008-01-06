@@ -3,28 +3,25 @@ public static:
 native def ...
 	if<Result>(test: Boolean, action: do Result) ...
 	elseif*(test: do Boolean, action: do Result) ...
-	else?(action: do Result): ...
-	Result?
+	else(action: do Result): ...
+	Result
 
-def for<Result>(resource: Closeable, action: do(Object) Result): Result {
-	try {
-		action(resource)
-	} finally {
-		resource.close()
-	}
-}
+native def ...
+	if<Result>(test: Boolean, action: do Result) ...
+	elseif*(test: do Boolean, action: do Result): ...
+	Result?
 
 def for<Item, Result>(items: Array<Item>, action: do(Item, Integer) Result): Result {
 	var i = 0
 	while(i < items.length) {
 		val result = action(items[i], i)
-		i = i + 1
+		i++
 		result
 	}
 }
 
 def for<Item, Result>(items: Iterable<Item>, action: do(Item, Iterator<Item>) Result): Result {
-	var iterator = items.iterator()
+	val iterator = items.iterator()
 	while(iterator.hasNext()) {
 		action(iterator.next(), iterator)
 	}
@@ -34,10 +31,18 @@ native def synchronized<Result>(action: do Result): Result
 
 native def ...
 	try<Result>(action: do Result) ...
-	catch<Type is Throwable>*($class: Class<Type>, action: do(Type)) ...
+	catch<Type is Throwable>*($class: Class<Type>, action: do(Type) Result) ...
 	finally?(action: do): ...
 	Result
 
 native def switch<Item, Result>(item: Item, handlers: Map<Item, do Result>): Result
 
 native def while<Result>(test: do Boolean, action: do Result): Result
+
+def using<Resource is Closeable, Result>(resource: Resource, action: do(Resource) Result): Result {
+	try {
+		action(resource)
+	} finally {
+		resource.close()
+	}
+}
