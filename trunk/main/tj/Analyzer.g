@@ -23,9 +23,12 @@ annotations: annotation*;
 
 args: ^(ARGS expression*);
 
-assignment: ^('=' target=expression expression) {
-	System.out.println("Assignment on " + $target.start);
-};
+assignment:
+	^(('='|'+='|'-='|'*='|'/=') target=expression expression) {
+		System.out.println("Assignment on " + $target.start);
+	} |
+	^(('++'|'--') expression)
+;
 
 block: ^(BLOCK statement+);
 
