@@ -141,7 +141,9 @@ memberExpression:
 
 memberRef: ID ('(' typeArgs? ')')? -> ^(MEMBER_REF ID typeArgs?);
 
-multiplyExpression: memberExpression (('*'^|'/'^) memberExpression)*;
+multiplyExpression: notExpression (('*'^|'/'^) notExpression)*;
+
+notExpression: '!'^? memberExpression;
 
 pair: ID ':' EOL* expression -> ^(PAIR ID expression); // ID or String (or Integer?)!
 

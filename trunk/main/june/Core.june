@@ -1,15 +1,25 @@
 public static:
 
-native def ...
-	if<Result>(test: Boolean, action: do Result) ...
+def if<Result>(test: Boolean, action: do Result) ...
 	elseif*(test: do Boolean, action: do Result) ...
 	else(action: do Result): ...
-	Result
+		Result {
+	rawIf(test) {
+		return action()
+	}
+	for(elseif) do(ei) {
+		rawIf(ei.test()) {
+			return ei.action()
+		}
+	}
+	else.action()
+}
 
-native def ...
-	if<Result>(test: Boolean, action: do Result) ...
+def if<Result>(test: Boolean, action: do Result) ...
 	elseif*(test: do Boolean, action: do Result): ...
-	Result?
+		Result? {
+	if(test, action) elseif(elseif) else {null}
+}
 
 def for<Item, Result>(items: Array<Item>, action: do(Item, Integer) Result): Result {
 	var i = 0
@@ -27,6 +37,10 @@ def for<Item, Result>(items: Iterable<Item>, action: do(Item, Iterator<Item>) Re
 	}
 }
 
+native def same(a: Object, b: Object): Boolean
+
+native def shiftRight(integer: Integer): Integer
+
 native def synchronized<Result>(action: do Result): Result
 
 native def ...
@@ -35,9 +49,27 @@ native def ...
 	finally?(action: do): ...
 	Result
 
-native def switch<Item, Result>(item: Item, handlers: Map<Item, do Result>): Result
+def switch<Item, Result>(item: Item, handlers: Map<Item, do Result>): ...
+		Result? {
+	switch(item, handlers) else {null}
+}
 
-native def while<Result>(test: do Boolean, action: do Result): Result
+def switch<Item, Result>(item: Item, handlers: Map<Item, do Result>) ...
+	else(action: do Result): ...
+		Result {
+	(handlers[item] || else).invoke()
+}
+
+def while<Result>(test: do Boolean, action: do Result): Result? {
+	var lastResult: Result?
+	LOOP: try {
+		rawIf(!test()) {
+			break LOOP: lastResult
+		}
+		lastResult = action()
+		redo LOOP
+	}
+}
 
 def using<Resource is Closeable, Result>(resource: Resource, action: do(Resource) Result): Result {
 	try {
@@ -46,3 +78,11 @@ def using<Resource is Closeable, Result>(resource: Resource, action: do(Resource
 		resource.close()
 	}
 }
+
+def with<Item, Result>(item: Item, action: do(Item) Result): Result {
+	action(item)
+}
+
+private static:
+
+native def rawIf<Result>(test: Boolean, action: do Result): Result?

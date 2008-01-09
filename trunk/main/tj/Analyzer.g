@@ -69,6 +69,7 @@ enumItem: ^(DECLARATION annotations ID);
 enumStatement: ^('enum' ID enumContent);
 
 expression:
+	^('!' expression) |
 	^('&&' expression expression) |
 	^('||' expression expression) |
 	^('==' expression expression) |
@@ -143,4 +144,4 @@ varDef:	ID ('?'|'*'|type)?;
 
 varStatement: ^(('val'|'var') varDef expression?);
 
-visibility: 'internal'|'protected'|'private'|'public' 'static'?;
+visibility: ('internal'|'protected'|'private'|'public') 'static'?;
