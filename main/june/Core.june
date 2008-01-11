@@ -2,21 +2,21 @@ public static:
 
 def if<Result>(test: Boolean, action: do Result) ...
 	elseif*(test: do Boolean, action: do Result) ...
-	else(action: do Result): ...
+	else(action: do Result):
 		Result {
 	rawIf(test) {
 		return action.invoke()
 	}
-	for(elseif) do(ei) {
-		rawIf(ei.test()) {
-			return ei.action.invoke()
+	for(elseif) {^
+		rawIf(.test()) {
+			return .action.invoke()
 		}
 	}
 	else.action()
 }
 
 def if<Result>(test: Boolean, action: do Result) ...
-	elseif*(test: do Boolean, action: do Result): ...
+	elseif*(test: do Boolean, action: do Result):
 		Result? {
 	if(test, action) elseif(elseif) else {null}
 }
@@ -46,16 +46,16 @@ native def synchronized<Result>(action: do Result): Result
 native def ...
 	try<Result>(action: do Result) ...
 	catch<Type is Throwable>*($class: Class<Type>, action: do(Type) Result) ...
-	finally?(action: do): ...
-	Result
+	finally?(action: do):
+		Result
 
-def switch<Item, Result>(item: Item, handlers: Map<Item, do Result>): ...
+def switch<Item, Result>(item: Item, handlers: Map<Item, do Result>):
 		Result? {
 	switch(item, handlers) else {null}
 }
 
 def switch<Item, Result>(item: Item, handlers: Map<Item, do Result>) ...
-	else(action: do Result): ...
+	else(action: do Result):
 		Result {
 	(handlers[item] || else).invoke()
 }
