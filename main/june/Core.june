@@ -5,11 +5,11 @@ def if<Result>(test: Boolean, action: do Result) ...
 	else(action: do Result): ...
 		Result {
 	rawIf(test) {
-		return action()
+		return action.invoke()
 	}
 	for(elseif) do(ei) {
 		rawIf(ei.test()) {
-			return ei.action()
+			return ei.action.invoke()
 		}
 	}
 	else.action()
@@ -24,7 +24,7 @@ def if<Result>(test: Boolean, action: do Result) ...
 def for<Item, Result>(items: Array<Item>, action: do(Item, Integer) Result): Result {
 	var i = 0
 	while(i < items.length) {
-		val result = action(items[i], i)
+		val result = action.invoke(items[i], i)
 		i++
 		result
 	}
@@ -66,21 +66,21 @@ def while<Result>(test: do Boolean, action: do Result): Result? {
 		rawIf(!test()) {
 			break LOOP: lastResult
 		}
-		lastResult = action()
+		lastResult = action.invoke()
 		redo LOOP
 	}
 }
 
 def using<Resource is Closeable, Result>(resource: Resource, action: do(Resource) Result): Result {
 	try {
-		action(resource)
+		action.invoke(resource)
 	} finally {
 		resource.close()
 	}
 }
 
 def with<Item, Result>(item: Item, action: do(Item) Result): Result {
-	action(item)
+	action.invoke(item)
 }
 
 private static:
