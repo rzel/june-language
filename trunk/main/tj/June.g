@@ -49,7 +49,7 @@ annotations: annotation*;
 
 args: '(' items ')' -> ^(ARGS items);
 
-block: '{'! EOL!* content? '}'!;
+block: '{' '^'? EOL* (statement (eol statement)* eol?)? '}' -> ^(BLOCK '^'? statement*);
 
 blockExpression:
 	block -> ^('do' block) |
@@ -81,7 +81,7 @@ constructorArgs:
 	'(' EOL* (expression (eoi expression)* (eoi pair)* eoi? | pair (eoi pair)* eoi?)? ')'
 	-> ^(ARGS expression* pair*);
 
-content: statement (eol statement)* eol? -> ^(BLOCK statement+);
+content: ;
 
 controlStatement:
 	'return'^ expression |
@@ -118,8 +118,9 @@ expressionOrAssignment: expression (
 expressionPair: expression ':' EOL* expression -> ^(PAIR expression+);
 
 impliedThis:
-	(d='.' call) -> ^(IMPLIED_THIS $d call) |
-	(d='.&' memberRef) -> ^(IMPLIED_THIS $d memberRef);
+	('.' call) -> ^(IMPLIED_THIS '.' call) |
+	('.&' memberRef) -> ^(IMPLIED_THIS '.&' memberRef) |
+	'&'^ memberRef;
 
 importStatement
 	:	'import'^ ('advice'?) ID ('.'! ID)* eol;

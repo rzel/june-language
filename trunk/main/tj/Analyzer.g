@@ -30,7 +30,7 @@ assignment:
 	^(('++'|'--') expression)
 ;
 
-block: ^(BLOCK statement+);
+block: ^(BLOCK '^'? statement*);
 
 blockExpression: ^(('do'|DEF_EXPR) params? block);
 
@@ -84,6 +84,7 @@ expression:
 	^('/' expression expression) |
 	^('.' target=expression call[$target.start]) |
 	^('.&' expression memberRef) |
+	^('&' memberRef) |
 	// TODO Need a 'this' object for the call arg.
 	^(IMPLIED_THIS '.' call[null]) |
 	^(IMPLIED_THIS '.&' memberRef) |

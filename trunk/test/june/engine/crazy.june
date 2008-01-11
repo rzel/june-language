@@ -13,7 +13,7 @@ enum Alignment [
 
 (a + b) * 4 + new Something<N>()
 
-numbers.where def(it) {0 <= it && it < 1}.select do(hmm) {hmm * 2}
+numbers.where def {^0 <= it && it < 1}.select do(hmm) {hmm * 2}
 
 MORE: if(a == b) {
 	doSomething.a
