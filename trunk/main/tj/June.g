@@ -94,7 +94,7 @@ defPart: ID typeParams? ('?'|'*')? '('! params? ')'!;
 
 defStatement:
 	('final'|'native'|'override')* 'def'^
-	ID typeParams? '('! params? ')'! defPart* (':'! type)? throwsClause? block?;
+	ID typeParams? '('! params? ')'! defPart* (':'! EOL!* type)? throwsClause? block?;
 
 enumContent: EOL* (enumItem (eoi enumItem)* eoi?)? -> ^(LIST enumItem*);
 
