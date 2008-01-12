@@ -81,8 +81,6 @@ constructorArgs:
 	'(' EOL* (expression (eoi expression)* (eoi pair)* eoi? | pair (eoi pair)* eoi?)? ')'
 	-> ^(ARGS expression* pair*);
 
-content: ;
-
 controlStatement:
 	'return'^ expression |
 	'throw'^ expression |
@@ -175,7 +173,7 @@ strings: string (EOL* string)* -> ^(STRINGS string+);
 
 throwsClause: 'throws'^ type ('|'! type)*;
 
-type: typeNoDo | (d='do'|d='def') ('(' typeArgs ')')? type? -> ^(TYPE_REF $d typeArgs? type?);
+type: typeNoDo | (d='do'|d='def') '?'? ('(' typeArgs ')')? type? -> ^(TYPE_REF $d '?'? typeArgs? type?);
 
 typeNoDo: ID ('.' ID)* ('<' typeArgs '>')? (c='?'|c='*')? -> ^(TYPE_REF ID+ typeArgs? $c?);
 
