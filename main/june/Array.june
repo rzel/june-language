@@ -1,0 +1,7 @@
+role<Item>:
+
+native def get(index: Integer): Item
+
+native def length: Integer
+
+native def set(index: Integer, item: Item)

@@ -111,7 +111,7 @@ pair: ^(PAIR ID expression);
 
 param: ^(PARAM varDef);
 
-params: ^(PARAMS param+);
+params: ^(PARAMS param*);
 
 statement:
 	assignment | controlStatement | expression |

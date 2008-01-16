@@ -28,7 +28,7 @@ public class JuneTree extends CommonTree {
 	public Map<String, Set<JuneTree>> symbols;
 
 	/**
-	 * TODO Use this instead of 'symbols'.
+	 * TODO Use this instead of 'symbols'. Really? It won't cover labels.
 	 */
 	public JuneClass blockClass;
 

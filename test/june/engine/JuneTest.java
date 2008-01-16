@@ -12,7 +12,7 @@ public class JuneTest {
 	public void parse() {
 		try {
 			// TODO How to fail on errors?
-			InputStream stream = getClass().getClassLoader().getResourceAsStream("june/Core.june");
+			InputStream stream = getClass().getClassLoader().getResourceAsStream("june/Array.june");
 			try {
 				new JuneEngine().compile(new InputStreamReader(stream));
 			} finally {
