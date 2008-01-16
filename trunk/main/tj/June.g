@@ -53,8 +53,8 @@ block: '{' '^'? EOL* (statement (eol statement)* eol?)? '}' -> ^(BLOCK '^'? stat
 
 blockExpression:
 	block -> ^('do' block) |
-	'do'^ '('! params ')'! block |
-	'def' '(' params? ')' block -> ^(DEF_EXPR params? block);
+	'do'^ params? block |
+	'def' params? block -> ^(DEF_EXPR params? block);
 
 booleanExpression: compareExpression (('&&'^|'||'^) compareExpression)*;
 
@@ -88,11 +88,11 @@ controlStatement:
 	'continue'^ ID? (':'! expression)? |
 	'redo'^ ID?;
 
-defPart: ID typeParams? ('?'|'*')? '('! params? ')'!;
+defPart: ID typeParams? ('?'|'*')? params?;
 
 defStatement:
 	('final'|'native'|'override')* 'def'^
-	ID typeParams? '('! params? ')'! defPart* (':'! EOL!* type)? throwsClause? block?;
+	ID typeParams? params? defPart* (':'! EOL!* type)? throwsClause? block?;
 
 enumContent: EOL* (enumItem (eoi enumItem)* eoi?)? -> ^(LIST enumItem*);
 
@@ -146,7 +146,7 @@ notExpression: '!'^? memberExpression;
 
 pair: ID ':' EOL* expression -> ^(PAIR ID expression); // ID or String (or Integer?)!
 
-params	:	EOL* varDef (eoi varDef)* eoi? -> ^(PARAMS ^(PARAM varDef)+);
+params: '(' EOL* (varDef (eoi varDef)* eoi?)? ')' -> ^(PARAMS ^(PARAM varDef)*);
 
 statement:
 	controlStatement | expressionOrAssignment |
