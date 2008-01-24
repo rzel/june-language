@@ -1,109 +1,121 @@
+package dont.you.know
+
 import something.Other
 import another.Something
 import advice sure.Whatever
 
-class<T is Comparable<T>> is Map<String, T> & Happy:
+println("Don't you know?")
 
-enum Alignment [
-	CENTER
-	@Synonym(term: 'left', context: 'LTR languages')
-	LEADING
-	TRAILING
-]
+class CoolBeans<T is Comparable<T>> is Map<String, T> & Happy {
 
-(a + b) * 4 + new Something<N>()
+	enum Alignment {
 
-numbers.where def {^0 <= it && it < 1}.select do(hmm) {hmm * 2}
+		val CENTER
 
-MORE: if(a == b) {
-	doSomething.a
-	c.d() != e
-	break: true
-} else {
-	doOtherStuff()
-	continue MORE: stuff.andAgain()
-}
+		@Synonym(term: 'left', context: 'LTR languages')
+		val LEADING
 
-9.toString()
+		val TRAILING
 
-a() - a.b.c(1, 2) + b.glub[duper, 5][glum].brr[a + b] - c
+	}
 
-class Name<What>
+	Alignment.CENTER
 
-@Whatever @bob.bill.More(1)
-@Source(author: 'Tom', date: 'then')
-role Fish {
-	@More(
-		year: '1999'
-		comment: 'yep'
-	)
-	def happy(a: do String) throws Fish | Bear {
-		out.println(this)
-		if(true) {throw apples}
-		return new(1, name: fig.grow()) {
-			private:
-			def blah() {
-				blue.&yellow
-				&more
+	(a + b) * 4 + new Something<N>()
+
+	numbers.where def {^0 <= this && this < 1}.select do(hmm) {hmm * 2}
+
+	MORE: if(a == b) {
+		doSomething.a
+		c.d() != e
+		break: true
+	} else {
+		doOtherStuff()
+		continue MORE: stuff.andAgain()
+	}
+
+	9.toString()
+
+	a() - a.b.c(1, 2) + b.glub[duper, 5][glum].brr[a + b] - c
+
+	class Name<What>
+
+	@Whatever @bob.bill.More(1)
+	@Source(author: 'Tom', date: 'then')
+	role Fish {
+		@More(
+			year: '1999'
+			comment: 'yep'
+		)
+		def happy(a: do String) throws Fish | Bear {
+			out.println(this)
+			if(true) {throw apples}
+			return new(1, name: fig.grow()) {
+				private:
+				def blah() {
+					blue.&yellow
+					&more
+				}
 			}
 		}
 	}
-}
 
-# Next empty on purpose
-def more() {
-}
+	# Next empty on purpose
+	def more() {
+	}
 
-switch(a) [:
-	happy: a
-	so('sad'): b
-]
-
-private:
-
-@Whatever
-val a = [
-	a:
-		[1, c],
-	b: 2
-]
-var b = [:]
-
-#public static:
-
-var c = [
-]
-var d = [1, 2
-3]
-var e = [
-		:
+	switch(a) [:
+		happy: a
+		so('sad'): b
 	]
 
-public:
+	private:
 
-final ...
-override def hi<Bloo>(
-		a* # comments count as EOL only
-		b: def(b.B?)) {
-	def that<That, There>(): ...
-		That;
-	var b: Double ...
-		=
-			5
-	def c(): List<java.util.Map<
-		String
-		String?
-	>>?
-	val d = static a(4, [1, c.d.&fine(Grapes<Wrath?>).name]);
-	var c = ['a' 'gain' "embedded {expressions} here and \" and stuff\\", 'b', d]
-	var e = [`Yes with `any' character.
+	@Whatever
+	val a = [
+		a:
+			[1, c],
+		b: 2
 	]
-	b[1] =
-		'any string can be left unterminated
-		'but multiline needs to work here, too
-	b = []
-}
+	var b = [:]
 
-.okayIGuess.andStuff()
-.sure = thing
-bindTo(.&height)
+	#public static:
+
+	var c = [
+	]
+	var d = [1, 2
+	3]
+	var e = [
+			:
+		]
+
+	public:
+
+	final ...
+	override def hi<Bloo>(
+			a* # comments count as EOL only
+			b: def(b.B?)) {
+		def that<That, There>(): ...
+			That;
+		var b: Double ...
+			=
+				5
+		def c(): List<java.util.Map<
+			String
+			String?
+		>>?
+		val d = static a(4, [1, c.d.&fine(Grapes<Wrath?>).name]);
+		var c = ['a' 'gain' "embedded {expressions} here and \" and stuff\\", 'b', d]
+		var e = [`Yes with `any' character.
+		]
+		b[1] =
+			'any string can be left unterminated
+			'but multiline needs to work here, too
+		b = []
+	}
+
+	.okayIGuess.andStuff()
+	.sure = thing
+	bindTo(.&height)
+
+}
