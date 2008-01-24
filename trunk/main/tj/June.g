@@ -38,7 +38,7 @@ tokens {
 	package tj;
 }
 
-script	:	importStatement* mainClass -> ^(SCRIPT importStatement* mainClass);
+script: packageStatement? importStatement* classContent? -> ^(SCRIPT packageStatement? importStatement* classContent?);
 
 addExpression
 	:	multiplyExpression (('+'^|'-'^) multiplyExpression)*;
@@ -94,12 +94,6 @@ defStatement:
 	('final'|'native'|'override')* 'def'^
 	ID typeParams? params? defPart* (':'! EOL!* type)? throwsClause? block?;
 
-enumContent: EOL* (enumItem (eoi enumItem)* eoi?)? -> ^(LIST enumItem*);
-
-enumItem: annotations ID -> ^(DECLARATION annotations ID);
-
-enumStatement: 'enum' ID '[' enumContent ']' -> ^('enum' ID enumContent);
-
 eoi: (','|EOL) EOL* ->;
 
 eol: (';'|EOL) EOL* ->;
@@ -128,9 +122,6 @@ introExpression
 
 items: EOL* (expression (eoi expression)* eoi?)? -> expression*;
 
-mainClass
-	:	(typeKind typeParams? supers? ':')? EOL* classContent? -> ^(TYPE_DEF typeKind? typeParams? supers? classContent?);
-
 map: stringMapNotEmpty |
 	'[' EOL* ':' EOL* (expressionPair (eoi expressionPair)* eoi?)? ']' -> ^(MAP expressionPair*);
 
@@ -143,6 +134,8 @@ memberRef: ID ('(' typeArgs? ')')? -> ^(MEMBER_REF ID typeArgs?);
 multiplyExpression: notExpression (('*'^|'/'^) notExpression)*;
 
 notExpression: '!'^? memberExpression;
+
+packageStatement: 'package'^ ID ('.'! ID)* eol;
 
 pair: ID ':' EOL* expression -> ^(PAIR ID expression); // ID or String (or Integer?)!
 
@@ -157,7 +150,6 @@ statement:
 	annotations (
 		classStatement -> ^(DECLARATION annotations classStatement) |
 		defStatement -> ^(DECLARATION annotations defStatement) |
-		enumStatement -> ^(DECLARATION annotations enumStatement) |
 		varStatement -> ^(DECLARATION annotations varStatement)
 	);
 
