@@ -16,7 +16,7 @@ options {
 script: ^(SCRIPT importStatement* mainClass);
 
 annotation: ^('@' type constructorArgs?) {
-	System.out.println("Annotation " + $type.start);
+	Log.info("Annotation " + $type.start);
 };
 
 annotations: annotation*;
@@ -25,7 +25,7 @@ args: ^(ARGS expression*);
 
 assignment:
 	^(('='|'+='|'-='|'*='|'/=') target=expression expression) {
-		System.out.println("Assignment on " + $target.start);
+		Log.info("Assignment on " + $target.start);
 	} |
 	^(('++'|'--') expression)
 ;
