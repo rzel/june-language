@@ -44,6 +44,7 @@ role Fish {
 			private:
 			def blah() {
 				blue.&yellow
+				&more
 			}
 		}
 	}

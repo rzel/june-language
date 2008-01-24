@@ -46,7 +46,7 @@ public class JuneTree extends CommonTree {
 		if (entities == null) {
 			entities = new HashSet<Object>();
 		}
-		System.out.println("addEntity " + entity);
+		Log.info("addEntity " + entity);
 		entities.add(entity);
 	}
 

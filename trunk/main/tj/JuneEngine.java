@@ -44,13 +44,14 @@ public class JuneEngine {
 			analyzer.script();
 			// TODO Generate bytecode.
 			// TODO Supply result via a ClassLoader or on disk or in memory or something.
+			/**/
 		} catch (Exception e) {
 			Helper.throwAny(e);
 		}
 	}
 
 	void findEntities(JuneTree target, JuneTree node, String name) {
-		System.out.println("findEntities for " + name + " on " + target);
+		Log.info("findEntities for " + name + " on " + target);
 		Set<JuneTree> treeNodes = null;
 		Set<Entity> entities = new HashSet<Entity>();
 		if (target == null) {
@@ -63,11 +64,12 @@ public class JuneEngine {
 				}
 				treeNodes = block.symbols.get(name);
 				if (treeNodes != null) {
-					//System.out.println(treeNodes);
+					//Log.info(treeNodes);
 				}
 				block = block.block;
 			}
-			if (script != null) {
+			if (false && script != null) {
+				// TODO This part is super slow (adds 400% to execution time so far)!!! Make it faster!!!
 				// Need types for Usage.
 				Resolver.ImportResolver importResolver =
 						new Resolver.ImportResolver(
@@ -85,8 +87,8 @@ public class JuneEngine {
 		} else {
 			// Search the target.
 		}
-		System.out.println(treeNodes);
-		System.out.println(entities);
+		Log.info(treeNodes == null ? "null" : treeNodes.toString());
+		Log.info(entities.toString());
 	}
 
 }
