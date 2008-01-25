@@ -42,7 +42,7 @@ class CoolBeans<T: Comparable<T>>(var dude: String) extra(things: List): JFrame 
 
 	a() - a.b.c(1, 2) + b.glub[duper, 5][glum].brr[a + b] - c
 
-	class Name<What>
+	class Name<What>(val first: String, val last: String)
 
 	@Whatever @bob.bill.More(1)
 	@Source(author: 'Tom', date: 'then')
@@ -53,6 +53,7 @@ class CoolBeans<T: Comparable<T>>(var dude: String) extra(things: List): JFrame 
 		)
 		def happy(a: do String) throws Fish | Bear {
 			out.println(this)
+			Name("Tom", last: "Thumb")
 			if(true) {throw apples}
 			return new(1, name: fig.grow()) {
 				private:
