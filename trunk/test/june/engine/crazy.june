@@ -69,10 +69,10 @@ class CoolBeans<T: Comparable<T>>(var dude: String) extra(things: List): JFrame 
 	def more() {
 	}
 
-	switch(a) [:
+	switch(a, [:
 		happy: a
 		so('sad'): b
-	]
+	])
 
 	private:
 
@@ -89,7 +89,7 @@ class CoolBeans<T: Comparable<T>>(var dude: String) extra(things: List): JFrame 
 	var c = [
 	]
 	var d = [1, 2
-	3]
+	3, cool: more]
 	var e = [
 			:
 		]

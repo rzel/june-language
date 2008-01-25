@@ -48,8 +48,9 @@ annotation: '@'^ typeNoDo args? eol*;
 
 annotations: annotation*;
 
-args: '(' EOL* (expression (eoi expression)* (eoi pair)* eoi? | pair (eoi pair)* eoi?)? ')'
-	-> ^(ARGS expression* pair*);
+args: '(' EOL* argItems? ')' -> ^(ARGS argItems?);
+
+argItems: expression (eoi expression)* (eoi pair)* eoi? | pair (eoi pair)* eoi?;
 
 block: '{' '^'? EOL* content? '}' -> ^(BLOCK '^'? content?);
 
@@ -60,14 +61,14 @@ blockExpression:
 
 booleanExpression: compareExpression (('&&'^|'||'^) compareExpression)*;
 
-call: ID args? (blockExpression|map)? callPart* ->
-	^(CALL ID args? blockExpression? map? callPart*);
+call: ID args? blockExpression? callPart* ->
+	^(CALL ID args? blockExpression? callPart*);
 
 callNew: 'new'^ typeNoDo? args block?;
 
-callPart: ID args? (blockExpression|map)? -> ^(CALL_PART ID args? blockExpression? map?);
+callPart: ID args? blockExpression? -> ^(CALL_PART ID args? blockExpression?);
 
-collection: '[' items ']' -> ^(LIST items) | map;
+collection: '[' EOL* argItems? ']' -> ^(LIST argItems?) | expressionMap;
 
 compareExpression
 	:	addExpression (('=='^|'!='^|'<'^|'<='^|'>'^|'>='^) addExpression)?;
@@ -100,6 +101,8 @@ expressionOrAssignment: expression (
 	('++'^|'--'^)
 )?;
 
+expressionMap: '[' EOL* ':' EOL* (expressionPair (eoi expressionPair)* eoi?)? ']' -> ^(MAP expressionPair*);
+
 expressionPair: expression ':' EOL* expression -> ^(PAIR expression+);
 
 impliedThis:
@@ -114,9 +117,6 @@ introExpression
 	:	blockExpression | call | callNew | collection | ('('! expression ')'!) | NUMBER | strings;
 
 items: EOL* (expression (eoi expression)* eoi?)? -> expression*;
-
-map: stringMapNotEmpty |
-	'[' EOL* ':' EOL* (expressionPair (eoi expressionPair)* eoi?)? ']' -> ^(MAP expressionPair*);
 
 memberExpression:
 	(staticExpression | impliedThis)
@@ -153,8 +153,6 @@ statement:
 staticExpression: 'static'^ introExpression | introExpression;
 
 string: LINE_STRING | POWER_STRING | RAW_STRING;
-
-stringMapNotEmpty: '[' EOL* (pair (eoi pair)* eoi?)? ']' -> ^(MAP pair*);
 
 strings: string (EOL* string)* -> ^(STRINGS string+);
 
