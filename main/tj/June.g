@@ -69,8 +69,8 @@ callPart: ID args? (blockExpression|map)? -> ^(CALL_PART ID args? blockExpressio
 classContent: EOL* (s+=statement|s+=visibility) (eol (s+=statement|s+=visibility))* eol? -> ^(BLOCK $s+);
 
 classStatement:
-	typeKind ID typeParams? supers? ('{' classContent? '}')? ->
-	^(TYPE_DEF typeKind ID typeParams? supers? classContent?);
+	typeKind ID typeParams? params? supers? ('{' classContent? '}')? ->
+	^(TYPE_DEF typeKind ID typeParams? params? supers? classContent?);
 
 collection: '[' items ']' -> ^(LIST items) | map;
 
@@ -139,7 +139,9 @@ packageStatement: 'package'^ ID ('.'! ID)* eol;
 
 pair: ID ':' EOL* expression -> ^(PAIR ID expression); // ID or String (or Integer?)!
 
-params: '(' EOL* (varDef (eoi varDef)* eoi?)? ')' -> ^(PARAMS ^(PARAM varDef)*);
+param: (v='var'|v='val')? varDef -> ^(PARAM $v? varDef);
+
+params: '(' EOL* (param (eoi param)* eoi?)? ')' -> ^(PARAMS param*);
 
 statement:
 	controlStatement | expressionOrAssignment |

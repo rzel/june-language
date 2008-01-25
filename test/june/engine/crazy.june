@@ -6,7 +6,11 @@ import advice sure.Whatever
 
 println("Don't you know?")
 
-class CoolBeans<T is Comparable<T>> is Map<String, T> & Happy {
+var dude = 'cool'
+
+class CoolBeans<T is Comparable<T>>(var dude: String) is JFrame & Map<String, T> & Happy {
+
+	super(dude)
 
 	enum Alignment {
 

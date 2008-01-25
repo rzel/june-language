@@ -52,7 +52,7 @@ public class JuneEngine {
 
 	void findEntities(JuneTree target, JuneTree node, String name) {
 		Log.info("findEntities for " + name + " on " + target);
-		Set<JuneTree> treeNodes = null;
+		Set<JuneTree> treeNodes = new HashSet<JuneTree>();
 		Set<Entity> entities = new HashSet<Entity>();
 		if (target == null) {
 			// Search the scope.
@@ -62,9 +62,9 @@ public class JuneEngine {
 				if (block.getType() == JuneParser.SCRIPT) {
 					script = block;
 				}
-				treeNodes = block.symbols.get(name);
-				if (treeNodes != null) {
-					//Log.info(treeNodes);
+				Set<JuneTree> currentTreeNodes = block.symbols.get(name);
+				if (currentTreeNodes != null) {
+					treeNodes.addAll(currentTreeNodes);
 				}
 				block = block.block;
 			}
@@ -87,7 +87,7 @@ public class JuneEngine {
 		} else {
 			// Search the target.
 		}
-		Log.info(treeNodes == null ? "null" : treeNodes.toString());
+		Log.info(treeNodes.toString());
 		Log.info(entities.toString());
 	}
 
