@@ -168,15 +168,17 @@ strings: string (EOL* string)* -> ^(STRINGS string+);
 
 throwsClause: 'throws'^ type ('|'! type)*;
 
-type: typeBasic (('&' typeBasic)* -> ^(TYPE_AND typeBasic+));
+type:
+	typeNoDo |
+	(d='do'|d='def') '?'? ('(' typeArgs ')')? type? -> ^(TYPE_REF $d '?'? typeArgs? type?);
 
 typeArgs: EOL* type (eoi type)* eoi? -> ^(TYPE_ARGS type+);
 
-typeBasic: typeNoDo | (d='do'|d='def') '?'? ('(' typeArgs ')')? typeBasic? -> ^(TYPE_REF $d '?'? typeArgs? typeBasic?);
+typeBasic: ID ('.' ID)* ('<' typeArgs '>')? (c='?'|c='*')? -> ^(TYPE_REF ID+ typeArgs? $c?);
 
 typeKind: 'annotation' | 'class' | 'enum' | 'interface' | 'role';
 
-typeNoDo: ID ('.' ID)* ('<' typeArgs '>')? (c='?'|c='*')? -> ^(TYPE_REF ID+ typeArgs? $c?);
+typeNoDo: typeBasic (('&' typeBasic)* -> ^(TYPE_AND typeBasic+));
 
 typeParam: ID supers? -> ^(TYPE_PARAM ID supers?);
 
