@@ -82,22 +82,8 @@ classDef
 		//Log.info("Class with " + $Scope::block.symbols);
 	}
 :
-	^(TYPE_DEF typeKind? ID fluff*) {
+	^(TYPE_DEF modifier* typeKind? ID fluff*) {
 		putOuterSymbol($ID == null ? null : $ID.text, $classDef.start);
-	}
-;
-
-defStatement
-	scope Scope;
-	@init {
-		startBlock($defStatement.start);
-	}
-	@after {
-		//Log.info("Def ID with " + $Scope::block.symbols);
-	}
-:
-	^('def' ('final'|'native'|'override')* ID fluff*) {
-		putOuterSymbol($ID.text, $defStatement.start);
 	}
 ;
 
@@ -106,15 +92,17 @@ label: ^(LABEL ID fluff*) {
 };
 
 fluff:
-	^(~(BLOCK|'do'|DEF_EXPR|'def'|LABEL|PARAM|TYPE_DEF|TYPE_PARAM|'var') fluff*) |
-	block | blockExpression | classDef | defStatement | label | param | typeParam | varStatement
+	^(~(BLOCK|'do'|DEF_EXPR|LABEL|PARAM|TYPE_DEF|TYPE_PARAM|'var') fluff*) |
+	block | blockExpression | classDef | label | param | typeParam | varStatement
 ;
+
+modifier: 'final'|'native'|'override';
 
 param: ^(PARAM ('var'|'val')? ID .*) {
 	addSymbol($ID.text, $param.start);
 };
 
-typeKind: 'annotation'|'aspect'|'class'|'enum'|'interface'|'role';
+typeKind: 'annotation'|'aspect'|'class'|'def'|'enum'|'interface'|'role';
 
 typeParam: ^(TYPE_PARAM ID .*) {
 	addSymbol($ID.text, $typeParam.start);

@@ -39,7 +39,7 @@ tokens {
 	package tj;
 }
 
-script: packageStatement? importStatement* classContent? -> ^(SCRIPT packageStatement? importStatement* classContent?);
+script: packageStatement? importStatement* content? -> ^(SCRIPT packageStatement? importStatement* content?);
 
 addExpression
 	:	multiplyExpression (('+'^|'-'^) multiplyExpression)*;
@@ -50,7 +50,7 @@ annotations: annotation*;
 
 args: '(' items ')' -> ^(ARGS items);
 
-block: '{' '^'? EOL* (statement (eol statement)* eol?)? '}' -> ^(BLOCK '^'? statement*);
+block: '{' '^'? EOL* content? '}' -> ^(BLOCK '^'? content?);
 
 blockExpression:
 	block -> ^('do' block) |
@@ -62,16 +62,13 @@ booleanExpression: compareExpression (('&&'^|'||'^) compareExpression)*;
 call: ID args? (blockExpression|map)? callPart* ->
 	^(CALL ID args? blockExpression? map? callPart*);
 
-callNew: 'new'^ typeNoDo? constructorArgs ('{'! classContent? '}'!)?;
+callNew: 'new'^ typeNoDo? constructorArgs block?;
 
 callPart: ID args? (blockExpression|map)? -> ^(CALL_PART ID args? blockExpression? map?);
 
-// TODO Should the visibility be grouping the statements?
-classContent: EOL* (s+=statement|s+=visibility) (eol (s+=statement|s+=visibility))* eol? -> ^(BLOCK $s+);
-
 classStatement:
-	typeKind ID typeParams? params? supers? ('{' classContent? '}')? ->
-	^(TYPE_DEF typeKind ID typeParams? params? supers? classContent?);
+	modifier* typeKind ID typeParams? params? defPart* supers? throwsClause? block? ->
+	^(TYPE_DEF modifier* typeKind ID typeParams? params? defPart* supers? throwsClause? block?);
 
 collection: '[' items ']' -> ^(LIST items) | map;
 
@@ -82,6 +79,8 @@ constructorArgs:
 	'(' EOL* (expression (eoi expression)* (eoi pair)* eoi? | pair (eoi pair)* eoi?)? ')'
 	-> ^(ARGS expression* pair*);
 
+content: statement (eol statement)* eol? -> statement+;
+
 controlStatement:
 	'return'^ expression |
 	'throw'^ expression |
@@ -90,10 +89,6 @@ controlStatement:
 	'redo'^ ID?;
 
 defPart: ID typeParams? ('?'|'*')? params?;
-
-defStatement:
-	('final'|'native'|'override')* 'def'^
-	ID typeParams? params? defPart* (':'! EOL!* type)? throwsClause? block?;
 
 eoi: (','|EOL) EOL* ->;
 
@@ -132,6 +127,8 @@ memberExpression:
 
 memberRef: ID ('(' typeArgs? ')')? -> ^(MEMBER_REF ID typeArgs?);
 
+modifier: 'final'|'native'|'override';
+
 multiplyExpression: notExpression (('*'^|'/'^) notExpression)*;
 
 notExpression: '!'^? memberExpression;
@@ -152,9 +149,9 @@ statement:
 	) |
 	annotations (
 		classStatement -> ^(DECLARATION annotations classStatement) |
-		defStatement -> ^(DECLARATION annotations defStatement) |
 		varStatement -> ^(DECLARATION annotations varStatement)
-	);
+	) |
+	visibility;
 
 supers: ':'^ type;
 
@@ -176,7 +173,7 @@ typeArgs: EOL* type (eoi type)* eoi? -> ^(TYPE_ARGS type+);
 
 typeBasic: ID ('.' ID)* ('<' typeArgs '>')? (c='?'|c='*')? -> ^(TYPE_REF ID+ typeArgs? $c?);
 
-typeKind: 'annotation' | 'class' | 'enum' | 'interface' | 'role';
+typeKind: 'annotation' | 'class' | 'def' | 'enum' | 'interface' | 'role';
 
 typeNoDo: typeBasic (('&' typeBasic)* -> ^(TYPE_AND typeBasic+));
 
@@ -190,6 +187,7 @@ varDef	:	ID (c='?'|c='*') -> ID $c
 varStatement
 	:	('val'^|'var'^) varDef ('='! EOL!* expression)?;
 
+// TODO Should the visibility be grouping the statements?
 visibility
 	:	('internal'|'protected'|'private'|'public') 'static'? ':'!;
 

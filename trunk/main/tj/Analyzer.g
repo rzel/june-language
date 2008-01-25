@@ -13,7 +13,7 @@ options {
 	JuneEngine engine;
 }
 
-script: ^(SCRIPT packageStatement? importStatement* classContent?);
+script: ^(SCRIPT packageStatement? importStatement* statement*);
 
 annotation: ^('@' type constructorArgs?) {
 	Log.info("Annotation " + $type.start);
@@ -39,13 +39,11 @@ call[JuneTree target]: ^(CALL ID args? expression? callPart*) {
 	engine.findEntities(target, $call.start, $ID.text);
 };
 
-callNew: ^('new' type? constructorArgs classContent?);
+callNew: ^('new' type? constructorArgs block?);
 
 callPart: ^(CALL_PART ID args? expression?);
 
-classContent: ^(BLOCK (statement|visibility)+);
-
-classStatement: ^(TYPE_DEF typeKind ID typeParams? params? supers? classContent?);
+classStatement: ^(TYPE_DEF modifier* typeKind ID typeParams? params? defPart* supers? throwsClause? block?);
 
 collection:	^(LIST expression*) | map;
 
@@ -59,8 +57,6 @@ controlStatement:
 	^('redo' ID?);
 
 defPart: ID typeParams? ('?'|'*')? params?;
-
-defStatement: ^('def' ('final'|'native'|'override')* ID typeParams? params? defPart* type? throwsClause? block?);
 
 expression:
 	^('!' expression) |
@@ -99,6 +95,8 @@ map: ^(MAP (pair+ | expressionPair*));
 
 memberRef: ^(MEMBER_REF ID typeArgs?);
 
+modifier: 'final'|'native'|'override';
+
 packageStatement: ^('package' ID+);
 
 pair: ^(PAIR ID expression);
@@ -110,7 +108,8 @@ params: ^(PARAMS param*);
 statement:
 	assignment | controlStatement | expression |
 	^(LABEL ID (assignment | controlStatement | expression)) |
-	^(DECLARATION annotations (classStatement | defStatement | varStatement))
+	^(DECLARATION annotations (classStatement | varStatement)) |
+	visibility
 ;
 
 string:
@@ -136,7 +135,7 @@ typeParam: ^(TYPE_PARAM ID supers?);
 
 typeParams: ^(TYPE_PARAMS typeParam+);
 
-typeKind: 'annotation'|'aspect'|'class'|'enum'|'interface'|'role';
+typeKind: 'annotation'|'aspect'|'class'|'def'|'enum'|'interface'|'role';
 
 varDef:	ID ('?'|'*'|type)?;
 
