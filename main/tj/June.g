@@ -13,6 +13,7 @@ tokens {
 	DECLARATION;
 	DEF;
 	DEF_EXPR;
+	DEF_PART;
 	GET_AT;
 	IMPLIED_THIS;
 	LABEL;
@@ -86,7 +87,7 @@ defStatement:
 	modifier* typeKind ID typeParams? params? defPart* typeSpec? throwsClause? block? ->
 	^(DEF modifier* typeKind ID typeParams? params? defPart* typeSpec? throwsClause? block?);
 
-defPart: ID typeParams? ('?'|'*')? params?;
+defPart: ID typeParams? ('?'|'*')? params? -> ^(DEF_PART ID  typeParams? '?'? '*'? params?);
 
 eoi: (','|EOL) EOL* ->;
 
@@ -174,7 +175,7 @@ typeParam: ID typeSpec? -> ^(TYPE_PARAM ID typeSpec?);
 
 typeParams: '<' EOL* typeParam (eoi typeParam)* eoi? '>' -> ^(TYPE_PARAMS typeParam+);
 
-typeSpec: ':'! type;
+typeSpec: ':'! EOL!* type;
 
 varDef	:	ID (c='?'|c='*') -> ID $c
 	|	ID (':' EOL* type)? -> ID type?;

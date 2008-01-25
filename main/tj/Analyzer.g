@@ -52,7 +52,7 @@ controlStatement:
 	^('continue' ID? expression?) |
 	^('redo' ID?);
 
-defPart: ID typeParams? ('?'|'*')? params?;
+defPart: ^(DEF_PART ID typeParams? ('?'|'*')? params?);
 
 defStatement: ^(DEF modifier* typeKind ID typeParams? params? defPart* type? throwsClause? block?);
 

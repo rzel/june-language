@@ -1,7 +1,13 @@
-role<Item>:
+package june
 
-native def get(index: Integer): Item
+native role Array<Item>(itemType: Class<Item>) {
 
-native def length: Integer
+	native def this(items: List<Items>)
 
-native def set(index: Integer, item: Item)
+	native def get(index: Integer): Item
+
+	native def length: Integer
+
+	native def set(index: Integer, item: Item)
+
+}
