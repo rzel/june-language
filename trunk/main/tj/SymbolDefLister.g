@@ -28,6 +28,7 @@ scope Scope {
 
 	private void addSymbol(Scope_scope scope, String id, JuneTree node) {
 		scope.block.addSymbol(id, node);
+		//Log.info(">>>---> " + id + ": " + node);
 	}
 
 	private void startBlock(JuneTree node) {
@@ -73,17 +74,23 @@ blockExpression
 	^(('do'|DEF_EXPR) fluff*)
 ;
 
-classDef
+// TODO Type params need defined just for a scope right here on the defPart.
+// Note that the params here purposely won't be captured as symbols since they are members of the part.
+defPart: ^(DEF_PART ID .*) {
+	addSymbol($ID.text, $defPart.start);
+};
+
+defStatement
 	scope Scope;
 	@init {
-		startBlock($classDef.start);
+		startBlock($defStatement.start);
 	}
 	@after {
 		//Log.info("Class with " + $Scope::block.symbols);
 	}
 :
-	^(TYPE_DEF modifier* typeKind? ID fluff*) {
-		putOuterSymbol($ID == null ? null : $ID.text, $classDef.start);
+	^(DEF modifier* typeKind? ID fluff*) {
+		putOuterSymbol($ID == null ? null : $ID.text, $defStatement.start);
 	}
 ;
 
@@ -92,8 +99,8 @@ label: ^(LABEL ID fluff*) {
 };
 
 fluff:
-	^(~(BLOCK|'do'|DEF_EXPR|LABEL|PARAM|TYPE_DEF|TYPE_PARAM|'var') fluff*) |
-	block | blockExpression | classDef | label | param | typeParam | varStatement
+	^(~(BLOCK|'do'|DEF_EXPR|DEF_PART|LABEL|PARAM|DEF|TYPE_PARAM|'var') fluff*) |
+	block | blockExpression | defPart | defStatement | label | param | typeParam | varStatement
 ;
 
 modifier: 'final'|'native'|'override';
