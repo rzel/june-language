@@ -11,6 +11,7 @@ tokens {
 	CALL_PART;
 	COMPARE;
 	DECLARATION;
+	DEF;
 	DEF_EXPR;
 	GET_AT;
 	IMPLIED_THIS;
@@ -25,7 +26,6 @@ tokens {
 	STRINGS;
 	TYPE_AND;
 	TYPE_ARGS;
-	TYPE_DEF;
 	TYPE_PARAM;
 	TYPE_PARAMS;
 	TYPE_REF;
@@ -67,10 +67,6 @@ callNew: 'new'^ typeNoDo? args block?;
 
 callPart: ID args? (blockExpression|map)? -> ^(CALL_PART ID args? blockExpression? map?);
 
-classStatement:
-	modifier* typeKind ID typeParams? params? defPart* supers? throwsClause? block? ->
-	^(TYPE_DEF modifier* typeKind ID typeParams? params? defPart* supers? throwsClause? block?);
-
 collection: '[' items ']' -> ^(LIST items) | map;
 
 compareExpression
@@ -84,6 +80,10 @@ controlStatement:
 	'break'^ ID? (':'! expression)? |
 	'continue'^ ID? (':'! expression)? |
 	'redo'^ ID?;
+
+defStatement:
+	modifier* typeKind ID typeParams? params? defPart* typeSpec? throwsClause? block? ->
+	^(DEF modifier* typeKind ID typeParams? params? defPart* typeSpec? throwsClause? block?);
 
 defPart: ID typeParams? ('?'|'*')? params?;
 
@@ -145,12 +145,10 @@ statement:
 		expressionOrAssignment -> ^(LABEL ID expressionOrAssignment)
 	) |
 	annotations (
-		classStatement -> ^(DECLARATION annotations classStatement) |
+		defStatement -> ^(DECLARATION annotations defStatement) |
 		varStatement -> ^(DECLARATION annotations varStatement)
 	) |
 	visibility;
-
-supers: ':'^ type;
 
 staticExpression: 'static'^ introExpression | introExpression;
 
@@ -174,9 +172,11 @@ typeKind: 'annotation' | 'class' | 'def' | 'enum' | 'interface' | 'role';
 
 typeNoDo: typeBasic (('&' typeBasic)* -> ^(TYPE_AND typeBasic+));
 
-typeParam: ID supers? -> ^(TYPE_PARAM ID supers?);
+typeParam: ID typeSpec? -> ^(TYPE_PARAM ID typeSpec?);
 
 typeParams: '<' EOL* typeParam (eoi typeParam)* eoi? '>' -> ^(TYPE_PARAMS typeParam+);
+
+typeSpec: ':'! type;
 
 varDef	:	ID (c='?'|c='*') -> ID $c
 	|	ID (':' EOL* type)? -> ID type?;
