@@ -15,13 +15,13 @@ options {
 
 script: ^(SCRIPT packageStatement? importStatement* statement*);
 
-annotation: ^('@' type constructorArgs?) {
+annotation: ^('@' type args?) {
 	Log.info("Annotation " + $type.start);
 };
 
 annotations: annotation*;
 
-args: ^(ARGS expression*);
+args: ^(ARGS expression* pair*);
 
 assignment:
 	^(('='|'+='|'-='|'*='|'/=') target=expression expression) {
@@ -39,15 +39,13 @@ call[JuneTree target]: ^(CALL ID args? expression? callPart*) {
 	engine.findEntities(target, $call.start, $ID.text);
 };
 
-callNew: ^('new' type? constructorArgs block?);
+callNew: ^('new' type? args block?);
 
 callPart: ^(CALL_PART ID args? expression?);
 
 classStatement: ^(TYPE_DEF modifier* typeKind ID typeParams? params? defPart* supers? throwsClause? block?);
 
 collection:	^(LIST expression*) | map;
-
-constructorArgs: ^(ARGS expression* pair*);
 
 controlStatement:
 	^('return' expression) |

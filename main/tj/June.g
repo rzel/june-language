@@ -44,11 +44,12 @@ script: packageStatement? importStatement* content? -> ^(SCRIPT packageStatement
 addExpression
 	:	multiplyExpression (('+'^|'-'^) multiplyExpression)*;
 
-annotation: '@'^ typeNoDo constructorArgs? eol*;
+annotation: '@'^ typeNoDo args? eol*;
 
 annotations: annotation*;
 
-args: '(' items ')' -> ^(ARGS items);
+args: '(' EOL* (expression (eoi expression)* (eoi pair)* eoi? | pair (eoi pair)* eoi?)? ')'
+	-> ^(ARGS expression* pair*);
 
 block: '{' '^'? EOL* content? '}' -> ^(BLOCK '^'? content?);
 
@@ -62,7 +63,7 @@ booleanExpression: compareExpression (('&&'^|'||'^) compareExpression)*;
 call: ID args? (blockExpression|map)? callPart* ->
 	^(CALL ID args? blockExpression? map? callPart*);
 
-callNew: 'new'^ typeNoDo? constructorArgs block?;
+callNew: 'new'^ typeNoDo? args block?;
 
 callPart: ID args? (blockExpression|map)? -> ^(CALL_PART ID args? blockExpression? map?);
 
@@ -74,10 +75,6 @@ collection: '[' items ']' -> ^(LIST items) | map;
 
 compareExpression
 	:	addExpression (('=='^|'!='^|'<'^|'<='^|'>'^|'>='^) addExpression)?;
-
-constructorArgs:
-	'(' EOL* (expression (eoi expression)* (eoi pair)* eoi? | pair (eoi pair)* eoi?)? ')'
-	-> ^(ARGS expression* pair*);
 
 content: statement (eol statement)* eol? -> statement+;
 
