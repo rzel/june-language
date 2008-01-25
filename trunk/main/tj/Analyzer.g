@@ -43,8 +43,6 @@ callNew: ^('new' type? args block?);
 
 callPart: ^(CALL_PART ID args? expression?);
 
-classStatement: ^(TYPE_DEF modifier* typeKind ID typeParams? params? defPart* supers? throwsClause? block?);
-
 collection:	^(LIST expression*) | map;
 
 controlStatement:
@@ -55,6 +53,8 @@ controlStatement:
 	^('redo' ID?);
 
 defPart: ID typeParams? ('?'|'*')? params?;
+
+defStatement: ^(DEF modifier* typeKind ID typeParams? params? defPart* type? throwsClause? block?);
 
 expression:
 	^('!' expression) |
@@ -106,7 +106,7 @@ params: ^(PARAMS param*);
 statement:
 	assignment | controlStatement | expression |
 	^(LABEL ID (assignment | controlStatement | expression)) |
-	^(DECLARATION annotations (classStatement | varStatement)) |
+	^(DECLARATION annotations (defStatement | varStatement)) |
 	visibility
 ;
 
@@ -118,8 +118,6 @@ string:
 
 strings: ^(STRINGS string+);
 
-supers: ^(':' type);
-
 throwsClause: ^('throws' type+);
 
 type:
@@ -129,7 +127,7 @@ type:
 
 typeArgs: ^(TYPE_ARGS type+);
 
-typeParam: ^(TYPE_PARAM ID supers?);
+typeParam: ^(TYPE_PARAM ID type?);
 
 typeParams: ^(TYPE_PARAMS typeParam+);
 
