@@ -43,7 +43,7 @@ callNew: ^('new' type? args block?);
 
 callPart: ^(CALL_PART ID args? expression?);
 
-collection:	^(LIST expression*) | map;
+collection:	^(LIST expression* pair*) | expressionMap;
 
 controlStatement:
 	^('return' expression) |
@@ -85,11 +85,11 @@ expression:
 	strings |
 	NUMBER;
 
+expressionMap: ^(MAP expressionPair*);
+
 expressionPair: ^(PAIR expression expression);
 
 importStatement: ^('import' 'advice'? ID+);
-
-map: ^(MAP (pair+ | expressionPair*));
 
 memberRef: ^(MEMBER_REF ID typeArgs?);
 
