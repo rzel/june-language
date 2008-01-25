@@ -8,7 +8,7 @@ println("Don't you know?")
 
 var dude = 'cool'
 
-class CoolBeans<T is Comparable<T>>(var dude: String) is JFrame & Map<String, T> & Happy {
+class CoolBeans<T: Comparable<T>>(var dude: String): JFrame & Map<String, T> & Happy {
 
 	super(dude)
 
@@ -83,7 +83,7 @@ class CoolBeans<T is Comparable<T>>(var dude: String) is JFrame & Map<String, T>
 	]
 	var b = [:]
 
-	#public static:
+	public static:
 
 	var c = [
 	]

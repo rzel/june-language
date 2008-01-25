@@ -23,11 +23,12 @@ tokens {
 	PARAMS;
 	SCRIPT;
 	STRINGS;
-	TYPE_DEF;
-	TYPE_REF;
+	TYPE_AND;
 	TYPE_ARGS;
+	TYPE_DEF;
 	TYPE_PARAM;
 	TYPE_PARAMS;
+	TYPE_REF;
 }
 
 @header {
@@ -155,7 +156,7 @@ statement:
 		varStatement -> ^(DECLARATION annotations varStatement)
 	);
 
-supers: 'is'^ type ('&'! type)*;
+supers: ':'^ type;
 
 staticExpression: 'static'^ introExpression | introExpression;
 
@@ -167,13 +168,15 @@ strings: string (EOL* string)* -> ^(STRINGS string+);
 
 throwsClause: 'throws'^ type ('|'! type)*;
 
-type: typeNoDo | (d='do'|d='def') '?'? ('(' typeArgs ')')? type? -> ^(TYPE_REF $d '?'? typeArgs? type?);
-
-typeNoDo: ID ('.' ID)* ('<' typeArgs '>')? (c='?'|c='*')? -> ^(TYPE_REF ID+ typeArgs? $c?);
+type: typeBasic (('&' typeBasic)* -> ^(TYPE_AND typeBasic+));
 
 typeArgs: EOL* type (eoi type)* eoi? -> ^(TYPE_ARGS type+);
 
+typeBasic: typeNoDo | (d='do'|d='def') '?'? ('(' typeArgs ')')? typeBasic? -> ^(TYPE_REF $d '?'? typeArgs? typeBasic?);
+
 typeKind: 'annotation' | 'class' | 'enum' | 'interface' | 'role';
+
+typeNoDo: ID ('.' ID)* ('<' typeArgs '>')? (c='?'|c='*')? -> ^(TYPE_REF ID+ typeArgs? $c?);
 
 typeParam: ID supers? -> ^(TYPE_PARAM ID supers?);
 
