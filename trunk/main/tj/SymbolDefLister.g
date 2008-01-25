@@ -110,7 +110,7 @@ fluff:
 	block | blockExpression | classDef | defStatement | label | param | typeParam | varStatement
 ;
 
-param: ^(PARAM ID .*) {
+param: ^(PARAM ('var'|'val')? ID .*) {
 	addSymbol($ID.text, $param.start);
 };
 

@@ -45,7 +45,7 @@ callPart: ^(CALL_PART ID args? expression?);
 
 classContent: ^(BLOCK (statement|visibility)+);
 
-classStatement: ^(TYPE_DEF typeKind ID typeParams? supers? classContent?);
+classStatement: ^(TYPE_DEF typeKind ID typeParams? params? supers? classContent?);
 
 collection:	^(LIST expression*) | map;
 
@@ -103,7 +103,7 @@ packageStatement: ^('package' ID+);
 
 pair: ^(PAIR ID expression);
 
-param: ^(PARAM varDef);
+param: ^(PARAM ('var'|'val')? varDef);
 
 params: ^(PARAMS param*);
 
