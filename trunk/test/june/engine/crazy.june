@@ -73,6 +73,13 @@ class CoolBeans<T: Comparable<T>>(var dude: String) extra(things: List): JFrame 
 		happy: a
 		so('sad'): b
 	])
+	
+	switch(a) case(happy) {
+		a
+	} case(so('sad')) {
+		b
+	} case(whatever, c) else {
+	}
 
 	private:
 

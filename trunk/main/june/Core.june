@@ -16,7 +16,7 @@ role Core {
 				return .action.invoke()
 			}
 		}
-		else.action()
+		else.action.invoke()
 	}
 
 	def if<Result>(test: Boolean, action: do Result) ...
@@ -53,15 +53,22 @@ role Core {
 		finally?(action: do):
 			Result
 
-	def switch<Item, Result>(item: Item, handlers: Map<Item, do Result>):
+	def switch<Item, Result>(item: Item) ...
+		case*(item: Item, action: do Result):
 			Result? {
-		switch(item, handlers) else {null}
+		switch(item) case(case) else {null}
 	}
 
-	def switch<Item, Result>(item: Item, handlers: Map<Item, do Result>) ...
+	def switch<Item, Result>(item: Item) ...
+		case*(item: Item, action: do Result) ...
 		else(action: do Result):
 			Result {
-		(handlers[item] || else).invoke()
+		for(case) {^
+			if(item == .item) {
+				return .action.invoke()
+			}
+		}
+		else.action.invoke()
 	}
 
 	def while<Result>(test: do Boolean, action: do Result): Result? {
