@@ -45,7 +45,7 @@ script: packageStatement? importStatement* content? -> ^(SCRIPT packageStatement
 addExpression
 	:	multiplyExpression (('+'^|'-'^) multiplyExpression)*;
 
-annotation: '@'^ typeNoDo args? eol*;
+annotation: '@'^ typeBasic args? eol*;
 
 annotations: annotation*;
 
@@ -65,7 +65,7 @@ booleanExpression: compareExpression (('&&'^|'||'^) compareExpression)*;
 call: ID args? blockExpression? callPart* ->
 	^(CALL ID args? blockExpression? callPart*);
 
-callNew: 'new'^ typeNoDo? args block?;
+callNew: 'new'^ typeBasic? (args block? | block) callPart*;
 
 callPart: ID args? blockExpression? -> ^(CALL_PART ID args? blockExpression?);
 
@@ -169,7 +169,7 @@ typeBasic: ID ('.' ID)* ('<' typeArgs '>')? (c='?'|c='*')? -> ^(TYPE_REF ID+ typ
 
 typeKind: 'annotation' | 'class' | 'def' | 'enum' | 'interface' | 'role';
 
-typeNoDo: typeBasic (('&' typeBasic)* -> ^(TYPE_AND typeBasic+));
+typeNoDo: (t+=typeBasic -> typeBasic) (('&' t+=typeBasic)+ -> ^(TYPE_AND $t+))?;
 
 typeParam: ID typeSpec? -> ^(TYPE_PARAM ID typeSpec?);
 
