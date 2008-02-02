@@ -103,7 +103,7 @@ fluff:
 	block | blockExpression | defPart | defStatement | label | param | typeParam | varStatement
 ;
 
-modifier: 'final'|'native'|'override';
+modifier: 'native'|'override'|'virtual';
 
 param: ^(PARAM ('var'|'val')? ID .*) {
 	addSymbol($ID.text, $param.start);

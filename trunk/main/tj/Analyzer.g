@@ -93,7 +93,7 @@ importStatement: ^('import' 'advice'? ID+);
 
 memberRef: ^(MEMBER_REF ID typeArgs?);
 
-modifier: 'final'|'native'|'override';
+modifier: 'native'|'override'|'virtual';
 
 packageStatement: ^('package' ID+);
 

@@ -103,7 +103,7 @@ class CoolBeans<T: Comparable<T>>(var dude: String) extra(things: List): JFrame 
 
 	public:
 
-	final ...
+	virtual ...
 	override def hi<Bloo>(
 			a* # comments count as EOL only
 			b: def(b.B?)) {

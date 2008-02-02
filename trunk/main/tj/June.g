@@ -125,7 +125,7 @@ memberExpression:
 
 memberRef: ID ('(' typeArgs? ')')? -> ^(MEMBER_REF ID typeArgs?);
 
-modifier: 'final'|'native'|'override';
+modifier: 'native'|'override'|'virtual';
 
 multiplyExpression: notExpression (('*'^|'/'^) notExpression)*;
 
