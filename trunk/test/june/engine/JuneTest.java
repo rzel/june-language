@@ -13,7 +13,7 @@ public class JuneTest {
 		try {
 			// TODO How to fail on errors?
 			for (int i = 0; i < 1; i++) {
-				InputStream stream = getClass().getClassLoader().getResourceAsStream("june/engine/crazy.june");
+				InputStream stream = getClass().getClassLoader().getResourceAsStream("june/engine/hello.june");
 				try {
 					new JuneEngine().compile(new BufferedReader(new InputStreamReader(stream)));
 				} finally {

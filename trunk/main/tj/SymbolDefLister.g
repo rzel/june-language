@@ -56,7 +56,7 @@ block
 		startBlock($block.start);
 	}
 	@after {
-		//Log.info("Block with " + $Scope::block.symbols);
+		Log.info("Block with " + $Scope::block.symbols);
 	}
 :
 	^(BLOCK fluff*)
@@ -68,7 +68,7 @@ blockExpression
 		startBlock($blockExpression.start);
 	}
 	@after {
-		//Log.info("Block expression with " + $Scope::block.symbols);
+		Log.info("Block expression with " + $Scope::block.symbols);
 	}
 :
 	^(('do'|DEF_EXPR) fluff*)
