@@ -99,14 +99,14 @@
         <java-data xmlns="http://www.netbeans.org/ns/freeform-project-java/2">
             <compilation-unit>
                 <package-root>main</package-root>
-                <classpath mode="compile">lib/antlr-runtime-3.0.jar:lib/asm-3.0.jar:output/generated/main</classpath>
+                <classpath mode="compile">lib/antlr-runtime-3.0.jar;lib/asm-3.0.jar;output/generated/main</classpath>
                 <built-to>output/classes/main</built-to>
                 <source-level>1.5</source-level>
             </compilation-unit>
             <compilation-unit>
                 <package-root>test</package-root>
                 <unit-tests/>
-                <classpath mode="compile">lib/antlr-runtime-3.0.jar:lib/asm-3.0.jar:lib/testng-5.5-jdk15.jar:main</classpath>
+                <classpath mode="compile">lib/antlr-runtime-3.0.jar;lib/asm-3.0.jar;lib/testng-5.5-jdk15.jar;main;output/generated/main;output/classes/main</classpath>
                 <built-to>output/classes/test</built-to>
                 <source-level>1.5</source-level>
             </compilation-unit>

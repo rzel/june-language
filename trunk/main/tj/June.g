@@ -40,7 +40,7 @@ tokens {
 	package tj;
 }
 
-script: packageStatement? importStatement* content? -> ^(SCRIPT packageStatement? importStatement* content?);
+script: packageStatement? importStatement* EOL* content -> ^(SCRIPT packageStatement? importStatement* content);
 
 addExpression
 	:	multiplyExpression (('+'^|'-'^) multiplyExpression)*;
