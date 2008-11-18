@@ -28,7 +28,7 @@ eol: (';'|EOL) EOL* ->;
 
 expression: block | call | def | lambda | list | number | string;
 
-lambda: ('@'^ parameters | '^'^) expression;
+lambda: '@'^ parameters? expression;
 
 line: expression (eoi expression)* -> ^(LINE expression+);
 
