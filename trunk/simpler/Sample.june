@@ -1,0 +1,20 @@
+a()('hi')
+
+if (cool) {
+	here(a: a)
+} else {
+	there()
+}
+
+def ident[Item](item: Item) = item
+
+val a: String = 'swank'
+
+def cooler() {^
+	println
+	more; it
+}
+
+class List[Item](items): Map[Integer, Item] & Collection[Item] {
+	def first
+}
