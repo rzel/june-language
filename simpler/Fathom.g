@@ -14,17 +14,19 @@ program: statements;
 
 arguments: '('^ statements ')'!;
 
+b: EOL* ->;
+
 block: '{'^ statements '}'!;
 
 call: callPart (nb callPart)* -> ^(CALL callPart+);
 
 callPart: ID (nb arguments)? (nb block)?;
 
-def: 'def'^ (ID '*'? parameters?)+ ('=' EOL!* expression)?;
+def: 'def'^ (ID '*'? parameters?)+ ('=' b expression)?;
 
-eoi: ',' EOL* ->;
+eoi: ',' b ->;
 
-eol: (';'|EOL) EOL* ->;
+eol: (';'|EOL) b ->;
 
 expression: block | call | def | lambda | list | number | string;
 
@@ -33,6 +35,8 @@ lambda: '@'^ parameters? expression;
 line: expression (eoi expression)* -> ^(LINE expression+);
 
 list: '['^ statements ']'!;
+
+nb: ('...' EOL+)? ->;
 
 statements: EOL!* (line (eol line)* eol?)?;
 
@@ -43,8 +47,6 @@ number: NUMBER;
 parameter: ID '*'?;
 
 parameters: '('^ (EOL!* (parameter (eoi parameter)* eoi?)?) ')'!;
-
-nb: ('...' EOL+)? ->;
 
 //STRETCH: '...' EOL* {skip();};
 
