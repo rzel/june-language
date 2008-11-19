@@ -1,0 +1,48 @@
+each(names) @(name, i) {
+	print('%s: %s%n', name, i)
+}
+
+print(
+	if (a) {
+		'hello'
+	} elif (b) {
+		'maybe'
+	} else {
+		whatever
+		'no way'
+	}
+)
+
+def blah(a, b) = {
+	if
+	else(@(a, b) add(a, b))
+}
+
+print('Hello, world!')
+
+def pi = 3.1415926545
+
+def a = [
+	1, 2, 3
+	4, 5,
+	6
+]
+
+a(
+	1
+	2
+); b
+
+# Seeing about chaining and spaces.
+def if(a, b*) elif*(c, d) else(e) =
+	$if(a) do(b) ...
+	# Does this work?
+	else(
+		for(elif) ...
+		first(^c(it)) ...
+		do(d(e)) ...
+		else(e)
+	)
+
+def List(Item)
+
