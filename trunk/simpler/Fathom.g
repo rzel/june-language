@@ -18,11 +18,17 @@ b: EOL* ->;
 
 block: '{'^ statements '}'!;
 
-call: callPart (nb callPart)* -> ^(CALL callPart+);
+blockish: block | lambdaBlock;
 
-callPart: ID (nb arguments)? (nb block)?;
+call: ((callPart nb)+ ID? | ID) -> ^(CALL callPart* ID?);
 
-def: 'def'^ (ID '*'? parameters?)+ ('=' b expression)?;
+callPart: ID nb (arguments nb blockish? | blockish);
+
+def: 'def'^ ((defPart nb)+ defName? | defName) nb ('=' b expression)?;
+
+defName: ID '*'?;
+
+defPart: defName parameters;
 
 eoi: ',' b ->;
 
@@ -31,6 +37,8 @@ eol: (';'|EOL) b ->;
 expression: block | call | def | lambda | list | number | string;
 
 lambda: '@'^ parameters? expression;
+
+lambdaBlock: '@'^ parameters? block;
 
 line: expression (eoi expression)* -> ^(LINE expression+);
 
