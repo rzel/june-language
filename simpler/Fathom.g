@@ -26,7 +26,7 @@ callPart: ID nb (arguments nb blockish? | blockish);
 
 def: 'def'^ ((defPart nb)+ defName? | defName) nb ('=' b expression)?;
 
-defName: ID '*'?;
+defName: ID quantity?;
 
 defPart: defName parameters;
 
@@ -52,9 +52,11 @@ string: POWER_STRING | RAW_STRING;
 
 number: NUMBER;
 
-parameter: ID '*'?;
+parameter: ID quantity?;
 
 parameters: '('^ (EOL!* (parameter (eoi parameter)* eoi?)?) ')'!;
+
+quantity: '?' | '*';
 
 //STRETCH: '...' EOL* {skip();};
 

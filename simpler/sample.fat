@@ -13,7 +13,7 @@ print(
 	}
 )
 
-def blah(a, b) = {
+def blah(a, b?, c?, d*) = {
 	if
 	else(@(a, b) add(a, b))
 }
@@ -34,12 +34,12 @@ a(
 ); b
 
 # Seeing about chaining and spaces.
-def if(a, b*) elif*(c, d) else(e) =
+def if(a, b*) elif*(c, d) else?(e) =
 	$if(a) do(b) ...
 	# Does this work?
 	else(
 		for(elif) ...
-		first(^c(it)) ...
+		first(@c(it)) ...
 		do(d(e)) ...
 		else(e)
 	)
