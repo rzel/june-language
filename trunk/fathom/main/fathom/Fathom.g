@@ -10,6 +10,14 @@ tokens {
 	LINE;
 }
 
+@header {
+	package fathom;
+}
+
+@lexer::header {
+	package fathom;
+}
+
 program: statements;
 
 arguments: '('^ statements ')'!;

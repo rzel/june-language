@@ -5,6 +5,7 @@
 	<classpathentry kind="src" path="output/generated/main"/>
 	<classpathentry kind="src" path="fathom/src"/>
 	<classpathentry kind="src" path="fathom/test"/>
+	<classpathentry kind="src" path="fathom/output/generated/main"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/asm-3.0.jar"/>
 	<classpathentry kind="lib" path="lib/testng-5.5-jdk15.jar"/>
