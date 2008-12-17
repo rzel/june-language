@@ -18,7 +18,7 @@ tokens {
 	package fathom;
 }
 
-program: statements;
+script: statements;
 
 arguments: '('^ statements ')'!;
 
@@ -44,9 +44,9 @@ eol: (';'|EOL) b ->;
 
 expression: block | call | def | lambda | list | number | string;
 
-lambda: '@'^ parameters? expression;
+lambda: 'do'^ parameters? expression;
 
-lambdaBlock: '@'^ parameters? block;
+lambdaBlock: 'do'^ parameters? block;
 
 line: expression (eoi expression)* -> ^(LINE expression+);
 

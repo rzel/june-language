@@ -1,4 +1,4 @@
-each(names) @(name, i) {
+each(names) do(name, i) {
 	print('%s: %s%n', name, i)
 }
 
@@ -15,7 +15,7 @@ print(
 
 def blah(a, b?, c?, d*) = {
 	if
-	else(@(a, b) add(a, b))
+	else(do(a, b) add(a, b))
 }
 
 print('Hello, world!')
@@ -39,7 +39,7 @@ def if(a, b*) elif*(c, d) else?(e) =
 	# Does this work?
 	else(
 		for(elif) ...
-		first(@c(it)) ...
+		first(do c(it)) ...
 		do(d(e)) ...
 		else(e)
 	)
