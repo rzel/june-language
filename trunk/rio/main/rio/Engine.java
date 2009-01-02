@@ -1,4 +1,4 @@
-package fathom;
+package rio;
 
 import java.io.*;
 
@@ -8,7 +8,7 @@ public class Engine {
 
 	public void run(Reader reader) {
 		try {
-			FathomParser parser = new FathomParser(new CommonTokenStream(new FathomLexer(new ANTLRReaderStream(reader))));
+			RioParser parser = new RioParser(new CommonTokenStream(new RioLexer(new ANTLRReaderStream(reader))));
 			parser.setTreeAdaptor(new RioTreeAdaptor());
 			RioTree tree = (RioTree)parser.script().getTree();
 			// TODO Run it.
