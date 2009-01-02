@@ -1,4 +1,4 @@
-grammar Fathom;
+grammar Rio;
 
 options {
 	output = AST;
@@ -11,11 +11,11 @@ tokens {
 }
 
 @header {
-	package fathom;
+	package rio;
 }
 
 @lexer::header {
-	package fathom;
+	package rio;
 }
 
 script: statements;
