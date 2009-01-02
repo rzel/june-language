@@ -1,10 +1,8 @@
-package fathom;
+package rio;
 
 import java.io.*;
 
 import org.testng.annotations.*;
-
-import rio.*;
 
 public class RioTest {
 
